@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
-import { NotFoundComponent } from './not-found.component';
+import { NotFoundComponent } from './shared/components/not-found/not-found.component';
+import { AdminMainComponent } from './admin/components/admin-main/admin-main.component';
 
 const routes: Routes = [
-    { path: '/', component:  AppComponent},
-    { path: '**', component:  NotFoundComponent},
+    { path: '', redirectTo: 'admin', pathMatch: 'full' },
+    { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
