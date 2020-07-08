@@ -1,3 +1,4 @@
+import { AngularFireStorage } from "@angular/fire/storage";
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotFoundComponent } from './components/not-found/not-found.component';
@@ -11,7 +12,7 @@ import { Conf } from './defines/conf';
         CommonModule
     ],
     exports: [NotFoundComponent],
-    providers: [Conf]
+    providers: [Conf, AngularFireStorage]
 
 })
 export class SharedModule { }
