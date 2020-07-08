@@ -1,0 +1,12 @@
+export class Upload {
+    public _$key: string;
+    public _name: string;
+    public _file: File;
+    public _url: string;
+    public _progress: number;
+    public _created: number = Date.now();
+
+    constructor(file: File) {
+        this._file = file;
+    }
+}

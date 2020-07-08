@@ -57,7 +57,6 @@ export class FormComponent implements OnInit {
                 let percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 console.log(`${(percent).toFixed(2)}%`);
             });
-
     }
 
 }

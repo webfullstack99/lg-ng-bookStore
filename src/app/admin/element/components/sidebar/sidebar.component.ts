@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Conf } from 'src/app/shared/defines/conf.class';
+import { Conf } from 'src/app/shared/defines/conf';
 
 @Component({
     selector: 'app-sidebar',
