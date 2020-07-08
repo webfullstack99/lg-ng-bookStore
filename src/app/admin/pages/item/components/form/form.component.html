@@ -1,1 +1,19 @@
-<p>form works!</p>
+<div class="container-fluid">
+    <!-- PAGE TITLE -->
+    <div class="row">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h4 class="text-gray-800">Form Page</h4>
+            <a routerLink="/admin/item" class="btn btn-dark">Back</a>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="row">
+        <div class="col-12">
+            <ul class="list-group">
+                <li *ngFor="let item of _items" class="list-group-item">{{ item|json}}</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
