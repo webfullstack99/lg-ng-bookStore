@@ -28,4 +28,9 @@ export class FormComponent implements OnInit {
         }
     }
 
+    public onUpload($event): void{
+        console.log($event.target.files[0]);
+        
+    }
+
 }
