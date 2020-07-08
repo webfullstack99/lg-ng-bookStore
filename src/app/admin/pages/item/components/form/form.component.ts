@@ -1,16 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireList, AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireStorage } from "@angular/fire/storage";
+import { Observable } from 'rxjs';
+import { map, finalize } from "rxjs/operators";
 
 @Component({
     selector: 'app-form',
     templateUrl: './form.component.html',
-    styleUrls: ['./form.component.css']
+    styleUrls: ['./form.component.css'],
+    providers: [AngularFireStorage],
 })
 export class FormComponent implements OnInit {
 
     public _basePath: string = '/items'
     public _items: any[];
-    constructor(private _db: AngularFireDatabase) {
+    public _downloadURL: string;
+    constructor(
+        private _db: AngularFireDatabase,
+        private _storage: AngularFireStorage
+    ) {
     }
 
     ngOnInit(): void {
@@ -28,9 +36,28 @@ export class FormComponent implements OnInit {
         }
     }
 
-    public onUpload($event): void{
-        console.log($event.target.files[0]);
-        
+    public onUpload($event): void {
+        let imgFile = $event.target.files[0];
+        let filePath = `item/img-${Date.now()}`;
+        let fileRef = this._storage.ref(filePath);
+        let task = this._storage.upload(filePath, imgFile);
+        task
+            .snapshotChanges()
+            .pipe(
+                finalize(() => {
+                    fileRef.getDownloadURL().subscribe(url => {
+                        if (url) {
+                            this._downloadURL = url;
+                            console.log(url);
+                        }
+                    });
+                })
+            )
+            .subscribe(snapshot => {
+                let percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log(`${(percent).toFixed(2)}%`);
+            });
+
     }
 
 }
