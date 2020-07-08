@@ -1,0 +1,17 @@
+{
+    "hosting": {
+        "public": "dist/book-store",
+        "site": "anhpeter-book-store",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ],
+        "rewrites": [
+            {
+                "source": "**",
+                "destination": "/index.html"
+            }
+        ]
+    }
+}
