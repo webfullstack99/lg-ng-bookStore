@@ -10,29 +10,7 @@
     <!-- FILTER -->
     <div class="row mt-3">
         <div class="col-12">
-            <div class="filter-widget">
-                <div class="d-flex justify-content-between">
-                    <h4>Filter</h4>
-                    <button data-toggle="collapse" data-target="#contentId" class="btn btn-light chevron-btn">
-                        <i class="far fa-chevron-down fa-lg text-dark on-click-switch-chevron"></i>
-                    </button>
-                </div>
-                <div class="collapse" id="contentId">
-                    <div class="row">
-
-                        <!-- DATA-STATUS -->
-                        <div class="col-lg-6">
-                            
-                        </div>
-
-                        <!-- SEARCH -->
-                        <div class="col-lg-6">
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <app-filter></app-filter>
         </div>
     </div>
 
@@ -52,7 +30,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td scope="row">1</td>
+                        <th scope="row">1</th>
                         <td>Item 1</td>
                         <td>07/07/2020</td>
                         <td>07/07/2020</td>
@@ -70,6 +48,11 @@
     </div>
 
     <!-- PAGINATION -->
+    <div class="row mt-3">
+        <div class="col-12">
+            <app-pagination></app-pagination>
+        </div>
+    </div>
 
 
 </div>

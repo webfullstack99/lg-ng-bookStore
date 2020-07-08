@@ -1,0 +1,22 @@
+<div class="filter-widget">
+    <div class="d-flex justify-content-between">
+        <h4>Filter</h4>
+        <button data-toggle="collapse" data-target="#contentId" class="btn btn-light chevron-btn">
+            <i class="far fa-chevron-down fa-lg text-dark on-click-switch-chevron"></i>
+        </button>
+    </div>
+    <div class="collapse show" id="contentId">
+        <div class="row py-3">
+
+            <!-- FILTER BUTTONS -->
+            <div class="col-lg-6">
+                <app-filter-buttons></app-filter-buttons>
+            </div>
+
+            <!-- SEARCH -->
+            <div class="col-lg-6 mt-2 mt-lg-0">
+                <app-search></app-search>
+            </div>
+        </div>
+    </div>
+</div>

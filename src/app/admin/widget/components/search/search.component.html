@@ -1,6 +1,17 @@
 <form class="form-inline">
     <div id="search-input-group" class="input-group">
-        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search"
+        <div class="input-group-prepend">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown">
+                    Search by all
+                </button>
+                <div class="dropdown-menu" aria-labelledby="triggerId">
+                    <a class="dropdown-item" href="#">Search by id</a>
+                    <a class="dropdown-item" href="#">Search by name</a>
+                </div>
+            </div>
+        </div>
+        <input type="text" class="form-control bg-white border-0 small" placeholder="Search for..." aria-label="Search"
             aria-describedby="basic-addon2">
         <div class="input-group-append">
             <button class="btn btn-primary" type="button">

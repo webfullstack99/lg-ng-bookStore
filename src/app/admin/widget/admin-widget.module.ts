@@ -4,11 +4,12 @@ import { LogoutModalComponent } from './components/logout-modal/logout-modal.com
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { FilterComponent } from './components/filter/filter.component';
 import { SearchComponent } from './components/search/search.component';
+import { FilterButtonsComponent } from './components/filter-buttons/filter-buttons.component';
 
 
 
 @NgModule({
-    declarations: [LogoutModalComponent, PaginationComponent, FilterComponent, SearchComponent],
+    declarations: [LogoutModalComponent, PaginationComponent, FilterComponent, SearchComponent, FilterButtonsComponent],
     imports: [
         CommonModule
     ],
