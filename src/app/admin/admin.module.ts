@@ -4,6 +4,7 @@ import { AdminMainComponent } from './components/admin-main/admin-main.component
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { RouterModule } from '@angular/router';
 import { ItemModule } from './pages/item/item.module';
+import { UploadService } from '../shared/services/upload.service';
 
 @NgModule({
     declarations: [AdminMainComponent, DashboardComponent],
@@ -14,7 +15,8 @@ import { ItemModule } from './pages/item/item.module';
         // pages
         ItemModule,
     ],
-    exports: [AdminMainComponent]
+    exports: [AdminMainComponent],
+    providers: [UploadService],
 
 })
 export class AdminModule { }

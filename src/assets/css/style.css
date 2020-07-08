@@ -29,6 +29,22 @@
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+/* ngForm css  */
+input.ng-pristine {
+    border-left: 5px solid var(--info);
+}
+
+input.ng-dirty.ng-invalid,
+input.ng-touched.ng-invalid {
+    border-left: 5px solid var(--danger);
+}
+
+input.ng-dirty.ng-valid,
+input.ng-touched.ng-valid {
+    border-left: 5px solid var(--success);
+}
+/* end ngForm css */
+
 #search-input-group{
     width: 100% !important;
 }

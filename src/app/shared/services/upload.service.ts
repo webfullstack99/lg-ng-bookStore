@@ -13,8 +13,8 @@ export class UploadService {
         private _storage: AngularFireStorage
     ) { }
 
-    public pushUpload(upload: Upload, callback) {
-        let filePath = `item/img-${Date.now()}`;
+    public pushUpload(upload: Upload, basePath, callback) {
+        let filePath = `${basePath}/${Date.now()}`;
         let fileRef = this._storage.ref(filePath);
         let task = this._storage.upload(filePath, upload._file);
         task
