@@ -13,7 +13,7 @@ export class UploadService {
         private _storage: AngularFireStorage
     ) { }
 
-    public pushUpload(upload: Upload, basePath, callback) {
+    public upload(upload: Upload, basePath: string, callback, progressCallback = null) {
         let filePath = `${basePath}/${Date.now()}`;
         let fileRef = this._storage.ref(filePath);
         let task = this._storage.upload(filePath, upload._file);
@@ -29,8 +29,13 @@ export class UploadService {
                 })
             )
             .subscribe(snapshot => {
-                //let percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                //console.log(`${(percent).toFixed(2)}%`);
+                if (progressCallback) {
+                    let percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    upload._progress = percent;
+                    progressCallback(upload);
+                }
             });
     }
+
+    public delete
 }

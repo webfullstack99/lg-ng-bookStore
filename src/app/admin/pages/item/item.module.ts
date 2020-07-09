@@ -5,12 +5,14 @@ import { FormComponent } from './components/form/form.component';
 import { AdminWidgetModule } from '../../widget/admin-widget.module';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { AdminSharedModule } from '../../shared/admin-shared.module';
 
 
 
 @NgModule({
     declarations: [IndexComponent, FormComponent],
     imports: [
+        AdminSharedModule,
         FormsModule,
         RouterModule,
         ReactiveFormsModule,

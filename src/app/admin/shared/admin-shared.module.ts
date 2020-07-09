@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { ProgressBarComponent } from './directives/progress-bar/progress-bar.component';
 
 
 @NgModule({
-  declarations: [],
-  imports: [
-    CommonModule
-  ]
+    declarations: [ProgressBarComponent],
+    imports: [
+        CommonModule
+    ],
+    exports: [ProgressBarComponent]
 })
 export class AdminSharedModule { }
