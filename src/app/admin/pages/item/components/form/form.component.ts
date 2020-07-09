@@ -61,6 +61,8 @@ export class FormComponent implements OnInit {
                     url: upload._url,
                 }
                 this._db.list(this._basePath).push(item);
+                console.log(item);
+
             }, (upload: Upload) => {
                 this._uploadProgress = upload._progress;
             })

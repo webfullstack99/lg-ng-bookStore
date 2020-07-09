@@ -46,6 +46,7 @@
 
 .action-button-container {
     max-width: 100px;
+    min-width: 65px;
 }
 
 /* ngForm css  */

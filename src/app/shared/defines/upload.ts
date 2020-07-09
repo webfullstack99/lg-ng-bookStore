@@ -1,7 +1,7 @@
 export class Upload {
     public _name: string;
     public _file: File;
-    public _url: string;
+    public _url: any;
     public _progress: number;
     public _created: number = Date.now();
 
