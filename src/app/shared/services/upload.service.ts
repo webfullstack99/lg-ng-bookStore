@@ -8,27 +8,29 @@ import { environment } from 'src/environments/environment';
 })
 export class UploadService {
 
-    constructor(
-        //private _storage: AngularFireStorage
-    ) { }
+    constructor() {
+        firebase.initializeApp(environment.firebase);
+    }
 
     public upload(upload: Upload, basePath: string, callback, progressCallback = null) {
-        firebase.initializeApp(environment.firebase);
         let filePath = `${basePath}/${Date.now()}`;
         let fileRef = firebase.storage().ref(filePath);
         let task = fileRef.put(upload._file);
 
         task.on('state_changed', (snapshot) => {
+            // In Progress 
             if (progressCallback) {
                 let percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 upload._progress = percent;
                 progressCallback(upload);
             }
         }, (error) => {
+            // Error
             console.log('upload error');
             console.log(error);
 
         }, () => {
+            // Done
             task.snapshot.ref.getDownloadURL().then(function (downloadURL) {
                 upload._url = downloadURL;
                 upload._name = upload._file.name;
@@ -37,7 +39,16 @@ export class UploadService {
         })
     }
 
-    public delete(downloadUrl) {
-        //return this._storage.storage.refFromURL(downloadUrl).delete();
+    public deleteOneByUrl(downloadUrl, doneCallback?: () => void) {
+        // Create a reference to the file to delete
+        let fileRef = firebase.storage().refFromURL(downloadUrl);
+
+        // Delete the file
+        fileRef.delete()
+            .then(function () {
+                if (typeof doneCallback == 'function') doneCallback();
+            }).catch((error) => {
+                console.log('Failed to delete file');
+            });
     }
 }

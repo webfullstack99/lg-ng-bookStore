@@ -18,7 +18,7 @@ export class SidebarComponent implements OnInit {
     }
 
     public getManagePageMenuClass(): object {
-        if (this._isFirstLoad) {
+        if (this._isFirstLoad == true) {
             return {
                 show: (screen.width >= 767.98),
             }
@@ -27,7 +27,7 @@ export class SidebarComponent implements OnInit {
     }
 
     public getMainSidebarClass(): object {
-        if (this._isFirstLoad) {
+        if (this._isFirstLoad == true) {
             return {
                 toggled: (this.screenWidth <= 767.98),
             }

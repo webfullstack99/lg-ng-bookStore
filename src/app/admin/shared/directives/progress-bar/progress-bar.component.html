@@ -1,3 +1,10 @@
 <div if class="progress">
     <div class="progress-bar" role="progressbar" [style]="'width: '+_progress+'%;'">{{_title}}</div>
 </div>
+
+<ng-template [ngIf]="_progress==100">
+    <div class="text-success text-right">
+        <span class="fas fa-stars fa-lg"></span>
+        <span class="">Done!</span>
+    </div>
+</ng-template>

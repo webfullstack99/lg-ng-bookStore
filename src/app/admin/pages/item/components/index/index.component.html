@@ -13,35 +13,38 @@
         </div>
     </div>
 
-
     <!-- LIST OF ITEMS -->
     <div class="row mt-3">
         <div class="col-12">
-            <table class="admin-main-table table table-hover table-responsive-sm">
+            <table class="admin-main-table table table-striped table-responsive-sm">
                 <thead class="">
                     <tr>
                         <th scope="col">#</th>
                         <th width="20%"> <a href="">Name </a> </th>
+                        <th width=""> <a href="">Status </a> </th>
                         <th> <a href="">Created</a> </th>
                         <th> <a href="">Modified</a> </th>
                         <th> Action </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let item of _items; let i = index">
+                    <tr *ngFor="let item of _items; let i = index" [attr.data-key]="item['$key']">
                         <th class="align-middle" scope="row">{{ i+1 }}</th>
                         <td class="align-middle">
                             <div>
-                                <div> <strong> Name: </strong> {{ item['name'] }} </div>
+                                <div> <strong> Name: </strong> {{item.name}} </div>
                             </div>
-                            <p> <img [src]="item['url']" class="img-fluid" [alt]="item['name']"> </p>
+                            <p> <img [src]="item.thumb" class="img-fluid" [alt]="item.name"> </p>
                         </td>
-                        <td class="align-middle" [innerHTML]=" _helperService.showTime(item.created)"></td>
+                        <td class="align-middle" [innerHTML]="_helperService.showStatusButton(item.status)"> </td>
+                        <td class="align-middle" [innerHTML]="_helperService.showHistory(item.created)"></td>
                         <td class="align-middle">07/07/2020</td>
                         <td class="align-middle">
                             <div class="one-row-buttons action-button-container">
-                                <a href="" class="btn btn-success btn-sm "><i class="far fa-pen"></i></a>
-                                <a href="" class="btn btn-danger btn-sm ml-1 "><i class="far fa-trash-alt"></i></a>
+                                <button (click)="onEditClick(item)" class="btn btn-success btn-sm "><i
+                                        class="far fa-pen"></i></button>
+                                <button (click)="onDeleteClick(item)" class="btn btn-danger btn-sm ml-1 "><i
+                                        class="far fa-trash-alt"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -51,7 +54,7 @@
     </div>
 
     <!-- PAGINATION -->
-    <div class="row mt-3">
+    <div *ngIf="_items.length > 0" class="row mt-3">
         <div class="col-12">
             <app-pagination></app-pagination>
         </div>

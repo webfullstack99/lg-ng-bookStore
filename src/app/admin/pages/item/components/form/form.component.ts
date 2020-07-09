@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireDatabase } from 'angularfire2/database';
-import { UploadService } from 'src/app/shared/services/upload.service';
-import { Upload } from 'src/app/shared/defines/upload';
+import { ItemModelService as _ModelService } from 'src/app/admin/shared/services/item-model.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { PageService } from '../../services/page.service';
+import { Upload } from 'src/app/shared/defines/upload';
+import { HelperService } from 'src/app/shared/services/helper.service';
 
 declare var $: any;
 @Component({
@@ -13,19 +14,24 @@ declare var $: any;
 })
 export class FormComponent implements OnInit {
 
-    public _basePath: string = '/items'
+    public _controller: string;
     public _selectedFile: File;
-    public _submittedForm: object;
+    public _submittedForm: any;
     public _uploadProgress: number;
     public _formProfile: FormGroup;
 
     constructor(
-        private _db: AngularFireDatabase,
-        private _uploadService: UploadService,
+        private _pageService: PageService,
+        private _modelService: _ModelService,
+        private _helperService: HelperService,
         private _formBuilder: FormBuilder,
     ) { }
 
     ngOnInit(): void {
+        // assign controller
+        this._controller = this._pageService._controller;
+        this._modelService.controller = this._controller;
+
         this.initiateFormProfile();
     }
 
@@ -37,7 +43,7 @@ export class FormComponent implements OnInit {
             status: ['', [
                 Validators.required,
             ]],
-            avatar: ['', [
+            thumb: ['', [
                 Validators.required,
             ]],
         });
@@ -46,26 +52,24 @@ export class FormComponent implements OnInit {
 
     public onSelectedFile($event): void {
         this._selectedFile = $event.target.files[0];
+        this._helperService.displayFileUploadName($event);
     }
 
     public onSubmitForm(): void {
         if (this._formProfile.dirty && this._formProfile.valid) {
             this._submittedForm = this._formProfile.value;
 
-            // solve submit
-            this._uploadService.upload(new Upload(this._selectedFile), this._basePath, (upload: Upload) => {
-                let item = {
-                    name: this._submittedForm['name'],
-                    status: this._submittedForm['status'],
-                    created: Date.now(),
-                    url: upload._url,
-                }
-                this._db.list(this._basePath).push(item);
-                console.log(item);
+            // Assign thumb
+            this._submittedForm.thumb = this._selectedFile;
 
-            }, (upload: Upload) => {
-                this._uploadProgress = upload._progress;
-            })
+
+            // solve submit
+            this._modelService.saveItem({ item: this._submittedForm }, {
+                task: 'insert-one',
+                progressCallback: (upload: Upload) => {
+                    this._uploadProgress = upload._progress;
+                },
+            });
 
             // reset form
             this.resetForm();
@@ -88,7 +92,7 @@ export class FormComponent implements OnInit {
     //let basPath = 'test-db';
     //this._db.list(basPath).remove();
     //for (let i = 1; i <= 10; i++) {
-    //this._db.list(this._basePath).push({
+    //this._db.list(this._controller).push({
     //name: `item ${i}`,
     //})
     //}
