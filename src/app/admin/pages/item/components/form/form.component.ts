@@ -4,6 +4,7 @@ import { UploadService } from 'src/app/shared/services/upload.service';
 import { Upload } from 'src/app/shared/defines/upload';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
+declare var $: any;
 @Component({
     selector: 'app-form',
     templateUrl: './form.component.html',
@@ -65,9 +66,14 @@ export class FormComponent implements OnInit {
             })
 
             // reset form
-            this._formProfile.reset();
-            this._selectedFile = null;
+            this.resetForm();
         }
+    }
+
+    private resetForm(): void {
+        this._formProfile.reset();
+        $('#img-file-input').text('Choose file');
+        this._selectedFile = null;
     }
 
     public isFormValid(): boolean {

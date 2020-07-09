@@ -1,7 +1,7 @@
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" [ngClass]="getMainSidebarClass()" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" [routerLink]="_conf.prefix['admin']" >
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" [routerLink]="_conf.prefix['admin']">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
@@ -33,7 +33,7 @@
             <i class="fas fa-fw fa-cog"></i>
             <span>Manage Page</span>
         </a>
-        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseTwo" class="collapse" [ngClass]="getManagePageMenuClass()" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" routerLink="/admin/item" routerLinkActive="active">Item</a>
                 <a class="collapse-item" routerLink="/admin/book" routerLinkActive="active">Book</a>

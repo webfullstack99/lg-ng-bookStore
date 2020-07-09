@@ -17,13 +17,13 @@ export class ItemModelService extends AdminModelService {
         super(_db);
     }
 
-    public listItems(params: object, options: object, callback: (data) => void) {
+    public listItems(params: any, options: any, callback: (data) => void) {
         //this._db.list(this.collection(this._controller)).valueChanges().subscribe((data) => {
         //callback(data);
         //})
 
         this._db.list(this.collection(this._controller)).snapshotChanges().forEach((itemsSnapshot) => {
-            let items: object[] = [];
+            let items: any[] = [];
             itemsSnapshot.forEach((itemSnapshot) => {
                 let item = itemSnapshot.payload.toJSON();
                 item['$key'] = itemSnapshot.key;
@@ -32,6 +32,4 @@ export class ItemModelService extends AdminModelService {
             callback(items);
         })
     }
-
-
 }

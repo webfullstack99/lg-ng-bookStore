@@ -4,7 +4,6 @@ $(document).ready(function () {
 
 let setup = {
     run: function () {
-        this.sidebarToggle();
         this.onChevronBtnClick();
         this.onSwitchChevronClick();
         this.onCustomFileInputChange();

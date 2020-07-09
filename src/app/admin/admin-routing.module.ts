@@ -11,8 +11,8 @@ const routes: Routes = [
             {
                 path: 'item',
                 children: [
-                    { path: '', component: itemIndex, },
                     { path: 'form', component: itemForm, },
+                    { path: '', component: itemIndex, },
                 ]
 
             },

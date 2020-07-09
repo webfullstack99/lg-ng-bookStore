@@ -6,6 +6,7 @@ import { AdminWidgetModule } from '../../widget/admin-widget.module';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AdminSharedModule } from '../../shared/admin-shared.module';
+import { PageService } from './services/page.service';
 
 
 
@@ -21,6 +22,7 @@ import { AdminSharedModule } from '../../shared/admin-shared.module';
     ],
     exports: [
         IndexComponent, FormComponent
-    ]
+    ],
+    providers: [PageService]
 })
 export class ItemModule { }

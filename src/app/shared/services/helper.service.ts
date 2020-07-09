@@ -6,4 +6,8 @@ import { Injectable } from '@angular/core';
 export class HelperService {
 
     constructor() { }
+
+    public showTime(time): string{
+        return `-- <span class="text-danger">${time}</span> --`;
+    }
 }
