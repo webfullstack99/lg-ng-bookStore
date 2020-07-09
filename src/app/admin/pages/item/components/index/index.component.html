@@ -23,16 +23,23 @@
                 <thead class="">
                     <tr>
                         <th scope="col">#</th>
-                        <th> <a href=""> Name </a> </th>
+                        <th width="15%"> <a href="">Name </a> </th>
                         <th> <a href="">Created</a> </th>
                         <th> <a href="">Modified</a> </th>
                         <th> Action </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Item 1</td>
+                    <tr *ngFor="let item of _items; let i = index">
+                        <th scope="row">{{ i+1 }}</th>
+                        <td>
+                            <div class="card">
+                                <img class="card-img-top" [src]="item['url']" alt="">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item['name'] }}</h5>
+                                </div>
+                            </div>
+                        </td>
                         <td>07/07/2020</td>
                         <td>07/07/2020</td>
                         <td>

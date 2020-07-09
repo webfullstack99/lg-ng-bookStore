@@ -25,6 +25,10 @@ export class FormComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.initiateFormProfile();
+    }
+
+    private initiateFormProfile(): void {
         this._formProfile = this._formBuilder.group({
             name: ['', [
                 Validators.required,
@@ -37,12 +41,6 @@ export class FormComponent implements OnInit {
             ]],
         });
 
-        this._formProfile.valueChanges.subscribe((value) => {
-        })
-
-        this._db.list(this._basePath).valueChanges().subscribe((data) => {
-            console.log(data);
-        })
     }
 
     public onSelectedFile($event): void {

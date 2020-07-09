@@ -7,6 +7,7 @@ let setup = {
         this.sidebarToggle();
         this.onChevronBtnClick();
         this.onSwitchChevronClick();
+        this.onCustomFileInputChange();
     },
 
     onChevronBtnClick: function () {
@@ -48,10 +49,22 @@ let setup = {
             }
             $(slt.accordionSidebar).toggleClass('toggled');
         })
+    },
+
+    onCustomFileInputChange: function () {
+        $(slt.customFileInput).on('change', function () {
+            //get the file name
+            var fileName = $(this).val();
+            
+            //replace the "Choose a file" label
+            $(this).next('.custom-file-label').html(fileName);
+        })
     }
+
 }
 
 let slt = {
+    customFileInput: 'input.custom-file-input[type="file"]',
     sidebarToggle: '#sidebarToggle',
     sidebarToggleTop: '#sidebarToggleTop',
     accordionSidebar: '#accordionSidebar',
