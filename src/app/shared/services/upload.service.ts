@@ -37,5 +37,7 @@ export class UploadService {
             });
     }
 
-    public delete
+    public delete(downloadUrl) {
+        return this._storage.storage.refFromURL(downloadUrl).delete();
+    }
 }

@@ -3,15 +3,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { Conf } from './defines/conf';
+import { ShowTimeComponent } from './components/show-time/show-time.component';
 
 
 
 @NgModule({
-    declarations: [NotFoundComponent],
+    declarations: [NotFoundComponent, ShowTimeComponent],
     imports: [
         CommonModule
     ],
-    exports: [NotFoundComponent],
+    exports: [NotFoundComponent, ShowTimeComponent],
     providers: [Conf, AngularFireStorage]
 
 })

@@ -16,12 +16,13 @@ export class IndexComponent implements OnInit {
 
     ngOnInit(): void {
         this._modelService.controller = this._controller;
+        this.listData();
+    }
+
+    private listData(): void {
         this._modelService.listItems({}, {}, (data) => {
             this._items = data;
             console.log(data);
-            
         })
     }
-
-
 }
