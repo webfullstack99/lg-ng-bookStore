@@ -1,11 +1,12 @@
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" [ngClass]="getMainSidebarClass()" id="accordionSidebar">
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" [ngClass]="getMainSidebarClass()"
+    id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" [routerLink]="_conf.prefix.admin">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+        <div class="sidebar-brand-text mx-3">AP Book Store</div>
     </a>
 
     <!-- Divider -->
@@ -33,13 +34,16 @@
             <i class="fas fa-fw fa-cog"></i>
             <span>Manage Page</span>
         </a>
-        <div id="collapseTwo" class="collapse" [ngClass]="getManagePageMenuClass()" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseTwo" class="collapse" [ngClass]="getManagePageMenuClass()" aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" routerLink="/admin/item" routerLinkActive="active">Item</a>
-                <a class="collapse-item" routerLink="/admin/book" routerLinkActive="active">Book</a>
-                <a class="collapse-item" routerLink="/admin/category" routerLinkActive="active">Category</a>
-                <a class="collapse-item" routerLink="/admin/user" routerLinkActive="active">User</a>
-                <a class="collapse-item" routerLink="/admin/group" routerLinkActive="active">Group</a>
+                <a class="collapse-item" [routerLink]="[_conf.prefix.admin, 'item']" routerLinkActive="active">Item</a>
+                <a class="collapse-item" [routerLink]="[_conf.prefix.admin, 'book']" routerLinkActive="active">Book</a>
+                <a class="collapse-item" [routerLink]="[_conf.prefix.admin, 'category']"
+                    routerLinkActive="active">Category</a>
+                <a class="collapse-item" [routerLink]="[_conf.prefix.admin, 'user']" routerLinkActive="active">User</a>
+                <a class="collapse-item" [routerLink]="[_conf.prefix.admin, 'group']"
+                    routerLinkActive="active">Group</a>
             </div>
         </div>
     </li>

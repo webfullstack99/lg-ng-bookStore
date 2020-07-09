@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Conf } from 'src/app/shared/defines/conf';
 
 @Component({
     selector: 'app-page-title',
@@ -9,7 +10,9 @@ export class PageTitleComponent implements OnInit {
 
     @Input('controller') _controller: string = 'title';
 
-    constructor() { }
+    constructor(
+        public _conf: Conf
+    ) { }
 
     ngOnInit(): void {
     }
