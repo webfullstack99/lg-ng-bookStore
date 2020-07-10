@@ -77,5 +77,24 @@ export class HelperService {
         return false;
     }
 
+    public removeKeyInItems(items: any): any {
+        let tempItems = [];
+        for (let item of items) {
+            tempItems.push({ ...item });
+        }
+        for (let item of tempItems) {
+            delete item.$key;
+        }
+        return tempItems;
+    }
+
+    public cloneArray(items: any[]): any[] {
+        return items.slice(0);
+    }
+
+    public cloneObj(item: object): any {
+        return { ...item };
+    }
+
 }
 

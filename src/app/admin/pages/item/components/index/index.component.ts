@@ -18,6 +18,7 @@ export class IndexComponent implements OnInit {
     public _controller: string;
     public _items: IItem[];
     public _clientFilter: any = {};
+    public _hasData: boolean;
 
     constructor(
         public _helperService: HelperService,
@@ -45,8 +46,14 @@ export class IndexComponent implements OnInit {
             clientFilter: this._clientFilter,
         }, {
             task: 'list-for-main-table',
+            freshDataCallback: (data: IItem[]) => {
+                if (data) if (data.length > 0) this._hasData = true;
+
+            },
             doneCallback: (data: IItem[]) => {
                 this._items = data;
+                console.log(data);
+                
             }
         });
     }

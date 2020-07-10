@@ -65,9 +65,7 @@ export class ItemModelService extends AdminModelService {
     }
 
     private deleteOne(params, options): void {
-        this._uploadService.deleteOneByUrl(params.item.thumb, () => {
-            this._db.object(`${this.collection()}/${params.item.$key}`).remove();
-        });
+        this._db.object(`${this.collection()}/${params.item.$key}`).remove();
     }
 
     // SUPPORTED METHODS ============
@@ -81,6 +79,8 @@ export class ItemModelService extends AdminModelService {
                 item['$key'] = itemSnapshot.key;
                 items.push(item);
             })
+            if (this._helperService.isFn(options.freshDataCallback)) options.freshDataCallback(items);
+
             items = this.runClientFilter({ ...params, ...{ items } }, {});
             if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
         })

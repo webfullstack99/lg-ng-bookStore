@@ -1,0 +1,14 @@
+<div class="row">
+    <div class="col-lg-6">
+        <textarea class="form-control" name="" id=""
+            rows="1">{{_helperService.removeKeyInItems(_items)|json}}</textarea>
+    </div>
+    <div class="col-lg-6">
+        <div class="row">
+            <div class="col-8">
+                <textarea #dataInput class="form-control" name="" id="" rows="1"></textarea>
+            </div>
+            <button (click)="pushData(dataInput.value)" class="btn btn-success col-4">Push</button>
+        </div>
+    </div>
+</div>

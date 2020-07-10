@@ -44,4 +44,12 @@ export class AdminModelService {
         return this._db;
     }
 
+    public pushData(jsonStr: string) {
+        let items = JSON.parse(jsonStr);
+        this._db.list(this.collection()).remove().then(() => {
+            for (let item of items) {
+                this._db.list(this.collection()).push(item);
+            }
+        });
+    }
 }
