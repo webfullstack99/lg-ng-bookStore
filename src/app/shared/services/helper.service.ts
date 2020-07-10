@@ -19,7 +19,7 @@ export class HelperService {
         let result: string = '';
 
         let myBtn = this._conf.template.format.button.status[statusVal];
-        result = `<button class="${myBtn.classes}">${myBtn.content}</button>`;
+        result = `<button class="status-btn ${myBtn.classes}">${myBtn.content}</button>`;
         return this._sanitized.bypassSecurityTrustHtml(result);
     }
 

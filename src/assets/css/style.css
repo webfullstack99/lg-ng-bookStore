@@ -85,6 +85,12 @@ input.ng-dirty.ng-valid, input.ng-touched.ng-valid {
     }
 }
 
+/* admin-main-table */
 .admin-main-table {
     color: var(--dark) !important;
 }
+
+.admin-main-table-img {
+    max-width: 100px;
+}
+/* end admin-main-table */

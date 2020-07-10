@@ -21,7 +21,7 @@
                 <thead class="">
                     <tr>
                         <th scope="col">#</th>
-                        <th width="20%"> <a href="">Name </a> </th>
+                        <th width=""> <a href="">Name </a> </th>
                         <th width=""> <a href="">Status </a> </th>
                         <th> <a href="">Created</a> </th>
                         <th> <a href="">Modified</a> </th>
@@ -36,7 +36,7 @@
                                 <div>
                                     <div> <strong> Name: </strong> {{item.name}} </div>
                                 </div>
-                                <p> <img [src]="item.thumb" class="img-fluid" [alt]="item.name"> </p>
+                                <p> <img [src]="item.thumb" class="admin-main-table-img rounded" [alt]="item.name"> </p>
                             </td>
                             <td class="align-middle" (click)="onStatusClick(item)"
                                 [innerHTML]="_helperService.showStatusButton(item.status)"> </td>
