@@ -10,7 +10,7 @@
     <!-- CONTENT -->
     <div class="row mt-lg-5">
         <div class="col-lg-6 offset-lg-3">
-            <form [formGroup]="_formProfile" (ngSubmit)="onSubmitForm()" action="#">
+            <form *ngIf="_formProfile" [formGroup]="_formProfile" (ngSubmit)="onSubmitForm()" action="#">
                 <div class="form-group row">
                     <label for="name" class="col-sm-2 col-form-label">Name</label>
                     <div class="col-sm-10">
@@ -34,9 +34,12 @@
                     <div class="col-sm-10">
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="customFile" formControlName="thumb"
-                                (change)="onSelectedFile($event)">
+                                accept="image/*" (change)="onSelectedFile($event)">
                             <label id="img-file-input" class="custom-file-label" for="customFile">Choose file</label>
                         </div>
+                        <p *ngIf="_currentItem.thumb">
+                            <img [src]="_currentItem.thumb" [alt]="_currentItem.name" class="img-fluid">
+                        </p>
                     </div>
                 </div>
 

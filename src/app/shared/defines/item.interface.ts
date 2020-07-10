@@ -3,6 +3,6 @@ export interface IItem {
     name: string;
     status: string;
     thumb: string;
-    created: number;
+    created?: number;
     modified?: string;
 }

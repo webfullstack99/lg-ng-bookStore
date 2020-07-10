@@ -4,6 +4,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PageService } from '../../services/page.service';
 import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { IItem } from 'src/app/shared/defines/item.interface';
 
 declare var $: any;
 @Component({
@@ -15,8 +17,10 @@ declare var $: any;
 export class FormComponent implements OnInit {
 
     public _controller: string;
+    public _formType: string;
     public _selectedFile: File;
     public _submittedForm: any;
+    public _currentItem: any = {};
     public _uploadProgress: number;
     public _formProfile: FormGroup;
 
@@ -25,6 +29,8 @@ export class FormComponent implements OnInit {
         private _modelService: _ModelService,
         private _helperService: HelperService,
         private _formBuilder: FormBuilder,
+        private _router: Router,
+        private _activatedRoute: ActivatedRoute,
     ) { }
 
     ngOnInit(): void {
@@ -32,22 +38,40 @@ export class FormComponent implements OnInit {
         this._controller = this._pageService._controller;
         this._modelService.controller = this._controller;
 
-        this.initiateFormProfile();
+        // solve case
+        let key = this._activatedRoute.snapshot.paramMap.get('key');
+        console.log(key);
+        if (key) {
+            // edit
+            this._formType = 'edit';
+            this._modelService.getItem({ key }, {
+                task: 'by-key', doneCallback: (data: IItem) => {
+                    this._currentItem = data || {};
+                    this.initiateFormProfile();
+                }
+            })
+        } else {
+            // add
+
+            this._formType = 'add';
+            this.initiateFormProfile();
+        }
+        // end solve case
+
     }
 
     private initiateFormProfile(): void {
+        let thumbValidates = [];
+        if (!this._currentItem.thumb) thumbValidates.push(Validators.required);
         this._formProfile = this._formBuilder.group({
-            name: ['', [
+            name: [this._currentItem.name, [
                 Validators.required,
             ]],
-            status: ['', [
+            status: [this._currentItem.status, [
                 Validators.required,
             ]],
-            thumb: ['', [
-                Validators.required,
-            ]],
+            thumb: ['', thumbValidates],
         });
-
     }
 
     public onSelectedFile($event): void {
@@ -59,20 +83,42 @@ export class FormComponent implements OnInit {
         if (this._formProfile.dirty && this._formProfile.valid) {
             this._submittedForm = this._formProfile.value;
 
-            // Assign thumb
-            this._submittedForm.thumb = this._selectedFile;
-
-
             // solve submit
-            this._modelService.saveItem({ item: this._submittedForm }, {
-                task: 'insert-one',
-                progressCallback: (upload: Upload) => {
-                    this._uploadProgress = upload._progress;
-                },
-            });
+            if (this._formType == 'edit') {
+                // edit
+                if (this._selectedFile != null) {
+                    this._submittedForm.thumb = this._selectedFile;
+                    this._modelService.saveItem({
+                        item: this._submittedForm,
+                        key: this._currentItem.$key,
+                        oldThumb: this._currentItem.thumb,
+                    }, {
+                        task: 'edit-change-thumb',
+                        progressCallback: (upload: Upload) => {
+                            this._uploadProgress = upload._progress;
+                        },
+                    });
+                } else {
+                    this._submittedForm.thumb = this._currentItem.thumb;
+                    this._modelService.saveItem({ item: this._submittedForm, key: this._currentItem.$key }, {
+                        task: 'edit-not-change-thumb',
+                    });
+                }
+
+            } else {
+                // add 
+                this._submittedForm.thumb = this._selectedFile;
+                this._modelService.saveItem({ item: this._submittedForm }, {
+                    task: 'insert-one',
+                    progressCallback: (upload: Upload) => {
+                        this._uploadProgress = upload._progress;
+                    },
+                });
+
+            }
 
             // reset form
-            this.resetForm();
+            if (this._formType == 'add') this.resetForm();
         }
     }
 
@@ -83,7 +129,7 @@ export class FormComponent implements OnInit {
     }
 
     public isFormValid(): boolean {
-        return this._formProfile.valid;
+        return this._formProfile.valid && this._formProfile.dirty;
     }
 
     //public testDb(): void {

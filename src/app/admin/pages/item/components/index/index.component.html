@@ -28,7 +28,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <ng-template [ngIf]="_items.length > 0">
+                    <ng-template [ngIf]="_items != null">
                         <tr *ngFor="let item of _items; let i = index" [attr.data-key]="item['$key']">
                             <th class="align-middle" scope="row">{{ i+1 }}</th>
                             <td class="align-middle">
@@ -51,8 +51,8 @@
                         </tr>
                     </ng-template>
 
-                    <ng-template [ngIf]="_items.length == 0">
-                        <tr app-table-emtpy-message></tr>
+                    <ng-template [ngIf]="_items != null">
+                        <tr *ngIf="_items.length == 0" app-table-emtpy-message></tr>
                     </ng-template>
                 </tbody>
             </table>
@@ -60,10 +60,12 @@
     </div>
 
     <!-- PAGINATION -->
-    <div *ngIf="_items.length > 0" class="row mt-3">
-        <div class="col-12">
-            <app-pagination></app-pagination>
+    <ng-template [ngIf]="_items != null">
+        <div *ngIf="_items.length > 0" class="row mt-3">
+            <div class="col-12">
+                <app-pagination></app-pagination>
+            </div>
         </div>
-    </div>
+    </ng-template>
 
 </div>

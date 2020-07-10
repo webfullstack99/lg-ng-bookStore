@@ -3,6 +3,8 @@ import { ItemModelService as _ModelService } from 'src/app/admin/shared/services
 import { PageService } from '../../services/page.service';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { IItem } from 'src/app/shared/defines/item.interface';
+import { Router } from '@angular/router';
+import { Conf } from 'src/app/shared/defines/conf';
 
 declare let $: any;
 @Component({
@@ -12,12 +14,14 @@ declare let $: any;
 })
 export class IndexComponent implements OnInit {
     public _controller: string;
-    public _items: IItem[] = [];
+    public _items: IItem[];
 
     constructor(
         public _helperService: HelperService,
         private _pageService: PageService,
         private _modelService: _ModelService,
+        private _router: Router,
+        private _conf: Conf,
     ) { }
 
     ngOnInit(): void {
@@ -29,15 +33,18 @@ export class IndexComponent implements OnInit {
     }
 
     private listData(): void {
-        this._modelService.listItems({}, {}, (data) => {
-            this._items = data;
-        })
+        this._modelService.listItems({}, {
+            doneCallback: (data: IItem[]) => {
+
+                this._items = data;
+            }
+        });
     }
 
     // Edit item
     public onEditClick(item: IItem): void {
         console.log('edit');
-        console.log(item);
+        this._router.navigate([this._conf.prefix.admin, this._controller, 'form', item.$key]);
     }
 
     // Delete item

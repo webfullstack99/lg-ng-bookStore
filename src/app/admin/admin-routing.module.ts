@@ -12,6 +12,7 @@ const routes: Routes = [
                 path: 'item',
                 children: [
                     { path: 'form', component: itemForm, },
+                    { path: 'form/:key', component: itemForm, },
                     { path: '', component: itemIndex, },
                 ]
 

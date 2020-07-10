@@ -10,8 +10,6 @@ import { IItem } from 'src/app/shared/defines/item.interface';
     providedIn: 'root'
 })
 export class ItemModelService extends AdminModelService {
-    protected _controller: string;
-
     constructor(
         protected _db: AngularFireDatabase,
         private _uploadService: UploadService,
@@ -20,24 +18,40 @@ export class ItemModelService extends AdminModelService {
     }
 
     // MAIN METHODS ============
-    public listItems(params: any, options: any, callback: (data) => void) {
-        //this._db.list(this.collection(this._controller)).valueChanges().subscribe((data) => {
-        //callback(data);
-        //})
-
-        this._db.list(this.collection(this._controller)).snapshotChanges().forEach((itemsSnapshot) => {
+    public listItems(params: any, options: any) {
+        this._db.list(this.collection()).snapshotChanges().forEach((itemsSnapshot) => {
             let items: any[] = [];
             itemsSnapshot.forEach((itemSnapshot) => {
                 let item = itemSnapshot.payload.toJSON();
                 item['$key'] = itemSnapshot.key;
                 items.push(item);
             })
-            callback(items);
+            options.doneCallback(items);
         })
+    }
+
+    public getItem(params: any, options: any) {
+        switch (options.task) {
+            case 'by-key':
+                this._db.object(`${this.collection()}/${params.key}`).valueChanges().subscribe((data: IItem) => {
+                    if (data) data.$key = params.key;
+                    options.doneCallback(data);
+                })
+                break;
+        }
+
     }
 
     public saveItem(params: any, options: any) {
         switch (options.task) {
+            case 'edit-change-thumb':
+                this.editChangeThumb(params, options);
+                break;
+
+            case 'edit-not-change-thumb':
+                this.editNotChangeThumb(params, options);
+                break;
+
             case 'insert-one':
                 this.insertOne(params, options);
                 break;
@@ -50,36 +64,59 @@ export class ItemModelService extends AdminModelService {
 
     private deleteOne(params, options): void {
         this._uploadService.deleteOneByUrl(params.item.thumb, () => {
-            this._db.object(`${this.collection(this._controller)}/${params.item.$key}`).remove();
+            this._db.object(`${this.collection()}/${params.item.$key}`).remove();
         });
     }
 
 
 
     // SUPPORTED METHODS ============
+    private editChangeThumb(params: any, options: any): void {
+
+        this._uploadService.upload(new Upload(params.item.thumb), this._controller, (upload: Upload) => {
+            // upload done
+            params.item.thumb = upload._url;
+
+            // delete old thumb
+            this._uploadService.deleteOneByUrl(params.oldThumb);
+
+            // update to db
+            this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
+                if (this.isFn(options.doneCallback)) options.doneCallback();
+            })
+
+        }, (upload: Upload) => {
+            // in progress
+            if (this.isFn(options.progressCallback)) options.progressCallback(upload);
+        })
+    }
+
+    private editNotChangeThumb(params: any, options: any): void {
+        this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
+            if (this.isFn(options.doneCallback)) options.doneCallback();
+        })
+    }
+
     private insertOne(params: any, options: any): void {
         this._uploadService.upload(new Upload(params.item.thumb), this._controller, (upload: Upload) => {
             // upload done
             let item: IItem = {
                 name: params.item.name,
                 status: params.item.status,
-                created: Date.now(),
                 thumb: upload._url,
             }
 
+            // set created
+            item = this.setCreated(item);
+
             // save to db
-            this._db.list(this.collection(this._controller)).push(item);
-            if (typeof options.doneCallback == 'function') options.doneCallback(upload)
+            this._db.list(this.collection()).push(item).then(() => {
+                if (this.isFn(options.doneCallback)) options.doneCallback(upload)
+            });
 
         }, (upload: Upload) => {
             // in progress
-            options.progressCallback(upload);
+            if (this.isFn(options.progressCallback)) options.progressCallback(upload);
         })
     }
-
-    // SETTER & GETTER
-    set controller(controller: string) {
-        this._controller = controller;
-    }
-
 }
