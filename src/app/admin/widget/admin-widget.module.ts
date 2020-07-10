@@ -10,11 +10,12 @@ import { XTitleComponent } from './components/x-title/x-title.component';
 import { RouterModule } from '@angular/router';
 import { MainTableComponent } from './components/main-table/main-table.component';
 import { TableEmtpyMessageComponent } from './components/table-emtpy-message/table-emtpy-message.component';
+import { ActionButtonsComponent } from './components/action-buttons/action-buttons.component';
 
 
 
 @NgModule({
-    declarations: [LogoutModalComponent, PaginationComponent, FilterComponent, SearchComponent, FilterButtonsComponent, MainTableComponent, PageTitleComponent, XTitleComponent, TableEmtpyMessageComponent, ],
+    declarations: [LogoutModalComponent, PaginationComponent, FilterComponent, SearchComponent, FilterButtonsComponent, MainTableComponent, PageTitleComponent, XTitleComponent, TableEmtpyMessageComponent, ActionButtonsComponent,],
     imports: [
         RouterModule,
         CommonModule
@@ -28,6 +29,7 @@ import { TableEmtpyMessageComponent } from './components/table-emtpy-message/tab
         PageTitleComponent,
         XTitleComponent,
         TableEmtpyMessageComponent,
+        ActionButtonsComponent
     ]
 })
 export class AdminWidgetModule { }

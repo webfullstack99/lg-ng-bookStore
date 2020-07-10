@@ -36,18 +36,19 @@
                                     <div> <strong> Name: </strong> {{item.name}} </div>
                                 </div>
                                 <p> <img [src]="item.thumb" class="img-fluid" [alt]="item.name"> </p>
-                            </td>
-                            <td class="align-middle" [innerHTML]="_helperService.showStatusButton(item.status)"> </td>
-                            <td class="align-middle" [innerHTML]="_helperService.showHistory(item.created)"></td>
-                            <td class="align-middle">07/07/2020</td>
-                            <td class="align-middle">
-                                <div class="one-row-buttons action-button-container">
-                                    <button (click)="onEditClick(item)" class="btn btn-success btn-sm "><i
-                                            class="far fa-pen"></i></button>
-                                    <button (click)="onDeleteClick(item)" class="btn btn-danger btn-sm ml-1 "><i
-                                            class="far fa-trash-alt"></i></button>
+                                <div class="form-group">
+                                    <textarea class="form-control" name="" id="" rows="1">{{item|json}}</textarea>
                                 </div>
                             </td>
+                            <td class="align-middle" (click)="onStatusClick(item)"
+                                [innerHTML]="_helperService.showStatusButton(item.status)"> </td>
+
+                            <td class="align-middle" [innerHTML]="_helperService.showHistory(item.created)"></td>
+                            <td class="align-middle" [innerHTML]="_helperService.showHistory(item.modified)"></td>
+                            
+                            <td class="align-middle" [appActionButtons]="_controller" [item]="item"
+                                (editClicked)="onEditClick($event)" (deleteClicked)="onDeleteClick($event)"
+                                (viewClicked)="onViewClick($event)"> </td>
                         </tr>
                     </ng-template>
 

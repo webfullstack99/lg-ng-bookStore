@@ -43,7 +43,6 @@ export class IndexComponent implements OnInit {
 
     // Edit item
     public onEditClick(item: IItem): void {
-        console.log('edit');
         this._router.navigate([this._conf.prefix.admin, this._controller, 'form', item.$key]);
     }
 
@@ -51,5 +50,19 @@ export class IndexComponent implements OnInit {
     public onDeleteClick(item: IItem): void {
         $(`tr[data-key="${item.$key}"]`).addClass('bg-delete-warning');
         this._modelService.saveItem({ item }, { task: 'delete-one' });
+    }
+
+    // View item
+    public onViewClick(item: IItem): void {
+    }
+
+
+    // Change status
+    public onStatusClick(item: IItem): void {
+        let tempItem = { ...item };
+        let key = item.$key;
+        delete tempItem.$key;
+        tempItem.status = this._helperService.getNewStatusValue(item.status);
+        this._modelService.saveItem({ item: tempItem, key }, { task: 'update-by-key', });
     }
 }

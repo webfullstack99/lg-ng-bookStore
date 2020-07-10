@@ -3,6 +3,12 @@ export interface IItem {
     name: string;
     status: string;
     thumb: string;
-    created?: number;
-    modified?: string;
+    created?: {
+        userId: string,
+        time: number,
+    },
+    modified?: {
+        userId: string,
+        time: number,
+    },
 }

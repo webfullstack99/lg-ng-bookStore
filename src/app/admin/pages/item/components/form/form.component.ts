@@ -37,10 +37,11 @@ export class FormComponent implements OnInit {
         // assign controller
         this._controller = this._pageService._controller;
         this._modelService.controller = this._controller;
+        this.initForm();
+    }
 
-        // solve case
+    private initForm() {
         let key = this._activatedRoute.snapshot.paramMap.get('key');
-        console.log(key);
         if (key) {
             // edit
             this._formType = 'edit';
@@ -52,22 +53,19 @@ export class FormComponent implements OnInit {
             })
         } else {
             // add
-
             this._formType = 'add';
             this.initiateFormProfile();
         }
-        // end solve case
-
     }
 
     private initiateFormProfile(): void {
         let thumbValidates = [];
         if (!this._currentItem.thumb) thumbValidates.push(Validators.required);
         this._formProfile = this._formBuilder.group({
-            name: [this._currentItem.name, [
+            name: [this._currentItem.name || '', [
                 Validators.required,
             ]],
-            status: [this._currentItem.status, [
+            status: [this._currentItem.status || '', [
                 Validators.required,
             ]],
             thumb: ['', thumbValidates],
@@ -83,43 +81,47 @@ export class FormComponent implements OnInit {
         if (this._formProfile.dirty && this._formProfile.valid) {
             this._submittedForm = this._formProfile.value;
 
-            // solve submit
-            if (this._formType == 'edit') {
-                // edit
-                if (this._selectedFile != null) {
-                    this._submittedForm.thumb = this._selectedFile;
-                    this._modelService.saveItem({
-                        item: this._submittedForm,
-                        key: this._currentItem.$key,
-                        oldThumb: this._currentItem.thumb,
-                    }, {
-                        task: 'edit-change-thumb',
-                        progressCallback: (upload: Upload) => {
-                            this._uploadProgress = upload._progress;
-                        },
-                    });
-                } else {
-                    this._submittedForm.thumb = this._currentItem.thumb;
-                    this._modelService.saveItem({ item: this._submittedForm, key: this._currentItem.$key }, {
-                        task: 'edit-not-change-thumb',
-                    });
-                }
-
-            } else {
-                // add 
-                this._submittedForm.thumb = this._selectedFile;
-                this._modelService.saveItem({ item: this._submittedForm }, {
-                    task: 'insert-one',
-                    progressCallback: (upload: Upload) => {
-                        this._uploadProgress = upload._progress;
-                    },
-                });
-
+            // upload in progress call back
+            let progressCallback = (upload: Upload) => {
+                this._uploadProgress = upload._progress;
             }
 
-            // reset form
+            // solve submit
+            if (this._formType == 'edit') this.solveEditSubmit(progressCallback);
+            else this.solveAddSubmit(progressCallback);
+
+            // reset add form
             if (this._formType == 'add') this.resetForm();
         }
+    }
+
+    private solveEditSubmit(progressCallback: (upload) => void): void {
+        if (this._selectedFile != null) {
+            // edit and change thumb
+            this._submittedForm.thumb = this._selectedFile;
+            this._modelService.saveItem({
+                item: this._submittedForm,
+                key: this._currentItem.$key,
+                oldThumb: this._currentItem.thumb,
+            }, {
+                task: 'edit-change-thumb', progressCallback
+            });
+        } else {
+            // edit not change thumb
+            this._submittedForm.thumb = this._currentItem.thumb;
+            this._modelService.saveItem({ item: this._submittedForm, key: this._currentItem.$key }, {
+                task: 'edit-not-change-thumb',
+            });
+        }
+    }
+
+    private solveAddSubmit(progressCallback: (upload) => void): void {
+        // add 
+        this._submittedForm.thumb = this._selectedFile;
+        this._modelService.saveItem({ item: this._submittedForm }, {
+            task: 'insert-one', progressCallback
+        });
+
     }
 
     private resetForm(): void {
@@ -131,23 +133,4 @@ export class FormComponent implements OnInit {
     public isFormValid(): boolean {
         return this._formProfile.valid && this._formProfile.dirty;
     }
-
-    //public testDb(): void {
-    //let run = false;
-    //if (run) {
-    //let basPath = 'test-db';
-    //this._db.list(basPath).remove();
-    //for (let i = 1; i <= 10; i++) {
-    //this._db.list(this._controller).push({
-    //name: `item ${i}`,
-    //})
-    //}
-    //this._db.list(basPath).valueChanges().subscribe((data) => {
-    //this._items = data;
-    //});
-    //}
-
-    //}
-
-
 }

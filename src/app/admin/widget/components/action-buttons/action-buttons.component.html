@@ -1,0 +1,12 @@
+<ng-template [ngIf]="_item">
+    <div class="one-row-buttons action-button-container">
+        <ng-template ngFor let-action [ngForOf]=" _actions" let-i="index">
+            <button (click)="onEditClicked()" *ngIf="action=='edit'" [class]="getBtnClass(action)"><i
+                    [class]="getIconClass(action)"></i></button>
+            <button (click)="onDeleteClicked()" *ngIf="action=='delete'" [class]="getBtnClass(action)"><i
+                    [class]="getIconClass(action)"></i></button>
+            <button (click)="onViewClicked()" *ngIf="action=='view'" [class]="getBtnClass(action)"><i
+                    [class]="getIconClass(action)"></i></button>
+        </ng-template>
+    </div>
+</ng-template>

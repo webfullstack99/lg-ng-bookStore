@@ -44,6 +44,10 @@ export class ItemModelService extends AdminModelService {
 
     public saveItem(params: any, options: any) {
         switch (options.task) {
+            case 'update-by-key':
+                this.updateByKey(params, options);
+                break;
+
             case 'edit-change-thumb':
                 this.editChangeThumb(params, options);
                 break;
@@ -71,8 +75,15 @@ export class ItemModelService extends AdminModelService {
 
 
     // SUPPORTED METHODS ============
-    private editChangeThumb(params: any, options: any): void {
+    private updateByKey(params: any, options: any): void {
+        params.item = this.setModified(params.item);
+        this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
+            if (this.isFn(options.doneCallback)) options.doneCallback();
+        })
+    }
 
+    private editChangeThumb(params: any, options: any): void {
+        params.item = this.setModified(params.item);
         this._uploadService.upload(new Upload(params.item.thumb), this._controller, (upload: Upload) => {
             // upload done
             params.item.thumb = upload._url;
@@ -92,6 +103,7 @@ export class ItemModelService extends AdminModelService {
     }
 
     private editNotChangeThumb(params: any, options: any): void {
+        params.item = this.setModified(params.item);
         this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
             if (this.isFn(options.doneCallback)) options.doneCallback();
         })

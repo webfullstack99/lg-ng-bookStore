@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { FirebaseDatabase } from 'angularfire2';
 
 @Injectable({
     providedIn: 'root'
@@ -21,17 +22,29 @@ export class AdminModelService {
     }
 
     protected setCreated(item: any) {
-        item.created = Date.now();
+        let userId: string = '-MBruIHFZL-VKjuO-qMv';
+        item.created = {
+            userId,
+            time: Date.now(),
+        }
         return item;
     }
 
     protected setModified(item: any) {
-        item.modified = Date.now();
+        let userId: string = '-MBruIHFZL-VKjuO-qMv';
+        item.modified = {
+            userId,
+            time: Date.now(),
+        }
         return item;
     }
 
     set controller(controller: string) {
         this._controller = controller;
+    }
+
+    get db(): AngularFireDatabase {
+        return this._db;
     }
 
 }
