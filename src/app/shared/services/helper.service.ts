@@ -9,7 +9,6 @@ declare let $: any;
     providedIn: 'root'
 })
 export class HelperService {
-
     constructor(
         public _conf: Conf,
         private _sanitized: DomSanitizer,
@@ -23,7 +22,6 @@ export class HelperService {
         result = `<button class="${myBtn.classes}">${myBtn.content}</button>`;
         return this._sanitized.bypassSecurityTrustHtml(result);
     }
-
 
     /**
      * Shows history
@@ -44,23 +42,6 @@ export class HelperService {
         }
     }
 
-
-    /**
-     * Shows action
-     * @param data {controller, item}
-     */
-    public showAction(data: any){
-        let result: string = '';
-        return this._sanitized.bypassSecurityTrustHtml(`
-                                <div class="one-row-buttons action-button-container">
-                                    <button (click)="onEditClick(item)" class="btn btn-success btn-sm "><i
-                                            class="far fa-pen"></i></button>
-                                    <button (click)="onDeleteClick(item)" class="btn btn-danger btn-sm ml-1 "><i
-                                            class="far fa-trash-alt"></i></button>
-                                </div>
-        `);
-    }
-
     public displayFileUploadName($event): void {
         $($event.target).next('.custom-file-label').html($event.target.value);
     }
@@ -74,9 +55,21 @@ export class HelperService {
         return str;
     }
 
-    public ucfirst(str: string): string{
-        if (str.length > 0) return `${str.slice(0,1).toUpperCase()}${str.slice(1)}`;
+    public ucfirst(str: string): string {
+        if (str.length > 0) return `${str.slice(0, 1).toUpperCase()}${str.slice(1)}`;
         return str
+    }
+
+    public getConf_btnTemplate(): any {
+        return this._conf.template.format.button;
+    }
+
+    public getConf_selectData(): any {
+        return this._conf.template.selectData;
+    }
+
+    public getTemplateConf(controller: string): any {
+        return this._conf.templateConf[controller];
     }
 }
 

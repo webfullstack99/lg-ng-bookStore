@@ -15,6 +15,16 @@ export class Conf {
     template = {
         format: {
             button: {
+                display: {
+                    yes: {
+                        content: 'Yes',
+                        classes: 'btn btn-primary',
+                    },
+                    no: {
+                        content: 'No',
+                        classes: 'btn btn-light',
+                    }
+                },
                 status: {
                     active: {
                         classes: 'btn btn-success btn-sm',
@@ -43,12 +53,17 @@ export class Conf {
                     },
                 }
             }
+        },
+        selectData: {
+            status: ['active', 'inactive'],
+            display: ['yes', 'no'],
         }
     }
 
     templateConf = {
         item: {
             action: ['edit', 'delete'],
-        }
+            filter: ['status'],
+        },
     }
 }
