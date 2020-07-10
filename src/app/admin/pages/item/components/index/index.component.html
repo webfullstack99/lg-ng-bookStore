@@ -1,5 +1,6 @@
 <div class="admin-manage-page">
     <!-- PAGE TITLE -->
+
     <div class="row">
         <div class="col-12 ">
             <app-page-title [controller]="_controller"></app-page-title>
@@ -7,11 +8,21 @@
     </div>
 
     <!-- FILTER -->
-    <div class="row mt-3">
-        <div class="col-12">
-            <app-filter [controller]="_controller"></app-filter>
+    <!-- 
+
+    <ng-template [ngIf]="_items!=null">
+        <div *ngIf="_items.length > 0" class="row mt-3">
+            <div class="col-12">
+                <app-filter [controller]="_controller"></app-filter>
+            </div>
         </div>
-    </div>
+    </ng-template>
+     -->
+        <div  class="row mt-3">
+            <div class="col-12">
+                <app-filter [controller]="_controller"></app-filter>
+            </div>
+        </div>
 
     <!-- LIST OF ITEMS -->
     <div class="row mt-3">
@@ -36,16 +47,13 @@
                                     <div> <strong> Name: </strong> {{item.name}} </div>
                                 </div>
                                 <p> <img [src]="item.thumb" class="img-fluid" [alt]="item.name"> </p>
-                                <div class="form-group">
-                                    <textarea class="form-control" name="" id="" rows="1">{{item|json}}</textarea>
-                                </div>
                             </td>
                             <td class="align-middle" (click)="onStatusClick(item)"
                                 [innerHTML]="_helperService.showStatusButton(item.status)"> </td>
 
                             <td class="align-middle" [innerHTML]="_helperService.showHistory(item.created)"></td>
                             <td class="align-middle" [innerHTML]="_helperService.showHistory(item.modified)"></td>
-                            
+
                             <td class="align-middle" [appActionButtons]="_controller" [item]="item"
                                 (btnClick)="onActionClick($event)"> </td>
                         </tr>

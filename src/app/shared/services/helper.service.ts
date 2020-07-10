@@ -71,5 +71,11 @@ export class HelperService {
     public getTemplateConf(controller: string): any {
         return this._conf.templateConf[controller];
     }
+
+    public isFn(fn: any): boolean {
+        if (typeof fn == 'function') return true;
+        return false;
+    }
+
 }
 

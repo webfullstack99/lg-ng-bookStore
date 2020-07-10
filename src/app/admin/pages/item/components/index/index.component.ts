@@ -6,6 +6,7 @@ import { IItem } from 'src/app/shared/defines/item.interface';
 import { Router } from '@angular/router';
 import { Conf } from 'src/app/shared/defines/conf';
 import { createCssSelector } from '@angular/compiler/src/render3/view/template';
+import { UrlService } from 'src/app/shared/services/url.service';
 
 declare let $: any;
 @Component({
@@ -16,13 +17,16 @@ declare let $: any;
 export class IndexComponent implements OnInit {
     public _controller: string;
     public _items: IItem[];
+    public _clientFilter: any = {};
 
     constructor(
         public _helperService: HelperService,
         private _pageService: PageService,
         private _modelService: _ModelService,
+        private _urlService: UrlService,
         private _router: Router,
         private _conf: Conf,
+
     ) { }
 
     ngOnInit(): void {
@@ -30,13 +34,18 @@ export class IndexComponent implements OnInit {
         this._controller = this._pageService._controller;
         this._modelService.controller = this._controller;
 
-        this.listData();
+        this._urlService.getClientFilter(this._controller, (clientFilter: any) => {
+            this._clientFilter = clientFilter;
+            this.listData();
+        })
     }
 
     private listData(): void {
-        this._modelService.listItems({}, {
+        this._modelService.listItems({
+            clientFilter: this._clientFilter,
+        }, {
+            task: 'list-for-main-table',
             doneCallback: (data: IItem[]) => {
-
                 this._items = data;
             }
         });

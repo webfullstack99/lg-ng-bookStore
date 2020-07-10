@@ -23,7 +23,8 @@ export class Conf {
                     no: {
                         content: 'No',
                         classes: 'btn btn-light',
-                    }
+                    },
+                    get all() { return new Conf().template.format.button.all; }
                 },
                 status: {
                     active: {
@@ -34,6 +35,7 @@ export class Conf {
                         classes: 'btn btn-warning btn-sm',
                         content: 'In active',
                     },
+                    get all() { return new Conf().template.format.button.all; }
                 },
                 action: {
                     edit: {
@@ -51,6 +53,14 @@ export class Conf {
                         icon: 'far fa-info',
                         content: 'View',
                     },
+                },
+                undefined: {
+                    classes: 'btn btn-secondary btn-sm',
+                    content: 'Undefined',
+                },
+                all: {
+                    classes: 'btn btn-primary btn-sm',
+                    content: 'All',
                 }
             }
         },

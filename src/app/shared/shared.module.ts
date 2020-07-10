@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { Conf } from './defines/conf';
 import { ShowTimeComponent } from './components/show-time/show-time.component';
+import { UrlService } from './services/url.service';
 
 
 
@@ -13,7 +14,7 @@ import { ShowTimeComponent } from './components/show-time/show-time.component';
         CommonModule
     ],
     exports: [NotFoundComponent, ShowTimeComponent],
-    providers: [Conf, AngularFireStorage]
+    providers: [Conf, AngularFireStorage, UrlService]
 
 })
 export class SharedModule { }

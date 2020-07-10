@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { FirebaseDatabase } from 'angularfire2';
+import { HelperService } from 'src/app/shared/services/helper.service';
 
 @Injectable({
     providedIn: 'root'
@@ -10,15 +11,11 @@ export class AdminModelService {
 
     constructor(
         protected _db: AngularFireDatabase,
+        protected _helperService: HelperService,
     ) { }
 
     protected collection(): string {
         return `${this._controller}s`;
-    }
-
-    protected isFn(fn: any): boolean {
-        if (typeof fn == 'function') return true;
-        return false;
     }
 
     protected setCreated(item: any) {

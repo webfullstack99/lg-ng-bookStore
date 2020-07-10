@@ -3,8 +3,9 @@
         <div class="col-3">{{ filter | titlecase}}</div>
         <div class="col-9">
             <div class="btn-group btn-group-sm">
-                <ng-template ngFor let-btnType [ngForOf]="this._selectData[filter]">
-                    <a href="" [class]="getBtn(filter, btnType).classes">{{getBtn(filter, btnType).content}}</a>
+                <ng-template ngFor let-btnType [ngForOf]="this.getFilterOptions(filter)">
+                    <a [routerLink]="[_conf.prefix.admin, _controller]" [queryParams]="getQueryParams(filter, btnType)"
+                        [class]="getBtnData(filter, btnType).classes">{{getBtnData(filter, btnType).content}}</a>
                 </ng-template>
             </div>
         </div>
