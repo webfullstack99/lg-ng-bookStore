@@ -5,6 +5,7 @@ import { HelperService } from 'src/app/shared/services/helper.service';
 import { IItem } from 'src/app/shared/defines/item.interface';
 import { Router } from '@angular/router';
 import { Conf } from 'src/app/shared/defines/conf';
+import { createCssSelector } from '@angular/compiler/src/render3/view/template';
 
 declare let $: any;
 @Component({
@@ -56,6 +57,14 @@ export class IndexComponent implements OnInit {
     public onViewClick(item: IItem): void {
     }
 
+
+    /**
+     * Determines whether action click on
+     * @param data {action, item}
+     */
+    public onActionClick(data: any): void {
+        this[`on${this._helperService.ucfirst(data.action)}Click`](data.item);
+    }
 
     // Change status
     public onStatusClick(item: IItem): void {

@@ -20,9 +20,7 @@ export class ActionButtonsComponent implements OnInit {
         this._template = this._conf.template.format.button.action;
     }
 
-    @Output('editClicked') _editClicked = new EventEmitter<any>();
-    @Output('deleteClicked') _deleteClicked = new EventEmitter<any>();
-    @Output('viewClicked') _viewClicked = new EventEmitter<any>();
+    @Output('btnClick') _btnCLick = new EventEmitter<any>();
 
     constructor(
         public _conf: Conf,
@@ -31,17 +29,8 @@ export class ActionButtonsComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    public onEditClicked(): void {
-        console.log('click');
-        this._editClicked.emit(this._item);
-    }
-
-    public onDeleteClicked(): void {
-        this._deleteClicked.emit(this._item);
-    }
-
-    public onViewClicked(): void {
-        this._viewClicked.emit(this._item);
+    public onBtnClick(action: string): void{
+        this._btnCLick.emit({action, item: this._item});
     }
 
     public getBtnClass(action: string): string {

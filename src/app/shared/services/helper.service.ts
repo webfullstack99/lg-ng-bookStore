@@ -73,5 +73,10 @@ export class HelperService {
         if (str.length > limitNumber) return str.substr(0, limitNumber) + '...';
         return str;
     }
+
+    public ucfirst(str: string): string{
+        if (str.length > 0) return `${str.slice(0,1).toUpperCase()}${str.slice(1)}`;
+        return str
+    }
 }
 

@@ -47,8 +47,7 @@
                             <td class="align-middle" [innerHTML]="_helperService.showHistory(item.modified)"></td>
                             
                             <td class="align-middle" [appActionButtons]="_controller" [item]="item"
-                                (editClicked)="onEditClick($event)" (deleteClicked)="onDeleteClick($event)"
-                                (viewClicked)="onViewClick($event)"> </td>
+                                (btnClick)="onActionClick($event)"> </td>
                         </tr>
                     </ng-template>
 
