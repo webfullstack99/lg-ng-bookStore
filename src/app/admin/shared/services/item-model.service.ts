@@ -92,7 +92,7 @@ export class ItemModelService extends AdminModelService {
 
     private getSearchRef(params: any, options: any): any {
         let field = params.clientFilter.search.search_field;
-        let value = params.clientFilter.search.search_value;
+        let value = params.clientFilter.search.search_value.toLowerCase();
         if (field.trim() != '' && value.trim() != '') {
             if (field != 'all') {
                 return params.ref
@@ -120,7 +120,7 @@ export class ItemModelService extends AdminModelService {
                 items = items.filter((item) => {
                     for (let field of this._searchFields) {
                         if (item[field])
-                            if (item[field].forSearch.indexOf(searchValue) > -1)
+                            if (item[field].forSearch.indexOf(searchValue.toLowerCase()) > -1)
                                 return true;
                     }
                     return false;
@@ -205,5 +205,4 @@ export class ItemModelService extends AdminModelService {
             if (this._helperService.isFn(options.progressCallback)) options.progressCallback(upload);
         })
     }
-
 }

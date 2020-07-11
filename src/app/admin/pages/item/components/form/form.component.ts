@@ -118,7 +118,7 @@ export class FormComponent implements OnInit {
     private solveAddSubmit(progressCallback: (upload) => void): void {
         // add 
         this._submittedForm.thumb = this._selectedFile;
-        console.log(this._submittedForm);
+        (this._submittedForm);
         this._modelService.saveItem({ item: this._submittedForm }, {
             task: 'insert-one', progressCallback
         });

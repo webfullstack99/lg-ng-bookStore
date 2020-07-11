@@ -1,5 +1,8 @@
 :root {
+    /* my css */
+    --highlight: #F5F207;
     --delete-warning: #ffacac;
+    /* end my css */
     --blue: #4e73df;
     --indigo: #6610f2;
     --purple: #6f42c1;
@@ -31,7 +34,11 @@
 }
 
 .bg-delete-warning{
-    background: var(--delete-warning) !important;
+    background-color: var(--delete-warning) !important;
+}
+
+.bg-highlight{
+    background-color: var(--highlight);
 }
 
 /* one row buttons */

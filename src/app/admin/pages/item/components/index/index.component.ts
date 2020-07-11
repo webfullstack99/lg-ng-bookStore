@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Conf } from 'src/app/shared/defines/conf';
 import { createCssSelector } from '@angular/compiler/src/render3/view/template';
 import { UrlService } from 'src/app/shared/services/url.service';
+import { HighlightService } from 'src/app/shared/services/highlight.service';
 
 declare let $: any;
 @Component({
@@ -22,6 +23,7 @@ export class IndexComponent implements OnInit {
 
     constructor(
         public _helperService: HelperService,
+        public _highlightService: HighlightService,
         private _pageService: PageService,
         private _modelService: _ModelService,
         private _urlService: UrlService,
@@ -51,7 +53,7 @@ export class IndexComponent implements OnInit {
 
             },
             doneCallback: (data: IItem[]) => {
-                this._items = data;
+                this._items = this._highlightService.highlightSearchDataForAdminMainTable(this._clientFilter, data, this._controller);
             }
         });
     }
