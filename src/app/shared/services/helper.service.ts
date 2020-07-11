@@ -9,6 +9,7 @@ declare let $: any;
     providedIn: 'root'
 })
 export class HelperService {
+
     constructor(
         public _conf: Conf,
         private _sanitized: DomSanitizer,
@@ -76,6 +77,13 @@ export class HelperService {
         return this._conf.template.selectData;
     }
 
+    public getConf_searchFields(controller: string): string[] {
+        let searchFields = [...this._conf.templateConf[controller].search]
+        let allIndex = searchFields.indexOf('all');
+        if (allIndex > -1) searchFields.splice(allIndex, 1);
+        return searchFields;
+    }
+
     public getTemplateConf(controller: string): any {
         return this._conf.templateConf[controller];
     }
@@ -104,5 +112,17 @@ export class HelperService {
         return { ...item };
     }
 
+    public getVal(item: any, path: string): any {
+        let result: any;
+        let temp: any = item;
+        let pathArr: string[] = path.split('.');
+        try {
+            for (let value of pathArr) {
+                result = temp[value];
+                temp = result;
+            }
+        } catch{ return '' }
+        return result;
+    }
 }
 

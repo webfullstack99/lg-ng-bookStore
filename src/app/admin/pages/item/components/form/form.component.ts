@@ -62,7 +62,7 @@ export class FormComponent implements OnInit {
         let thumbValidates = [];
         if (!this._currentItem.thumb) thumbValidates.push(Validators.required);
         this._formProfile = this._formBuilder.group({
-            name: [this._currentItem.name || '', [
+            name: [this._helperService.getVal(this._currentItem, 'name.value') || '', [
                 Validators.required,
             ]],
             status: [this._currentItem.status || '', [

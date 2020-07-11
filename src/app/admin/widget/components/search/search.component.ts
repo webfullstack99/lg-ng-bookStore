@@ -13,8 +13,11 @@ export class SearchComponent implements OnInit {
     public _searchArr: string[];
     public _searchTemplate: any;
     public _clientSearch: any;
+    private _searchTimeout: any;
+    private _timeout: number = this._conf.params.timeout;
 
     @Input('controller') _controller: string
+
     constructor(
         public _conf: Conf,
         public _helperService: HelperService,
@@ -43,15 +46,23 @@ export class SearchComponent implements OnInit {
     // action
     public onChangeSearchField($event, searchField: string): void {
         this._clientSearch.search_field = searchField;
+        this.search();
     }
 
     public onSearch($event: any): void {
         this._clientSearch.search_value = $event.target.value.trim();
+        clearTimeout(this._searchTimeout);
+        this._searchTimeout = setTimeout(() => {
+            this.search();
+        }, this._timeout);
     }
 
     public onSubmit($event): void {
-        if (this._clientSearch.search_value.trim() != '')
-                this._router.navigateByUrl(this._urlService.getUrl({ queryParams: this._clientSearch }, { task: 'set-query-params' }));
+        this.search();
         $event.preventDefault();
+    }
+
+    public search(): void {
+        this._router.navigateByUrl(this._urlService.getUrl({ queryParams: this._clientSearch }, { task: 'set-query-params' }));
     }
 }

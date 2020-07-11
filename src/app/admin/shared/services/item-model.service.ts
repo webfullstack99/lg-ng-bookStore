@@ -11,13 +11,13 @@ import { HelperService } from 'src/app/shared/services/helper.service';
     providedIn: 'root'
 })
 export class ItemModelService extends AdminModelService {
+
     constructor(
         protected _db: AngularFireDatabase,
         protected _helperService: HelperService,
         private _uploadService: UploadService,
     ) {
         super(_db, _helperService);
-        this._searchFields = ['name'];
     }
 
     // MAIN METHODS ============
@@ -71,7 +71,8 @@ export class ItemModelService extends AdminModelService {
 
     // SUPPORTED METHODS ============
     private listForMainTable(params: any, options: any): void {
-        this._db.list(this.collection(), ref => this.runSearchFilter({ ...params, ref }, options)
+        this._db.list(this.collection(),
+            ref => this.getSearchRef({ ...params, ref }, options)
         ).snapshotChanges().forEach((itemsSnapshot) => {
             let items: any = [];
 
@@ -83,31 +84,50 @@ export class ItemModelService extends AdminModelService {
             })
             if (this._helperService.isFn(options.freshDataCallback)) options.freshDataCallback(items);
 
-            items = this.runClientFilter({ ...params, ...{ items } }, {});
+            items = this.runLocalFilter({ ...params, ...{ items } }, {});
+
             if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
         })
     }
 
-    private runSearchFilter(params: any, option: any): any {
-        let clientSearch = params.clientFilter.search;
-        if (clientSearch.search_field != 'all') {
-            return params.ref
-                .orderByChild(`${clientSearch.search_field}/forSearch`)
-                .startAt(clientSearch.search_value)
-                .endAt(`${clientSearch.search_value}\uf8ff`)
+    private getSearchRef(params: any, options: any): any {
+        let field = params.clientFilter.search.search_field;
+        let value = params.clientFilter.search.search_value;
+        if (field.trim() != '' && value.trim() != '') {
+            if (field != 'all') {
+                return params.ref
+                    .orderByChild(`${field}/forSearch`)
+                    .startAt(value)
+                    .endAt(`${value}\uf8ff`)
+            }
         }
         return params.ref;
     }
 
-    /**
-     * Runs client filter (locally)
-     * @param params 
-     * @param options 
-     * @returns client filter 
-     */
-    private runClientFilter(params: any, options: any): any {
+    private runLocalFilter(params: any, options: any): any {
         params.items = this.runPropertyFilter(params, options);
+        params.items = this.runLocalSearch(params, options);
         return params.items;
+    }
+
+    private runLocalSearch(params: any, options: any): any {
+        let items = params.items;
+        let searchField = params.clientFilter.search.search_field;
+        let searchValue = params.clientFilter.search.search_value;
+
+        if (searchField.trim() != '' && searchValue.trim() != '') {
+            if (searchField == 'all') {
+                items = items.filter((item) => {
+                    for (let field of this._searchFields) {
+                        if (item[field])
+                            if (item[field].forSearch.indexOf(searchValue) > -1)
+                                return true;
+                    }
+                    return false;
+                })
+            }
+        }
+        return items;
     }
 
     private runPropertyFilter(params: any, options: any): void {

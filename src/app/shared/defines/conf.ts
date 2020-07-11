@@ -1,5 +1,9 @@
 export class Conf {
 
+    params = {
+        timeout: 400,
+    }
+
     format = {
         time: {
             short_time: 'dd/MM/yyyy',
@@ -85,7 +89,7 @@ export class Conf {
         item: {
             action: ['edit', 'delete'],
             filter: ['status'],
-            search: ['id', 'name', 'all'],
+            search: ['name', 'all'],
         },
     }
 }

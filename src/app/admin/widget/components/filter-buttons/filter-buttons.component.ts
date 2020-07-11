@@ -51,4 +51,8 @@ export class FilterButtonsComponent implements OnInit {
     public getQueryParams(filter: string, btnType: string): any {
         return { [filter]: btnType }
     }
+
+    public onBtnClick(filter: string, value: string) {
+        this._router.navigateByUrl(this._urlService.getUrl({ queryParams: { [filter]: value } }, { task: 'set-query-params' }));
+    }
 }

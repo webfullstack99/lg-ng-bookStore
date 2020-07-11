@@ -39,6 +39,7 @@ export class AdminModelService {
 
     set controller(controller: string) {
         this._controller = controller;
+        this._searchFields = this._helperService.getConf_searchFields(this._controller);
     }
 
     get db(): AngularFireDatabase {
@@ -56,8 +57,16 @@ export class AdminModelService {
 
     protected syncForSearch(item: any): any {
         for (let field of this._searchFields) {
-            if (item[field].value.toLowerCase().compareLocale(item.name.forSearch) != 0) {
-                item[field].forSearch = item[field].value.toLowerCase();
+            if (typeof item[field] == 'string') {
+                let value = item[field];
+                item[field] = {
+                    value,
+                    forSearch: value.toLowerCase(),
+                }
+            } else {
+                if (item[field].value.toLowerCase().localeCompare(item.name.forSearch) != 0) {
+                    item[field].forSearch = item[field].value.toLowerCase();
+                }
             }
         }
         return item;
