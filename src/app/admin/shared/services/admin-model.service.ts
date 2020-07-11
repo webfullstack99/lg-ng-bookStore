@@ -7,6 +7,7 @@ import { HelperService } from 'src/app/shared/services/helper.service';
     providedIn: 'root'
 })
 export class AdminModelService {
+    protected _searchFields: string[];
     protected _controller: string;
 
     constructor(
@@ -51,5 +52,14 @@ export class AdminModelService {
                 this._db.list(this.collection()).push(item);
             }
         });
+    }
+
+    protected syncForSearch(item: any): any {
+        for (let field of this._searchFields) {
+            if (item[field].value.toLowerCase().compareLocale(item.name.forSearch) != 0) {
+                item[field].forSearch = item[field].value.toLowerCase();
+            }
+        }
+        return item;
     }
 }

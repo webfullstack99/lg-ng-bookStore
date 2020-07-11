@@ -64,6 +64,14 @@ export class HelperService {
         return this._conf.template.format.button;
     }
 
+    public getConf_searchArr(controller: string): string[] {
+        return this._conf.templateConf[controller].search;
+    }
+
+    public getConf_searchTemplate(): any {
+        return this._conf.template.format.search;
+    }
+
     public getConf_selectData(): any {
         return this._conf.template.selectData;
     }

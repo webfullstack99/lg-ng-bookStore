@@ -34,9 +34,9 @@
                             <th class="align-middle" scope="row">{{ i+1 }}</th>
                             <td class="align-middle">
                                 <div>
-                                    <div> <strong> Name: </strong> {{item.name}} </div>
+                                    <div> <strong> Name: </strong> {{item.name.value}} </div>
                                 </div>
-                                <p> <img [src]="item.thumb" class="admin-main-table-img rounded" [alt]="item.name"> </p>
+                                <p> <img [src]="item.thumb" class="admin-main-table-img rounded" [alt]="item.name.value"> </p>
                             </td>
                             <td class="align-middle" (click)="onStatusClick(item)"
                                 [innerHTML]="_helperService.showStatusButton(item.status)"> </td>

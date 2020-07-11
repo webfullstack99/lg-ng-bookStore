@@ -52,7 +52,6 @@ export class IndexComponent implements OnInit {
             },
             doneCallback: (data: IItem[]) => {
                 this._items = data;
-                console.log(data);
             }
         });
     }

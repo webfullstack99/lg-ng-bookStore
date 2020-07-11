@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AdminModelService } from './admin-model.service';
 import { disableDebugTools } from '@angular/platform-browser';
-import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireDatabase, QueryFn } from 'angularfire2/database';
 import { UploadService } from 'src/app/shared/services/upload.service';
 import { Upload } from 'src/app/shared/defines/upload';
 import { IItem } from 'src/app/shared/defines/item.interface';
@@ -17,6 +17,7 @@ export class ItemModelService extends AdminModelService {
         private _uploadService: UploadService,
     ) {
         super(_db, _helperService);
+        this._searchFields = ['name'];
     }
 
     // MAIN METHODS ============
@@ -70,7 +71,8 @@ export class ItemModelService extends AdminModelService {
 
     // SUPPORTED METHODS ============
     private listForMainTable(params: any, options: any): void {
-        this._db.list(this.collection()).snapshotChanges().forEach((itemsSnapshot) => {
+        this._db.list(this.collection(), ref => this.runSearchFilter({ ...params, ref }, options)
+        ).snapshotChanges().forEach((itemsSnapshot) => {
             let items: any = [];
 
             // add $key into each item
@@ -86,6 +88,17 @@ export class ItemModelService extends AdminModelService {
         })
     }
 
+    private runSearchFilter(params: any, option: any): any {
+        let clientSearch = params.clientFilter.search;
+        if (clientSearch.search_field != 'all') {
+            return params.ref
+                .orderByChild(`${clientSearch.search_field}/forSearch`)
+                .startAt(clientSearch.search_value)
+                .endAt(`${clientSearch.search_value}\uf8ff`)
+        }
+        return params.ref;
+    }
+
     /**
      * Runs client filter (locally)
      * @param params 
@@ -93,6 +106,11 @@ export class ItemModelService extends AdminModelService {
      * @returns client filter 
      */
     private runClientFilter(params: any, options: any): any {
+        params.items = this.runPropertyFilter(params, options);
+        return params.items;
+    }
+
+    private runPropertyFilter(params: any, options: any): void {
         let items = params.items;
         items = items.filter((item) => {
             for (let key in params.clientFilter.filter) {
@@ -102,9 +120,11 @@ export class ItemModelService extends AdminModelService {
             return true;
         })
         return items;
+
     }
 
     private updateByKey(params: any, options: any): void {
+        params.item = this.syncForSearch(params.item);
         params.item = this.setModified(params.item);
         this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
             if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
@@ -112,6 +132,7 @@ export class ItemModelService extends AdminModelService {
     }
 
     private editChangeThumb(params: any, options: any): void {
+        params.item = this.syncForSearch(params.item);
         params.item = this.setModified(params.item);
         this._uploadService.upload(new Upload(params.item.thumb), this._controller, (upload: Upload) => {
             // upload done
@@ -132,6 +153,7 @@ export class ItemModelService extends AdminModelService {
     }
 
     private editNotChangeThumb(params: any, options: any): void {
+        params.item = this.syncForSearch(params.item);
         params.item = this.setModified(params.item);
         this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
             if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
@@ -142,7 +164,10 @@ export class ItemModelService extends AdminModelService {
         this._uploadService.upload(new Upload(params.item.thumb), this._controller, (upload: Upload) => {
             // upload done
             let item: IItem = {
-                name: params.item.name,
+                name: {
+                    value: params.item.name,
+                    forSearch: params.item.name.toLowerCase(),
+                },
                 status: params.item.status,
                 thumb: upload._url,
             }
@@ -160,4 +185,5 @@ export class ItemModelService extends AdminModelService {
             if (this._helperService.isFn(options.progressCallback)) options.progressCallback(upload);
         })
     }
+
 }

@@ -1,20 +1,21 @@
-<form class="form-inline">
+<form class="form-inline" (submit)="onSubmit($event)">
     <div id="search-input-group" class="input-group">
         <div class="input-group-prepend">
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown">
-                    Search by all
+                    {{getSearchingField() | titlecase}}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="triggerId">
-                    <a class="dropdown-item" href="#">Search by id</a>
-                    <a class="dropdown-item" href="#">Search by name</a>
+                    <button (click)="onChangeSearchField($event, search)" *ngFor="let search of _searchArr"
+                        type="button" class="dropdown-item"
+                        [class.active]="search == _clientSearch.search_field">{{ getSearchFieldText(search)}}</button>
                 </div>
             </div>
         </div>
-        <input type="text" class="form-control bg-white border-0 small" placeholder="Search for..." aria-label="Search"
-            aria-describedby="basic-addon2">
+        <input type="text" class="form-control bg-white border-0 small" placeholder="Search for..."
+            (keyup)="onSearch($event)" [value]="_clientSearch.search_value">
         <div class="input-group-append">
-            <button class="btn btn-primary" type="button">
+            <button class="btn btn-primary" type="submit">
                 <i class="fas fa-search fa-sm"></i>
             </button>
         </div>

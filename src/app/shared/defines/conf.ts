@@ -62,6 +62,17 @@ export class Conf {
                     classes: 'btn btn-primary btn-sm',
                     content: 'All',
                 }
+            },
+            search: {
+                id: 'Search by id',
+                username: 'Search by username',
+                name: 'Search by name',
+                fullName: 'Search by full name',
+                email: 'Search by email',
+                title: 'Search by title',
+                description: 'Search by description',
+                content: 'Search by content',
+                all: 'Search by all',
             }
         },
         selectData: {
@@ -74,6 +85,7 @@ export class Conf {
         item: {
             action: ['edit', 'delete'],
             filter: ['status'],
+            search: ['id', 'name', 'all'],
         },
     }
 }

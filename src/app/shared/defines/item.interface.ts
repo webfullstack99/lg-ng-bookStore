@@ -1,6 +1,9 @@
 export interface IItem {
     $key?: string;
-    name: string;
+    name: {
+        value: string
+        forSearch: string,
+    };
     status: string;
     thumb: string;
     created?: {
