@@ -65,6 +65,10 @@ export class HelperService {
         return this._conf.template.format.button;
     }
 
+    public getConf_sortArr(controller: string): string[] {
+        return this._conf.templateConf[controller].sort;
+    }
+
     public getConf_searchArr(controller: string): string[] {
         return this._conf.templateConf[controller].search;
     }

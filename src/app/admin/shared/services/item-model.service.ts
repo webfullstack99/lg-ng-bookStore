@@ -72,7 +72,11 @@ export class ItemModelService extends AdminModelService {
     // SUPPORTED METHODS ============
     private listForMainTable(params: any, options: any): void {
         this._db.list(this.collection(),
-            ref => this.getSearchRef({ ...params, ref }, options)
+            (ref) => {
+                ref = this.getSearchRef({ ...params, ref }, options)
+                ref = this.getSortRef({ ...params, ref }, options)
+                return ref;
+            }
         ).snapshotChanges().forEach((itemsSnapshot) => {
             let items: any = [];
 
@@ -101,6 +105,12 @@ export class ItemModelService extends AdminModelService {
                     .endAt(`${value}\uf8ff`)
             }
         }
+        return params.ref;
+    }
+
+    private getSortRef(params: any, options: any): any {
+        let sortField = params.clientFilter.sort.sort_field;
+        let sortOrder = params.clientFilter.sort.sort_order;
         return params.ref;
     }
 

@@ -12,11 +12,12 @@ import { MainTableComponent } from './components/main-table/main-table.component
 import { TableEmtpyMessageComponent } from './components/table-emtpy-message/table-emtpy-message.component';
 import { ActionButtonsComponent } from './components/action-buttons/action-buttons.component';
 import { ShowAndPushDataComponent } from './components/show-and-push-data/show-and-push-data.component';
+import { TheadAdminMainTableComponent } from './components/thead-admin-main-table/thead-admin-main-table.component';
 
 
 
 @NgModule({
-    declarations: [LogoutModalComponent, PaginationComponent, FilterComponent, SearchComponent, FilterButtonsComponent, MainTableComponent, PageTitleComponent, XTitleComponent, TableEmtpyMessageComponent, ActionButtonsComponent, ShowAndPushDataComponent,],
+    declarations: [LogoutModalComponent, PaginationComponent, FilterComponent, SearchComponent, FilterButtonsComponent, MainTableComponent, PageTitleComponent, XTitleComponent, TableEmtpyMessageComponent, ActionButtonsComponent, ShowAndPushDataComponent, TheadAdminMainTableComponent,],
     imports: [
         RouterModule,
         CommonModule
@@ -32,6 +33,7 @@ import { ShowAndPushDataComponent } from './components/show-and-push-data/show-a
         TableEmtpyMessageComponent,
         ActionButtonsComponent,
         ShowAndPushDataComponent,
+        TheadAdminMainTableComponent,
     ]
 })
 export class AdminWidgetModule { }

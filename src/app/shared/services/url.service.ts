@@ -7,12 +7,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class UrlService {
     public _queryParams: any;
+    public _urlSearchParams: URLSearchParams;
 
     constructor(
         private _helperService: HelperService,
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
-    ) { }
+    ) {
+        this._urlSearchParams = new URLSearchParams(window.location.search);
+    }
 
     /**
      * Gets client filter: search and filter
@@ -25,6 +28,7 @@ export class UrlService {
             this._queryParams = data;
             let filters: string[] = this._helperService.getTemplateConf(controller).filter;
             let searchArr: string[] = this._helperService.getTemplateConf(controller).search;
+            let sortArr: string[] = this._helperService.getTemplateConf(controller).sort;
             let clientFilter: any = { filter: {}, sort: {}, search: {} };
 
 
@@ -44,9 +48,25 @@ export class UrlService {
                 clientFilter.search = this.getSearchObj(data.search_field || 'all', data.search_value)
             }
 
+            // sort
+            for (let sort of sortArr) {
+                if (data.sort_field == sort) {
+                    clientFilter.sort = this.getSortObj(data.sort_field, data.sort_order)
+                    break;
+                }
+            }
+
+
             // done callback
             if (this._helperService.isFn(doneCallback)) doneCallback(clientFilter);
         })
+    }
+
+    private getSortObj(field: string, order: string = ''): object {
+        return {
+            sort_field: field.trim(),
+            sort_order: order.trim(),
+        }
     }
 
     private getSearchObj(searchField: string, searchValue: string = ''): object {
@@ -58,16 +78,20 @@ export class UrlService {
 
     public getUrl(params: any, options: any): string {
         let url: string = window.location.pathname;
-        let urlSearchParams = new URLSearchParams(window.location.search);
+        this._urlSearchParams = new URLSearchParams(window.location.search);
         switch (options.task) {
             case 'set-query-params':
                 for (let key in params.queryParams) {
-                    urlSearchParams.set(key, params.queryParams[key]);
+                    this._urlSearchParams.set(key, params.queryParams[key]);
                 }
                 break;
         }
 
-        url = (urlSearchParams.toString()!='') ? `${url}?${urlSearchParams.toString()}` : url;
+        url = (this._urlSearchParams.toString() != '') ? `${url}?${this._urlSearchParams.toString()}` : url;
         return url;
+    }
+
+    public getQueryParam(name: string) {
+        return this._urlSearchParams.get(name);
     }
 }

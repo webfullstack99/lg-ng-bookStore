@@ -18,16 +18,26 @@
     <div class="row mt-3">
         <div class="col-12">
             <table class="admin-main-table table table-striped table-responsive-sm">
-                <thead class="">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th width=""> <a href="">Name </a> </th>
-                        <th width=""> <a href="">Status </a> </th>
-                        <th> <a href="">Created</a> </th>
-                        <th> <a href="">Modified</a> </th>
-                        <th> Action </th>
-                    </tr>
-                </thead>
+                <thead app-thead-admin-main-table [controller]="_controller" [thead-data]="
+                        [
+                            {
+                                title: '#'
+                            }, {
+                                title: 'name',
+                                field: 'name'
+                            }, {
+                                title: 'status',
+                                field: 'status'
+                            }, {
+                                title: 'created',
+                                field: 'created'
+                            }, {
+                                title: 'modified',
+                                field: 'modified'
+                            }, {
+                                title: 'action'
+                            }
+                        ] "> </thead>
                 <tbody>
                     <ng-template [ngIf]="_items != null">
                         <tr *ngFor="let item of _items; let i = index" [attr.data-key]="item['$key']">
@@ -56,14 +66,13 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- PAGINATION -->
-        <ng-template [ngIf]="_items != null">
-            <div *ngIf="_items.length > 0" class="row mt-3">
-                <div class="col-12">
-                    <app-pagination></app-pagination>
-                </div>
-            </div>
-        </ng-template>
-
     </div>
+
+    <!-- PAGINATION -->
+    <ng-template [ngIf]="_items != null">
+        <div *ngIf="_items.length > 0" class="row mt-3">
+            <div class="col-12">
+                <app-pagination></app-pagination>
+            </div>
+        </div>
+    </ng-template>

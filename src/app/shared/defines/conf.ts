@@ -90,6 +90,7 @@ export class Conf {
             action: ['edit', 'delete'],
             filter: ['status'],
             search: ['name', 'all'],
+            sort: ['name', 'status', 'created', 'modified'],
         },
     }
 }
