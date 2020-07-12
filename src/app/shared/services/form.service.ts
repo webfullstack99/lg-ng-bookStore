@@ -19,9 +19,9 @@ export class FormService {
      */
     public checkbox(data: any): any {
         return this._helperService.toHtml(`
-        <div class="form-check form-check-inline"> 
-            <input class="form-check-input" type="checkbox" id="${data.name}" value="${data.value}">
+        <div class="form-check form-check-inline d-flex justify-content-between"> 
             <label class="form-check-label" for="${data.name}">${data.displayName}</label>
+            <input class="form-check-input" type="checkbox" id="${data.name}" value="${data.value}">
         </div>`);
     }
 }
