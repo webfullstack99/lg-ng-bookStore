@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { UrlService } from 'src/app/shared/services/url.service';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     templateUrl: './thead-admin-main-table.component.html',
     styleUrls: ['./thead-admin-main-table.component.css']
 })
-export class TheadAdminMainTableComponent implements OnInit {
+export class TheadAdminMainTableComponent implements OnInit, AfterViewInit {
     public _sortArr: string[];
     public _clientSort: any;
 
@@ -21,6 +21,8 @@ export class TheadAdminMainTableComponent implements OnInit {
         public _urlService: UrlService,
         public _helperService: HelperService,
     ) { }
+    ngAfterViewInit(): void {
+    }
 
     ngOnInit(): void {
         this._sortArr = this._helperService.getConf_sortArr(this._controller);
@@ -47,13 +49,18 @@ export class TheadAdminMainTableComponent implements OnInit {
     }
 
     //public getSortClass(): object {
-        //let result = {
-            //fas: true,
-            //'fa-sort-up': (this._clientSort.sort_order == 'asc'),
-            //'fa-sort-down': (this._clientSort.sort_order == 'desc'),
-        //}
-        //console.log(this._clientSort);
-        //console.log(result);
-        //return result;
+    //let result = {
+    //fas: true,
+    //'fa-sort-up': (this._clientSort.sort_order == 'asc'),
+    //'fa-sort-down': (this._clientSort.sort_order == 'desc'),
     //}
+    //console.log(this._clientSort);
+    //console.log(result);
+    //return result;
+    //}
+
+    public getSortIcon(): any {
+        let order = (this._clientSort.sort_order == 'asc') ? 'up' : 'down';
+        return `<i class="fas fa-sort-${order}"></i>`;
+    }
 }

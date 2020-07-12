@@ -14,9 +14,9 @@
             <ng-template [ngIf]="head.hasSort">
                 <a (click)="onSortClick($event, head.field)" href="#">
                     {{ head.title | titlecase }}
-                    <i *ngIf="_clientSort.sort_field == head.field" class="fas"
-                        [class.fa-sort-up]="_clientSort.sort_order=='asc'"
-                        [class.fa-sort-down]="_clientSort.sort_order=='desc'"></i>
+                    <ng-template [ngIf]="_clientSort.sort_field == head.field">
+                        <span [innerHTML]="getSortIcon()"></span>
+                    </ng-template>
                 </a>
             </ng-template>
 
