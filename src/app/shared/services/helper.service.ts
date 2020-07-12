@@ -61,6 +61,10 @@ export class HelperService {
         return str
     }
 
+    public getConf_text(val: string): string {
+        return this._conf.template.format.text[val];
+    }
+
     public getConf_btnTemplate(): any {
         return this._conf.template.format.button;
     }

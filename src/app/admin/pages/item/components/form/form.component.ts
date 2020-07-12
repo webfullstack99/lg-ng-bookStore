@@ -18,7 +18,7 @@ export class FormComponent implements OnInit {
 
     public _controller: string;
     public _formType: string;
-    public _selectedFile: File;
+    public _selectedFiles: File;
     public _submittedForm: any;
     public _currentItem: any = {};
     public _uploadProgress: number;
@@ -73,7 +73,7 @@ export class FormComponent implements OnInit {
     }
 
     public onSelectedFile($event): void {
-        this._selectedFile = $event.target.files[0];
+        this._selectedFiles = $event.target.files[0];
         this._helperService.displayFileUploadName($event);
     }
 
@@ -96,9 +96,9 @@ export class FormComponent implements OnInit {
     }
 
     private solveEditSubmit(progressCallback: (upload) => void): void {
-        if (this._selectedFile != null) {
+        if (this._selectedFiles != null) {
             // edit and change thumb
-            this._submittedForm.thumb = this._selectedFile;
+            this._submittedForm.thumb = this._selectedFiles;
             this._modelService.saveItem({
                 item: this._submittedForm,
                 key: this._currentItem.$key,
@@ -117,7 +117,7 @@ export class FormComponent implements OnInit {
 
     private solveAddSubmit(progressCallback: (upload) => void): void {
         // add 
-        this._submittedForm.thumb = this._selectedFile;
+        this._submittedForm.thumb = this._selectedFiles;
         (this._submittedForm);
         this._modelService.saveItem({ item: this._submittedForm }, {
             task: 'insert-one', progressCallback
@@ -127,11 +127,7 @@ export class FormComponent implements OnInit {
 
     private resetForm(): void {
         this._formProfile.reset();
-        $('#img-file-input').text('Choose file');
-        this._selectedFile = null;
-    }
-
-    public isFormValid(): boolean {
-        return this._formProfile.valid && this._formProfile.dirty;
+        $('.img-file-input').text('Choose file');
+        this._selectedFiles = null;
     }
 }

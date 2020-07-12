@@ -18,6 +18,9 @@ export class Conf {
 
     template = {
         format: {
+            text: {
+                chooseFile: 'choose file',
+            },
             button: {
                 display: {
                     yes: {
@@ -87,7 +90,11 @@ export class Conf {
             admin: {
                 label: 'col-sm-2 col-form-label',
                 input: 'col-sm-10 form-control',
-                submit: 'col-sm-10 offset-lg-2 btn btn-primary',
+                fileContainer: 'col-sm-10',
+                fileInput: 'custom-file-input',
+                fileInputLabel: 'img-file-input custom-file-label',
+                submit: 'col-sm-2 offset-lg-2 btn btn-primary',
+                select: 'col-sm-10 custom-select',
             }
         }
     }

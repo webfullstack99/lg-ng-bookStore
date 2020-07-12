@@ -1,15 +1,44 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { HelperService } from 'src/app/shared/services/helper.service';
+import { Conf } from 'src/app/shared/defines/conf';
 
 @Component({
-  selector: 'app-admin-form',
-  templateUrl: './admin-form.component.html',
-  styleUrls: ['./admin-form.component.css']
+    selector: '[appAdminForm]',
+    templateUrl: './admin-form.component.html',
+    styleUrls: ['./admin-form.component.css']
 })
 export class AdminFormComponent implements OnInit {
 
-  constructor() { }
+    @Input('formData') _formData: any[];
+    @Input('appAdminForm') _formProfile: FormGroup;
+    @Input('currentItem') _currentItem: any;
+    @Input('selectedFiles') _selectedFiles: any;
+    @Output('_onSelectedFiles') _onSelectedFile = new EventEmitter<any>();
+    @Output('onSubmit') _onSubmit = new EventEmitter<any>();
 
-  ngOnInit(): void {
-  }
+    constructor(
+        public _helperService: HelperService,
+        public _conf: Conf,
+    ) { }
 
+    ngOnInit(): void {
+        console.log(this._formData);
+    }
+
+    public onSubmitForm(): void {
+        this._onSubmit.emit(this._formProfile);
+    }
+
+    public onFileChange($event): void {
+        this._onSelectedFile.emit($event);
+    }
+
+    public isFormValid(): boolean {
+        return this._formProfile.valid && this._formProfile.dirty;
+    }
+
+    public getClass(type: string): any {
+        return this._conf.template.form.admin[type];
+    }
 }

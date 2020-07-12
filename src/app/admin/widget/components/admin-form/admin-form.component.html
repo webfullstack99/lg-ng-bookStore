@@ -1,35 +1,43 @@
-<!-- 
-
 <form *ngIf="_formProfile" [formGroup]="_formProfile" (ngSubmit)="onSubmitForm()" action="#">
-    <div class="form-group row">
-        <label for="name" class="col-sm-2 col-form-label">Name</label>
-        <input type="text" class="col-sm-10 form-control" id="name" formControlName="name">
-    </div>
+    <ng-template ngFor let-input [ngForOf]="_formData">
+        <div [ngSwitch]="input.type" class="form-group row">
+            <label *ngIf="input.type!='submit'" [for]="input.name"
+                [class]="getClass('label')">{{ input.displayName|titlecase }}</label>
 
-    <div class="form-group row">
-        <label for="status" class="col-sm-2 col-form-label">Status</label>
-        <select class="col-sm-10 custom-select" id="status" formControlName="status">
-            <option value="" disabled selected>Select status</option>
-            <option value="active">Active</option>
-            <option value="inactive">In active</option>
-        </select>
-    </div>
+            <!-- GENERAL TYPE FOR INPUT TYPE: text, password, number, ... -->
+            <ng-template [ngSwitchCase]="'general'">
+                <input [type]="input.inputType" [class]="getClass('input')" [id]="input.name"
+                    [formControlName]="input.name">
+            </ng-template>
 
-    <div class="form-group row">
-        <label for="custom-file" class="col-sm-2 col-form-label">Thumb</label>
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" id="customFile" formControlName="thumb" accept="image/*"
-                (change)="onSelectedFile($event)">
-            <label id="img-file-input" class="custom-file-label" for="customFile">Choose file</label>
+            <!-- SELECT TYPE -->
+            <ng-template [ngSwitchCase]="'select'">
+                <select [class]="getClass('select')" [id]="input.name" [formControlName]="input.name">
+                    <option value="" disabled selected>Select status</option>
+                    <option *ngFor="let value of _helperService.getConf_selectData()[input.name]" [value]="value">
+                        {{_helperService.getConf_btnTemplate()[input.name][value].content}}
+                    </option>
+                </select>
+            </ng-template>
+
+            <!-- FILE TYPE -->
+            <ng-template [ngSwitchCase]="'file'">
+                <div class="custom-file" [class]="getClass('fileContainer')">
+                    <input type="file" [class]="getClass('fileInput')" [id]="input.name" [formControlName]="input.name"
+                        accept="image/*" (change)="onFileChange($event)">
+                    <label [class]="getClass('fileInputLabel')"
+                        [for]="input.name">{{ _helperService.getConf_text('chooseFile') | ucfirst}}</label>
+                </div>
+                <p *ngIf="_currentItem.thumb">
+                    <img [src]="_currentItem.thumb" [alt]="input.displayName+' image'" class="img-fluid rounded">
+                </p>
+            </ng-template>
+
+            <!-- SUBMIT TYPE -->
+            <ng-template [ngSwitchCase]="'submit'">
+                <input type="submit" [class]="getClass('submit')" [value]="input.displayName"
+                    [disabled]="!isFormValid()">
+            </ng-template>
         </div>
-        <p *ngIf="_currentItem.thumb">
-            <img [src]="_currentItem.thumb" [alt]="_currentItem.name.value" class="img-fluid rounded">
-        </p>
-    </div>
-
-    <!-- SUBMIT BTN -->
-<div class="form-group row">
-    <input type="submit" class="col-sm-10 offset-lg-2 btn btn-primary" value="Submit" [disabled]="!isFormValid()">
-</div>
+    </ng-template>
 </form>
--->

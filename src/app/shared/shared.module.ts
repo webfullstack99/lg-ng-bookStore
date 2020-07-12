@@ -9,11 +9,12 @@ import { HighlightService } from './services/highlight.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { UcfirstPipe } from './pipes/ucfirst.pipe';
 
 
 
 @NgModule({
-    declarations: [NotFoundComponent, ShowTimeComponent],
+    declarations: [NotFoundComponent, ShowTimeComponent, UcfirstPipe],
     imports: [
         RouterModule,
         BrowserModule,
@@ -22,9 +23,9 @@ import { RouterModule } from '@angular/router';
     exports: [
         NotFoundComponent, 
         ShowTimeComponent, 
-        ReactiveFormsModule, 
         RouterModule, 
-        BrowserModule
+        BrowserModule,
+        UcfirstPipe,
     ],
     providers: [
         Conf, 

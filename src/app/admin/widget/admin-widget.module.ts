@@ -14,29 +14,28 @@ import { ActionButtonsComponent } from './components/action-buttons/action-butto
 import { ShowAndPushDataComponent } from './components/show-and-push-data/show-and-push-data.component';
 import { TheadAdminMainTableComponent } from './components/thead-admin-main-table/thead-admin-main-table.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
-import { AdminFormComponent } from './components/admin-form/admin-form.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 
 @NgModule({
     declarations: [
-        LogoutModalComponent, 
-        PaginationComponent, 
-        FilterComponent, 
-        SearchComponent, 
-        FilterButtonsComponent, 
-        MainTableComponent, 
-        PageTitleComponent, 
-        XTitleComponent, 
-        TableEmtpyMessageComponent, 
-        ActionButtonsComponent, 
-        ShowAndPushDataComponent, 
-        TheadAdminMainTableComponent, 
-        ProgressBarComponent, AdminFormComponent,
+        LogoutModalComponent,
+        PaginationComponent,
+        FilterComponent,
+        SearchComponent,
+        FilterButtonsComponent,
+        MainTableComponent,
+        PageTitleComponent,
+        XTitleComponent,
+        TableEmtpyMessageComponent,
+        ActionButtonsComponent,
+        ShowAndPushDataComponent,
+        TheadAdminMainTableComponent,
+        ProgressBarComponent, 
     ],
     imports: [
-        RouterModule,
-        CommonModule
+        SharedModule,
     ],
     exports: [
         LogoutModalComponent,
@@ -51,7 +50,6 @@ import { AdminFormComponent } from './components/admin-form/admin-form.component
         ShowAndPushDataComponent,
         TheadAdminMainTableComponent,
         ProgressBarComponent,
-        AdminFormComponent,
     ]
 })
 export class AdminWidgetModule { }
