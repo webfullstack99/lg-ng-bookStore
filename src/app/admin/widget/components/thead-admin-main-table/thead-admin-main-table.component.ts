@@ -48,18 +48,7 @@ export class TheadAdminMainTableComponent implements OnInit, AfterViewInit {
         return (this._clientSort.sort_field == field && this._clientSort.sort_order == 'asc') ? 'desc' : 'asc';
     }
 
-    //public getSortClass(): object {
-    //let result = {
-    //fas: true,
-    //'fa-sort-up': (this._clientSort.sort_order == 'asc'),
-    //'fa-sort-down': (this._clientSort.sort_order == 'desc'),
-    //}
-    //console.log(this._clientSort);
-    //console.log(result);
-    //return result;
-    //}
-
-    public getSortIcon(): any {
+public getSortIcon(): any {
         let order = (this._clientSort.sort_order == 'asc') ? 'up' : 'down';
         return `<i class="fas fa-sort-${order}"></i>`;
     }

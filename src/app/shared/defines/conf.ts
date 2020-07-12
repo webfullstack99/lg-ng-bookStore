@@ -77,7 +77,7 @@ export class Conf {
                 description: 'Search by description',
                 content: 'Search by content',
                 all: 'Search by all',
-            }
+            },
         },
         selectData: {
             status: ['active', 'inactive'],

@@ -1,4 +1,7 @@
-<div class="d-flex justify-content-between align-items-center">
-    <h4 class="text-gray-800">{{ getTitle() | titlecase}}</h4>
-    <a [routerLink]="[_conf.prefix.admin, _controller, 'form']" class="btn btn-primary">Add</a>
-</div>
+<ng-template [ngIf]="_pageType">
+    <div class="d-flex justify-content-between align-items-center">
+        <h4 class="text-gray-800">{{ this._pageData.pageTitle | titlecase}}</h4>
+
+        <button (click)="onBtnClick()" [ngClass]="getBtnClass()">{{ this._pageData.btn.content | titlecase}}</button>
+    </div>
+</ng-template>
