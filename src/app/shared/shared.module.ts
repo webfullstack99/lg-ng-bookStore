@@ -6,16 +6,31 @@ import { Conf } from './defines/conf';
 import { ShowTimeComponent } from './components/show-time/show-time.component';
 import { UrlService } from './services/url.service';
 import { HighlightService } from './services/highlight.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
 
 
 
 @NgModule({
     declarations: [NotFoundComponent, ShowTimeComponent],
     imports: [
-        CommonModule
+        RouterModule,
+        BrowserModule,
+        ReactiveFormsModule,
     ],
-    exports: [NotFoundComponent, ShowTimeComponent],
-    providers: [Conf, AngularFireStorage, UrlService, HighlightService]
+    exports: [
+        NotFoundComponent, 
+        ShowTimeComponent, 
+        ReactiveFormsModule, 
+        RouterModule, 
+        BrowserModule
+    ],
+    providers: [
+        Conf, 
+        UrlService, 
+        HighlightService,
+    ]
 
 })
 export class SharedModule { }

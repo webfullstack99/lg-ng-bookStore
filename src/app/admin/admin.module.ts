@@ -5,15 +5,14 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { RouterModule } from '@angular/router';
 import { ItemModule } from './pages/item/item.module';
 import { UploadService } from '../shared/services/upload.service';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-    declarations: [AdminMainComponent, DashboardComponent ],
+    declarations: [AdminMainComponent, DashboardComponent],
     imports: [
-        RouterModule,
-        CommonModule,
-
         // pages
         ItemModule,
+        SharedModule,
     ],
     exports: [AdminMainComponent],
     providers: [UploadService],

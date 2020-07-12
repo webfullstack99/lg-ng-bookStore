@@ -4,21 +4,19 @@ import { IndexComponent } from './components/index/index.component';
 import { FormComponent } from './components/form/form.component';
 import { AdminWidgetModule } from '../../widget/admin-widget.module';
 import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { AdminSharedModule } from '../../shared/admin-shared.module';
 import { PageService } from './services/page.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 
 @NgModule({
     declarations: [IndexComponent, FormComponent],
     imports: [
-        AdminSharedModule,
-        FormsModule,
-        RouterModule,
-        ReactiveFormsModule,
         AdminWidgetModule,
-        CommonModule
+        FormsModule,
+        SharedModule,
     ],
     exports: [
         IndexComponent, FormComponent
