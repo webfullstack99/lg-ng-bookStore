@@ -46,8 +46,6 @@ export class PageTitleComponent implements OnInit {
                 }
                 break;
         }
-        console.log(this._pageData);
-
     }
 
     public getBtnClass(): object {

@@ -6,6 +6,7 @@ import { UploadService } from 'src/app/shared/services/upload.service';
 import { Upload } from 'src/app/shared/defines/upload';
 import { IItem } from 'src/app/shared/defines/item.interface';
 import { HelperService } from 'src/app/shared/services/helper.service';
+import { ɵInternalFormsSharedModule } from '@angular/forms';
 
 @Injectable({
     providedIn: 'root'
@@ -155,7 +156,7 @@ export class ItemModelService extends AdminModelService {
         let items = params.items;
         let field = params.clientFilter.sort.sort_field;
         let order = params.clientFilter.sort.sort_order;
-        if (['desc', 'asc'].includes(order)) {
+        if (this._sortFields.includes(field) && ['desc', 'asc'].includes(order)) {
             items = items.sort((a, b) => {
                 let aPath: string;
                 let bPath: string;
@@ -170,6 +171,12 @@ export class ItemModelService extends AdminModelService {
                 let bVal = this._helperService.getVal(b, bPath);
                 let comparison: number = (typeof aVal == 'string') ? aVal.localeCompare(bVal) : (aVal - bVal);
                 return (order == 'asc') ? comparison : -comparison;
+            })
+        } else {
+            items = items.sort((a, b) => {
+                let aVal: string = a.$key;
+                let bVal: string = b.$key;
+                return -(aVal.localeCompare(bVal));
             })
         }
         return items;
