@@ -26,7 +26,7 @@ export class HelperService {
 
     /**
      * Shows history
-     * @param data {userId, time}
+     * @param data {userId, time, user}
      * @returns history 
      */
     public showHistory(data: any): string {
@@ -35,10 +35,10 @@ export class HelperService {
             let timePatterns = this._conf.format.time;
             let shortTime = formatDate(data.time, timePatterns.short_time, this._conf.format.time.locale);
             let longTime = formatDate(data.time, timePatterns.long_time, this._conf.format.time.locale);
-            result = ` <div>
-                            <div title="${data.userId}"> <i class="far fa-user fa-fw"></i> ${this.limit(data.userId, 10)}</div>
-                            <div title="${longTime}"> <i class="far fa-clock fa-fw"></i> ${shortTime}</div>
-                        </div> `
+            let username = this.getVal(data, 'user.username');
+            let userStr = (username.trim() != '') ? `<div> <i class="far fa-user fa-fw"></i> ${this.limit(username, 10)}</div>` : '';
+            let timeStr = `<div title="${longTime}"> <i class="far fa-clock fa-fw"></i> ${shortTime}</div>`;
+            result = ` <div>${userStr} ${timeStr}</div> `
             return result;
         }
     }

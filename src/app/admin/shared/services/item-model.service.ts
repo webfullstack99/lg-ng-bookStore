@@ -94,7 +94,19 @@ export class ItemModelService extends AdminModelService {
             items = this.runLocalFilter({ ...params, ...{ items } }, {});
             items = this.runLocalSort({ ...params, ...{ items } }, {});
 
-            if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
+            this.syncItemsRef({
+                items,
+                collection: 'users',
+                fields: ['created', 'modified'],
+                path: 'userId',
+                newPath: 'user',
+            }, {
+                doneCallback: (items: any[]) => {
+                    console.log(items);
+                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
+                },
+            });
+
         })
     }
 

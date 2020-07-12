@@ -73,4 +73,70 @@ export class AdminModelService {
         }
         return item;
     }
+
+    // sync between collections
+    /**
+     * Syncs items ref
+     * @param params - { items: any[], collection: string, fields:string[], path: string, newPath: string}
+     * @param options 
+     */
+    protected syncItemsRef(params: any, options: any): void {
+        let items = params.items;
+        this.getItemsRef({
+            items,
+            collection: params.collection,
+            fields: params.fields,
+            path: params.path,
+            doneCallback: (refItems) => {
+                for (let refItem of refItems) {
+                    items = items.map((item) => {
+                        for (let field of params.fields)
+                            if (item[field])
+                                if (item[field][params.path] == refItem['$key']) item[field][params.newPath] = refItem;
+                        return item;
+                    })
+                }
+                options.doneCallback(items);
+            }
+        })
+    }
+
+    /**
+     * Gets items ref
+     * @param data {items, collection, fields, path, doneCallback}
+     */
+    protected getItemsRef(data): void {
+        let promises: Promise<any>[] = [];
+        let ids: string[] = this.getIdsRef(data.items, data.fields, data.path);
+        for (let id of ids) {
+            promises.push(
+                new Promise((resolve) => {
+                    this._db.object(`${data.collection}/${id}`).valueChanges().subscribe((data) => {
+                        let item = data;
+                        item['$key'] = id;
+                        resolve(item);
+                    });
+                })
+            )
+        }
+        Promise.all(promises)
+            .then((items) => {
+                if (this._helperService.isFn(data.doneCallback)) data.doneCallback(items);
+            })
+
+    }
+
+    protected getIdsRef(items: any[], fields: string[], path: string): string[] {
+        let ids: string[] = [];
+        for (let item of items) {
+            for (let field of fields) {
+                if (item[field]) {
+                    let id = this._helperService.getVal(item[field], path);
+                    if (id)
+                        if (!ids.includes(id)) ids.push(id);
+                }
+            }
+        }
+        return ids;
+    }
 }

@@ -13,9 +13,7 @@ export class UrlService {
         private _helperService: HelperService,
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
-    ) {
-        this._urlSearchParams = new URLSearchParams(window.location.search);
-    }
+    ) { }
 
     /**
      * Gets client filter: search and filter
@@ -25,6 +23,7 @@ export class UrlService {
     public getClientFilter(controller: string, doneCallback: (clientFilter: any) => void): any {
         // btn filter
         this._activatedRoute.queryParams.subscribe((data) => {
+            this._urlSearchParams = new URLSearchParams(window.location.search);
             this._queryParams = data;
             let filters: string[] = this._helperService.getTemplateConf(controller).filter;
             let searchArr: string[] = this._helperService.getTemplateConf(controller).search;
@@ -55,7 +54,6 @@ export class UrlService {
                     break;
                 }
             }
-
 
             // done callback
             if (this._helperService.isFn(doneCallback)) doneCallback(clientFilter);

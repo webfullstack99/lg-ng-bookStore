@@ -10,7 +10,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { UcfirstPipe } from './pipes/ucfirst.pipe';
-import { FormService } from './services/form.service';
 
 
 
@@ -32,7 +31,6 @@ import { FormService } from './services/form.service';
         Conf,
         UrlService,
         HighlightService,
-        FormService
     ]
 
 })
