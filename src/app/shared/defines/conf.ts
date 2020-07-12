@@ -82,6 +82,13 @@ export class Conf {
         selectData: {
             status: ['active', 'inactive'],
             display: ['yes', 'no'],
+        },
+        form: {
+            admin: {
+                label: 'col-sm-2 col-form-label',
+                input: 'col-sm-10 form-control',
+                submit: 'col-sm-10 offset-lg-2 btn btn-primary',
+            }
         }
     }
 

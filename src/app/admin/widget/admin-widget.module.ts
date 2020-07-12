@@ -14,6 +14,7 @@ import { ActionButtonsComponent } from './components/action-buttons/action-butto
 import { ShowAndPushDataComponent } from './components/show-and-push-data/show-and-push-data.component';
 import { TheadAdminMainTableComponent } from './components/thead-admin-main-table/thead-admin-main-table.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
+import { AdminFormComponent } from './components/admin-form/admin-form.component';
 
 
 
@@ -31,7 +32,7 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
         ActionButtonsComponent, 
         ShowAndPushDataComponent, 
         TheadAdminMainTableComponent, 
-        ProgressBarComponent,
+        ProgressBarComponent, AdminFormComponent,
     ],
     imports: [
         RouterModule,
@@ -50,6 +51,7 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
         ShowAndPushDataComponent,
         TheadAdminMainTableComponent,
         ProgressBarComponent,
+        AdminFormComponent,
     ]
 })
 export class AdminWidgetModule { }
