@@ -21,7 +21,8 @@
                 <thead app-thead-admin-main-table [controller]="_controller" [thead-data]="
                         [
                             {
-                                title: '#'
+                                title: _formService.checkbox({name: 'select-all-item', displayName: ''}),
+                                html: true
                             }, {
                                 title: 'name',
                                 field: 'name'
@@ -41,7 +42,7 @@
                 <tbody>
                     <ng-template [ngIf]="_items != null">
                         <tr *ngFor="let item of _items; let i = index" [attr.data-key]="item['$key']">
-                            <th class="align-middle" scope="row">{{ i+1 }}</th>
+                            <th class="align-middle" scope="row" [innerHTML]="_formService.checkbox({name: 'item', value: item.$key, displayName: i+1})"></th>
                             <td class="align-middle">
                                 <div>
                                     <div> <strong> Name: </strong> <span [innerHTML]="item.name.value"></span> </div>

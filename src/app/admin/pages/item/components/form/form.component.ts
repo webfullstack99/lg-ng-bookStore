@@ -127,7 +127,7 @@ export class FormComponent implements OnInit {
 
     private resetForm(): void {
         this._formProfile.reset();
-        $('.img-file-input').text('Choose file');
+        $('.img-file-input').text(this._helperService.ucfirst(this._helperService.getConf_text('chooseFile')));
         this._selectedFiles = null;
     }
 }

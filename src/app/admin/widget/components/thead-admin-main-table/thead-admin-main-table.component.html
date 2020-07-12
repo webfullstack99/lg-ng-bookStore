@@ -21,7 +21,13 @@
             </ng-template>
 
             <ng-template [ngIf]="!head.hasSort">
-                {{ head.title | titlecase }}
+                <ng-template [ngIf]="head.html">
+                    <span [innerHTML]="head.title"></span>
+                </ng-template>
+
+                <ng-template [ngIf]="!head.html">
+                    {{ head.title | titlecase }}
+                </ng-template>
             </ng-template>
         </th>
     </ng-template>

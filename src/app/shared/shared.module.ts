@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { UcfirstPipe } from './pipes/ucfirst.pipe';
+import { FormService } from './services/form.service';
 
 
 
@@ -21,16 +22,17 @@ import { UcfirstPipe } from './pipes/ucfirst.pipe';
         ReactiveFormsModule,
     ],
     exports: [
-        NotFoundComponent, 
-        ShowTimeComponent, 
-        RouterModule, 
+        NotFoundComponent,
+        ShowTimeComponent,
+        RouterModule,
         BrowserModule,
         UcfirstPipe,
     ],
     providers: [
-        Conf, 
-        UrlService, 
+        Conf,
+        UrlService,
         HighlightService,
+        FormService
     ]
 
 })

@@ -41,4 +41,16 @@ export class AdminFormComponent implements OnInit {
     public getClass(type: string): any {
         return this._conf.template.form.admin[type];
     }
+
+    public getDefaultSelectContent(name: string): string {
+        return `select ${name}`;
+    }
+
+    public getPropertyString(propertyObj): string {
+        let result: string = '';
+        for (let key in propertyObj)
+            result += ` ${key}="${propertyObj[key]}"`;
+        return result;
+    }
 }
+

@@ -100,4 +100,8 @@ input.ng-dirty.ng-valid, input.ng-touched.ng-valid {
 .admin-main-table-img {
     max-width: 100px;
 }
+
+.admin-checkbox{
+
+}
 /* end admin-main-table */

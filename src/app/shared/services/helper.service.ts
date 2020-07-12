@@ -133,5 +133,9 @@ export class HelperService {
         } catch{ return '' }
         return result;
     }
+
+    public toHtml(string: string): any {
+        return this._sanitized.bypassSecurityTrustHtml(string);
+    }
 }
 

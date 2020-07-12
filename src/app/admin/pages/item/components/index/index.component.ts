@@ -8,8 +8,10 @@ import { Conf } from 'src/app/shared/defines/conf';
 import { createCssSelector } from '@angular/compiler/src/render3/view/template';
 import { UrlService } from 'src/app/shared/services/url.service';
 import { HighlightService } from 'src/app/shared/services/highlight.service';
+import { FormService } from 'src/app/shared/services/form.service';
 
 declare let $: any;
+
 @Component({
     selector: 'app-index',
     templateUrl: './index.component.html',
@@ -20,9 +22,11 @@ export class IndexComponent implements OnInit {
     public _items: IItem[];
     public _clientFilter: any = {};
     public _hasData: boolean;
+    public _selectedItems: any[];
 
     constructor(
         public _helperService: HelperService,
+        public _formService: FormService,
         public _highlightService: HighlightService,
         private _pageService: PageService,
         private _modelService: _ModelService,

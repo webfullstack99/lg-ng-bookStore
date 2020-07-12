@@ -1,19 +1,20 @@
 <form *ngIf="_formProfile" [formGroup]="_formProfile" (ngSubmit)="onSubmitForm()" action="#">
     <ng-template ngFor let-input [ngForOf]="_formData">
         <div [ngSwitch]="input.type" class="form-group row">
+
             <label *ngIf="input.type!='submit'" [for]="input.name"
-                [class]="getClass('label')">{{ input.displayName|titlecase }}</label>
+                [class]="getClass('label')">{{ input.displayName | titlecase }}</label>
 
             <!-- GENERAL TYPE FOR INPUT TYPE: text, password, number, ... -->
             <ng-template [ngSwitchCase]="'general'">
                 <input [type]="input.inputType" [class]="getClass('input')" [id]="input.name"
-                    [formControlName]="input.name">
+                    [formControlName]="input.name" >
             </ng-template>
 
             <!-- SELECT TYPE -->
             <ng-template [ngSwitchCase]="'select'">
                 <select [class]="getClass('select')" [id]="input.name" [formControlName]="input.name">
-                    <option value="" disabled selected>Select status</option>
+                    <option value="" disabled selected>{{getDefaultSelectContent(input.name) | ucfirst }}</option>
                     <option *ngFor="let value of _helperService.getConf_selectData()[input.name]" [value]="value">
                         {{_helperService.getConf_btnTemplate()[input.name][value].content}}
                     </option>
