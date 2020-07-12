@@ -211,6 +211,7 @@ export class ItemModelService extends AdminModelService {
     private updateByKey(params: any, options: any): void {
         params.item = this.syncForSearch(params.item);
         params.item = this.setModified(params.item);
+        params.item = this.standardizeBeforeSaving(params.item);
         this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
             if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
         })
@@ -219,6 +220,7 @@ export class ItemModelService extends AdminModelService {
     private editChangeThumb(params: any, options: any): void {
         params.item = this.syncForSearch(params.item);
         params.item = this.setModified(params.item);
+        params.item = this.standardizeBeforeSaving(params.item);
         this._uploadService.upload(new Upload(params.item.thumb), this._controller, (upload: Upload) => {
             // upload done
             params.item.thumb = upload._url;
@@ -240,6 +242,7 @@ export class ItemModelService extends AdminModelService {
     private editNotChangeThumb(params: any, options: any): void {
         params.item = this.syncForSearch(params.item);
         params.item = this.setModified(params.item);
+        params.item = this.standardizeBeforeSaving(params.item);
         this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
             if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
         })

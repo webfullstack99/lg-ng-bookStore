@@ -43,6 +43,14 @@ export class IndexComponent implements OnInit {
             this._clientFilter = clientFilter;
             this.listData();
         })
+        let obj = {
+            created: {
+                username: 'admin',
+            }
+        }
+        delete obj['created']['username'];
+        console.log(obj);
+        
     }
 
     private listData(): void {

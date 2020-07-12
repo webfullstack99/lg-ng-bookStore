@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { FirebaseDatabase } from 'angularfire2';
 import { HelperService } from 'src/app/shared/services/helper.service';
+import { Schema } from '../defines/schema';
 
 @Injectable({
     providedIn: 'root'
@@ -10,6 +11,7 @@ export class AdminModelService {
     protected _searchFields: string[];
     protected _sortFields: string[];
     protected _controller: string;
+    protected _schema: string[];
 
     constructor(
         protected _db: AngularFireDatabase,
@@ -42,6 +44,13 @@ export class AdminModelService {
         this._controller = controller;
         this._searchFields = this._helperService.getConf_searchFields(this._controller);
         this._sortFields = this._helperService.getConf_sortArr(this._controller);
+        this.setSchema();
+    }
+
+    protected setSchema(schema?: string[]): void {
+        if (!schema) this._schema = new Schema()[this._controller];
+        else this._schema = schema;
+
     }
 
     get db(): AngularFireDatabase {
@@ -74,7 +83,7 @@ export class AdminModelService {
         return item;
     }
 
-    // sync between collections
+    // Lookup 
     /**
      * Syncs items ref
      * @param params - { items: any[], from: string, localFields:string[], localPath: string - ref to localFields, newPath?: string}
@@ -142,5 +151,23 @@ export class AdminModelService {
             }
         }
         return ids;
+    }
+
+    protected standardizeBeforeSaving(item: any) {
+        let itemTemp = { ...item };
+        for (let key in itemTemp) {
+            if (!this._schema.includes(key)) {
+                let flag: boolean = true;
+                if (typeof itemTemp[key] === 'object' && itemTemp != null) {
+                    for (let subKey in itemTemp[key]) {
+                        let tempPath = `${key}.${subKey}`;
+                        if (this._schema.includes(tempPath)) flag = false;
+                        else delete itemTemp[key][subKey];
+                    }
+                }
+                if (flag) delete itemTemp[key];
+            }
+        }
+        return itemTemp;
     }
 }
