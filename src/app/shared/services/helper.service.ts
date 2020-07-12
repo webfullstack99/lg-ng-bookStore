@@ -120,6 +120,7 @@ export class HelperService {
         let result: any;
         let temp: any = item;
         let pathArr: string[] = path.split('.');
+        if (!pathArr) pathArr = [path];
         try {
             for (let value of pathArr) {
                 result = temp[value];

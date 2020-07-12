@@ -8,6 +8,7 @@ import { HelperService } from 'src/app/shared/services/helper.service';
 })
 export class AdminModelService {
     protected _searchFields: string[];
+    protected _sortFields: string[];
     protected _controller: string;
 
     constructor(
@@ -40,6 +41,7 @@ export class AdminModelService {
     set controller(controller: string) {
         this._controller = controller;
         this._searchFields = this._helperService.getConf_searchFields(this._controller);
+        this._sortFields = this._helperService.getConf_sortArr(this._controller);
     }
 
     get db(): AngularFireDatabase {

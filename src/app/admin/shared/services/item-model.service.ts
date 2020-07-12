@@ -66,7 +66,9 @@ export class ItemModelService extends AdminModelService {
     }
 
     private deleteOne(params, options): void {
-        this._db.object(`${this.collection()}/${params.item.$key}`).remove();
+        this._uploadService.deleteOneByUrl(params.item.thumb, () => {
+            this._db.object(`${this.collection()}/${params.item.$key}`).remove();
+        })
     }
 
     // SUPPORTED METHODS ============
@@ -89,6 +91,7 @@ export class ItemModelService extends AdminModelService {
             if (this._helperService.isFn(options.freshDataCallback)) options.freshDataCallback(items);
 
             items = this.runLocalFilter({ ...params, ...{ items } }, {});
+            items = this.runLocalSort({ ...params, ...{ items } }, {});
 
             if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
         })
@@ -97,20 +100,28 @@ export class ItemModelService extends AdminModelService {
     private getSearchRef(params: any, options: any): any {
         let field = params.clientFilter.search.search_field;
         let value = params.clientFilter.search.search_value.toLowerCase();
-        if (field.trim() != '' && value.trim() != '') {
-            if (field != 'all') {
-                return params.ref
-                    .orderByChild(`${field}/forSearch`)
-                    .startAt(value)
-                    .endAt(`${value}\uf8ff`)
+        if (this._searchFields.includes(field)) {
+            if (value.trim() != '') {
+                if (field != 'all') {
+                    return params.ref
+                        .orderByChild(`${field}/forSearch`)
+                        .startAt(value)
+                        .endAt(`${value}\uf8ff`)
+                }
             }
         }
         return params.ref;
     }
 
     private getSortRef(params: any, options: any): any {
-        let sortField = params.clientFilter.sort.sort_field;
-        let sortOrder = params.clientFilter.sort.sort_order;
+        let field = params.clientFilter.sort.sort_field;
+        let order = params.clientFilter.sort.sort_order;
+        let total = 10;
+        //if (this._sortFields.includes(field)) {
+        //if (value == 'desc') return params.ref.limitToLast()   
+        //if (value == 'as')
+
+        //}
         return params.ref;
     }
 
@@ -136,6 +147,30 @@ export class ItemModelService extends AdminModelService {
                     return false;
                 })
             }
+        }
+        return items;
+    }
+
+    private runLocalSort(params: any, options: any): any {
+        let items = params.items;
+        let field = params.clientFilter.sort.sort_field;
+        let order = params.clientFilter.sort.sort_order;
+        if (['desc', 'asc'].includes(order)) {
+            items = items.sort((a, b) => {
+                let aPath: string;
+                let bPath: string;
+                if (['created', 'modified',].includes(field)) {
+                    aPath = `${field}.time`;
+                    bPath = `${field}.time`;
+                } else {
+                    aPath = (this._searchFields.includes(field)) ? `${field}.forSearch` : field;
+                    bPath = (this._searchFields.includes(field)) ? `${field}.forSearch` : field;
+                }
+                let aVal = this._helperService.getVal(a, aPath);
+                let bVal = this._helperService.getVal(b, bPath);
+                let comparison: number = (typeof aVal == 'string') ? aVal.localeCompare(bVal) : (aVal - bVal);
+                return (order == 'asc') ? comparison : -comparison;
+            })
         }
         return items;
     }

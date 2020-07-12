@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UrlService } from 'src/app/shared/services/url.service';
 import { HelperService } from 'src/app/shared/services/helper.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: '[app-thead-admin-main-table]',
@@ -17,13 +17,13 @@ export class TheadAdminMainTableComponent implements OnInit {
 
     constructor(
         private _router: Router,
+        private _activatedRoute: ActivatedRoute,
         public _urlService: UrlService,
         public _helperService: HelperService,
     ) { }
 
     ngOnInit(): void {
         this._sortArr = this._helperService.getConf_sortArr(this._controller);
-
         this._urlService.getClientFilter(this._controller, (clientFilter: any) => {
             this._clientSort = clientFilter.sort;
         })
@@ -46,4 +46,14 @@ export class TheadAdminMainTableComponent implements OnInit {
         return (this._clientSort.sort_field == field && this._clientSort.sort_order == 'asc') ? 'desc' : 'asc';
     }
 
+    //public getSortClass(): object {
+        //let result = {
+            //fas: true,
+            //'fa-sort-up': (this._clientSort.sort_order == 'asc'),
+            //'fa-sort-down': (this._clientSort.sort_order == 'desc'),
+        //}
+        //console.log(this._clientSort);
+        //console.log(result);
+        //return result;
+    //}
 }
