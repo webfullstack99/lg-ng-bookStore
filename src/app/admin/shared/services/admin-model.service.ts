@@ -77,22 +77,26 @@ export class AdminModelService {
     // sync between collections
     /**
      * Syncs items ref
-     * @param params - { items: any[], collection: string, fields:string[], path: string, newPath: string}
+     * @param params - { items: any[], from: string, localFields:string[], localPath: string - ref to localFields, newPath?: string}
      * @param options 
      */
-    protected syncItemsRef(params: any, options: any): void {
+    protected lookup(params: any, options: any): void {
         let items = params.items;
         this.getItemsRef({
             items,
-            collection: params.collection,
-            fields: params.fields,
-            path: params.path,
+            collection: params.from,
+            fields: params.localFields,
+            foreignField: params.foreignField,
+            path: params.localPath,
             doneCallback: (refItems) => {
                 for (let refItem of refItems) {
                     items = items.map((item) => {
-                        for (let field of params.fields)
+                        for (let field of params.localFields)
                             if (item[field])
-                                if (item[field][params.path] == refItem['$key']) item[field][params.newPath] = refItem;
+                                if (item[field][params.localPath] == refItem[params.foreignField]) {
+                                    if (params.newPath) item[field][params.newPath] = refItem;
+                                    else item[field][params.localPath] = refItem;
+                                }
                         return item;
                     })
                 }
@@ -111,9 +115,9 @@ export class AdminModelService {
         for (let id of ids) {
             promises.push(
                 new Promise((resolve) => {
-                    this._db.object(`${data.collection}/${id}`).valueChanges().subscribe((data) => {
-                        let item = data;
-                        item['$key'] = id;
+                    this._db.object(`${data.collection}/${id}`).valueChanges().subscribe((result) => {
+                        let item = result;
+                        item[data.foreignField] = id;
                         resolve(item);
                     });
                 })

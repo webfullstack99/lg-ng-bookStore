@@ -94,11 +94,12 @@ export class ItemModelService extends AdminModelService {
             items = this.runLocalFilter({ ...params, ...{ items } }, {});
             items = this.runLocalSort({ ...params, ...{ items } }, {});
 
-            this.syncItemsRef({
+            this.lookup({
                 items,
-                collection: 'users',
-                fields: ['created', 'modified'],
-                path: 'userId',
+                from: 'users',
+                localFields: ['created', 'modified'],
+                foreignField: '$key',
+                localPath: 'userId',
                 newPath: 'user',
             }, {
                 doneCallback: (items: any[]) => {
