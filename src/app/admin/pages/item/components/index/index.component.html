@@ -10,7 +10,7 @@
     <!-- FILTER -->
     <div *ngIf="_hasData == true" class="row mt-3">
         <div class="col-12">
-            <app-filter [controller]="_controller"></app-filter>
+            <app-filter [filterCount]="_filterCount" [controller]="_controller"></app-filter>
         </div>
     </div>
 
@@ -42,8 +42,8 @@
                 <tbody>
                     <ng-template [ngIf]="_items != null">
                         <tr *ngFor="let item of _items; let i = index" [attr.data-key]="item['$key']">
-                            <th class="align-middle" scope="row"
-                                [innerHTML]="i+1">
+                            <th class="align-middle" scope="row">
+                                <app-admin-table-input [inputData]="{type: 'checkbox', item: item}"></app-admin-table-input>
                             </th>
                             <td class="align-middle">
                                 <div>

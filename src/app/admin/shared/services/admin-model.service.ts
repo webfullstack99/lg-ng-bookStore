@@ -170,4 +170,20 @@ export class AdminModelService {
         }
         return itemTemp;
     }
+
+    public countFilter(items: any[]) {
+        let filterCount: any = {};
+        let filterArr = this._helperService.getConf_filterArr(this._controller);
+        for (let filter of filterArr) {
+            filterCount[filter] = {};
+            for (let item of items)
+                if (filterCount[filter][item[filter]]) filterCount[filter][item[filter]]++;
+                else filterCount[filter][item[filter]] = 1;
+
+            let total: number = 0;
+            for (let key in filterCount[filter]) total += filterCount[filter][key];
+            filterCount[filter].all = total;
+        }
+        return filterCount;
+    }
 }

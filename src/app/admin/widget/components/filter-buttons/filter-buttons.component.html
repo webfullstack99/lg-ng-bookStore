@@ -4,7 +4,9 @@
         <div class="col-9">
             <div class="btn-group btn-group-sm">
                 <ng-template ngFor let-btnType [ngForOf]="this.getFilterOptions(filter)">
-                    <button  (click)="onBtnClick(filter, btnType)" [class]="getBtnData(filter, btnType).classes">{{getBtnData(filter, btnType).content}}</button>
+                    <button (click)="onBtnClick(filter, btnType)"
+                        [class]="getBtnData(filter, btnType).classes">{{getBtnData(filter, btnType).content}}
+                        <span class="badge badge-light">{{ getCountNumber(filter, btnType)}}</span></button>
                 </ng-template>
             </div>
         </div>

@@ -36,7 +36,7 @@ export class HelperService {
             let shortTime = formatDate(data.time, timePatterns.short_time, this._conf.format.time.locale);
             let longTime = formatDate(data.time, timePatterns.long_time, this._conf.format.time.locale);
             let username = this.getVal(data, 'user.username');
-            let userStr = (username.trim() != '') ? `<div> <i class="far fa-user fa-fw"></i> ${this.limit(username, 10)}</div>` : '';
+            let userStr = `<div> <i class="far fa-user fa-fw"></i> ${username}</div>`;
             let timeStr = `<div title="${longTime}"> <i class="far fa-clock fa-fw"></i> ${shortTime}</div>`;
             result = ` <div>${userStr} ${timeStr}</div> `
             return result;
@@ -75,6 +75,10 @@ export class HelperService {
 
     public getConf_searchArr(controller: string): string[] {
         return this._conf.templateConf[controller].search;
+    }
+
+    public getConf_filterArr(controller: string): string[] {
+        return this._conf.templateConf[controller].filter;
     }
 
     public getConf_searchTemplate(): any {
@@ -123,8 +127,9 @@ export class HelperService {
     public getVal(item: any, path: string): any {
         let result: any;
         let temp: any = item;
-        let pathArr: string[] = path.split('.');
-        if (!pathArr) pathArr = [path];
+        let pathArr: string[];
+        if (path.indexOf('.') > -1) pathArr = path.split('.');
+        else pathArr = [path];
         try {
             for (let value of pathArr) {
                 result = temp[value];

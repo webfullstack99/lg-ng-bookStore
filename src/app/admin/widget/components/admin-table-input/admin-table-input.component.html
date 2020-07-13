@@ -1,0 +1,10 @@
+<div [ngSwitch]="_inputData.type">
+
+    <!-- CHECKBOX -->
+    <ng-template [ngSwitchCase]="'checkbox'">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" [id]="_inputData.item.$key">
+            <label class="custom-control-label" [for]="_inputData.item.$key"></label>
+        </div>
+    </ng-template>
+</div>

@@ -15,6 +15,7 @@ import { ShowAndPushDataComponent } from './components/show-and-push-data/show-a
 import { TheadAdminMainTableComponent } from './components/thead-admin-main-table/thead-admin-main-table.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { AdminTableInputComponent } from './components/admin-table-input/admin-table-input.component';
 
 
 
@@ -32,7 +33,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
         ActionButtonsComponent,
         ShowAndPushDataComponent,
         TheadAdminMainTableComponent,
-        ProgressBarComponent, 
+        ProgressBarComponent,
+        AdminTableInputComponent,
     ],
     imports: [
         SharedModule,
@@ -50,6 +52,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
         ShowAndPushDataComponent,
         TheadAdminMainTableComponent,
         ProgressBarComponent,
+        AdminTableInputComponent,
     ]
 })
 export class AdminWidgetModule { }

@@ -7,10 +7,11 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class FilterComponent implements OnInit {
 
-    @Input('controller') _controller: string
+    @Input('controller') _controller: string;
+    @Input('filterCount') _filterCount: any = {};
+
     constructor() { }
 
-    ngOnInit(): void {
-    }
+    ngOnInit(): void { }
 
 }

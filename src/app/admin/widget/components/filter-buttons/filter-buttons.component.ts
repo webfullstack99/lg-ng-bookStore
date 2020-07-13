@@ -13,7 +13,9 @@ export class FilterButtonsComponent implements OnInit {
     public _filters: string[];
     public _selectData: string[];
     public _clientFilter: any = {};
+
     @Input('controller') _controller: string
+    @Input('filterCount') _filterCount: any = {};
 
     constructor(
         public _conf: Conf,
@@ -54,5 +56,9 @@ export class FilterButtonsComponent implements OnInit {
 
     public onBtnClick(filter: string, value: string) {
         this._router.navigateByUrl(this._urlService.getUrl({ queryParams: { [filter]: value } }, { task: 'set-query-params' }));
+    }
+
+    public getCountNumber(filter: string, value: string): number {
+        return this._filterCount[filter][value];
     }
 }

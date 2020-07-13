@@ -21,6 +21,7 @@ export class IndexComponent implements OnInit {
     public _items: IItem[];
     public _clientFilter: any = {};
     public _hasData: boolean;
+    public _filterCount: any = {};
     public _selectedItems: any[];
 
     constructor(
@@ -49,8 +50,7 @@ export class IndexComponent implements OnInit {
             }
         }
         delete obj['created']['username'];
-        console.log(obj);
-        
+
     }
 
     private listData(): void {
@@ -58,9 +58,11 @@ export class IndexComponent implements OnInit {
             clientFilter: this._clientFilter,
         }, {
             task: 'list-for-main-table',
-            freshDataCallback: (data: IItem[]) => {
-                if (data) if (data.length > 0) this._hasData = true;
-
+            freshDataCallback: (items: IItem[]) => {
+                if (items) if (items.length > 0) {
+                    this._hasData = true;
+                    this._filterCount = this._modelService.countFilter(items);
+                }
             },
             doneCallback: (data: IItem[]) => {
                 this._items = this._highlightService.highlightSearchDataForAdminMainTable(this._clientFilter, data, this._controller);

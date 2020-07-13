@@ -103,7 +103,6 @@ export class ItemModelService extends AdminModelService {
                 newPath: 'user',
             }, {
                 doneCallback: (items: any[]) => {
-                    console.log(items);
                     if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
                 },
             });

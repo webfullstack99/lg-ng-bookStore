@@ -23,7 +23,6 @@ export class AdminFormComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        console.log(this._formData);
     }
 
     public onSubmitForm(): void {
