@@ -17,6 +17,7 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AdminTableInputComponent } from './components/admin-table-input/admin-table-input.component';
 import { TheadActionBarComponent } from './components/thead-action-bar/thead-action-bar.component';
+import { TestDbComponent } from './components/test-db/test-db.component';
 
 
 
@@ -37,6 +38,7 @@ import { TheadActionBarComponent } from './components/thead-action-bar/thead-act
         ProgressBarComponent,
         AdminTableInputComponent,
         TheadActionBarComponent,
+        TestDbComponent,
     ],
     imports: [
         SharedModule,
@@ -55,7 +57,8 @@ import { TheadActionBarComponent } from './components/thead-action-bar/thead-act
         TheadAdminMainTableComponent,
         ProgressBarComponent,
         AdminTableInputComponent,
-        TheadActionBarComponent
+        TheadActionBarComponent,
+        TestDbComponent,
     ]
 })
 export class AdminWidgetModule { }

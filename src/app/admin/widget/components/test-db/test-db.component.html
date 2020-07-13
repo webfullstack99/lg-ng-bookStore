@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="col-12 my-3 d-flex">
+        <h4>{{ _testFor | titlecase}}</h4>
+        <div class="form-inline ml-3" *ngIf="_testFor=='creating'">
+            <input type="number" class="form-control" placeholder="Item number" [value]="_itemQty"
+                (keyup)="_itemQty=$event.target.value">
+        </div>
+    </div>
+    <div class="col-12 mb-3">
+        <div [appProgressBar]="_progress" [title]="_progress+'%'"> </div>
+    </div>
+    <div class="col-12 mb-3">
+        <button (click)="runTest()" class="btn btn-primary btn-sm">Run test</button>
+        <button (click)="clearTest()" class="ml-2 btn btn-danger btn-sm">Clear test</button>
+        <button (click)="reset()" class="ml-2 btn btn-success btn-sm">Reset</button>
+    </div>
+</div>

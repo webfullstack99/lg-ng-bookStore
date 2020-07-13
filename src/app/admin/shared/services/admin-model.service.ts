@@ -206,13 +206,14 @@ export class AdminModelService {
             }
         } else if (data.task == 'change') {
             for (let item of items) {
-                promises.push(
-                    new Promise((resolve) => {
-                        this.saveItem({ updateData: { [data.field]: data.value }, key: item.$key }, {
-                            task: 'update-by-key', doneCallback: () => { resolve(true); }
-                        });
-                    })
-                )
+                //if (item[data.field] != data.value)
+                    promises.push(
+                        new Promise((resolve) => {
+                            this.saveItem({ updateData: { [data.field]: data.value }, key: item.$key }, {
+                                task: 'update-by-key', doneCallback: () => { resolve(true); }
+                            });
+                        })
+                    )
             }
         }
         Promise.all(promises)

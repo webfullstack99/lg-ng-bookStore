@@ -37,9 +37,6 @@ export class IndexComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        //test
-        //this._selectedItems.push('1');
-
         // assign controller
         this._controller = this._pageService._controller;
         this._modelService.controller = this._controller;
@@ -104,6 +101,7 @@ export class IndexComponent implements OnInit {
         delete tempItem.$key;
         tempItem.status = this._helperService.getNewStatusValue(item.status);
         this._modelService.saveItem({ updateData: { status: tempItem.status, }, key }, { task: 'update-by-key', });
+        //this._selectedItems = [];
     }
 
 
