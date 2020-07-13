@@ -1,9 +1,18 @@
 <div [ngSwitch]="_inputData.type">
 
     <!-- CHECKBOX -->
-    <ng-template [ngSwitchCase]="'checkbox'">
+    <ng-template [ngSwitchCase]="'thead-checkbox'">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" [id]="_inputData.item.$key">
+            <input (change)="onTheadCheckBoxCheck($event)" type="checkbox" class="custom-control-input"
+                [id]="_inputData.type">
+            <label class="custom-control-label" [for]="_inputData.type"></label>
+        </div>
+    </ng-template>
+
+    <ng-template [ngSwitchCase]="'table-row-checkbox'">
+        <div class="custom-control custom-checkbox ">
+            <input (change)="onSelect($event, _inputData.item)" type="checkbox"
+                class="custom-control-input table-row-checkbox" [id]="_inputData.item.$key">
             <label class="custom-control-label" [for]="_inputData.item.$key"></label>
         </div>
     </ng-template>

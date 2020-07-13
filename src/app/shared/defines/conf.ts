@@ -1,7 +1,8 @@
 export class Conf {
 
     params = {
-        timeout: 400,
+        defaultTimeout: 400,
+        delayForAvoidAsyncTime: 100,
     }
 
     format = {

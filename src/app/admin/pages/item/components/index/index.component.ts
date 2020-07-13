@@ -20,9 +20,10 @@ export class IndexComponent implements OnInit {
     public _controller: string;
     public _items: IItem[];
     public _clientFilter: any = {};
-    public _hasData: boolean;
     public _filterCount: any = {};
-    public _selectedItems: any[];
+    public _selectedItems: any[] = [];
+    public _hasData: boolean;
+    public _changeActionField: string;
 
     constructor(
         public _helperService: HelperService,
@@ -36,6 +37,9 @@ export class IndexComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        //test
+        //this._selectedItems.push('1');
+
         // assign controller
         this._controller = this._pageService._controller;
         this._modelService.controller = this._controller;
@@ -77,8 +81,13 @@ export class IndexComponent implements OnInit {
 
     // Delete item
     public onDeleteClick(item: IItem): void {
-        $(`tr[data-key="${item.$key}"]`).addClass('bg-delete-warning');
-        this._modelService.saveItem({ item }, { task: 'delete-one' });
+        let slt = `tr[data-key="${item.$key}"]`;
+        $(slt).addClass('bg-delete-warning');
+        setTimeout(() => {
+            let r = confirm(`Do you want to delete ${item.name.value}?`)
+            if (r) this._modelService.saveItem({ item }, { task: 'delete-by-key' });
+            else $(slt).removeClass('bg-delete-warning');
+        }, this._conf.params.delayForAvoidAsyncTime);
     }
 
     // View item
@@ -100,6 +109,44 @@ export class IndexComponent implements OnInit {
         let key = item.$key;
         delete tempItem.$key;
         tempItem.status = this._helperService.getNewStatusValue(item.status);
-        this._modelService.saveItem({ item: tempItem, key }, { task: 'update-by-key', });
+        this._modelService.saveItem({ updateData: { status: tempItem.status, }, key }, { task: 'update-by-key', });
+    }
+
+
+    /**
+     * Determines whether select on
+     * @param data - {$key, isChecked}
+     */
+    public onSelect(data: any): void {
+        if (data.isChecked) this._selectedItems.push(data.item);
+        else this._selectedItems.splice(this._selectedItems.indexOf(data.item), 1);
+    }
+
+    public onCheckAll(isChecked: boolean): void {
+        if (isChecked) {
+            this._selectedItems = [...this._items];
+            this._helperService.selectAllItems();
+        } else {
+            this._selectedItems = [];
+            this._helperService.unSelectAllItems();
+        }
+    }
+
+    public getTotalItemSelected(): number {
+        return this._selectedItems.length;
+    }
+
+
+    // CHANGE MULTI
+    /**
+     * Determines whether multi task on
+     * @param data - {task, value}
+     */
+    public onSubmittedAction(data: any): void {
+        this._modelService.changeMulti(data, this._selectedItems, () => {
+            this._selectedItems = [];
+            //if (data.task == 'delete') this._selectedItems = [];
+            //else this.onCheckAll(true);
+        });
     }
 }

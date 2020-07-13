@@ -95,8 +95,9 @@ export class UrlService {
 
     public getQueryParamObj(): object {
         let result: object = {};
-        for (let entry of this._urlSearchParams['entries']())
-            result[entry[0]] = entry[1];
+        if (this._urlSearchParams)
+            for (let entry of this._urlSearchParams['entries']())
+                result[entry[0]] = entry[1];
         return result;
     }
 }

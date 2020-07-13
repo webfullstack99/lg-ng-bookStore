@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { UrlService } from 'src/app/shared/services/url.service';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -14,6 +14,7 @@ export class TheadAdminMainTableComponent implements OnInit, AfterViewInit {
 
     @Input('thead-data') _data: any[];
     @Input('controller') _controller: string;
+    @Output('onTheadCheckBoxCheck') _onTheadCheckBoxCheck = new EventEmitter<any>();
 
     constructor(
         private _router: Router,
@@ -48,8 +49,12 @@ export class TheadAdminMainTableComponent implements OnInit, AfterViewInit {
         return (this._clientSort.sort_field == field && this._clientSort.sort_order == 'asc') ? 'desc' : 'asc';
     }
 
-public getSortIcon(): any {
+    public getSortIcon(): any {
         let order = (this._clientSort.sort_order == 'asc') ? 'up' : 'down';
         return `<i class="fas fa-sort-${order}"></i>`;
+    }
+
+    public onTheadCheckBoxCheck($event): void {
+        this._onTheadCheckBoxCheck.emit($event);
     }
 }

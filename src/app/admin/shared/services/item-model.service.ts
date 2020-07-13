@@ -42,6 +42,7 @@ export class ItemModelService extends AdminModelService {
 
     }
 
+    // Override
     public saveItem(params: any, options: any) {
         switch (options.task) {
             case 'update-by-key':
@@ -60,15 +61,18 @@ export class ItemModelService extends AdminModelService {
                 this.insertOne(params, options);
                 break;
 
-            case 'delete-one':
-                this.deleteOne(params, options);
+            case 'delete-by-key':
+                this.deleteByKey(params, options);
                 break;
         }
     }
 
-    private deleteOne(params, options): void {
+    private deleteByKey(params, options): void {
         this._uploadService.deleteOneByUrl(params.item.thumb, () => {
-            this._db.object(`${this.collection()}/${params.item.$key}`).remove();
+            this._db.object(`${this.collection()}/${params.item.$key}`).remove()
+                .then(() => {
+                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                });
         })
     }
 
@@ -208,10 +212,8 @@ export class ItemModelService extends AdminModelService {
     }
 
     private updateByKey(params: any, options: any): void {
-        params.item = this.syncForSearch(params.item);
-        params.item = this.setModified(params.item);
-        params.item = this.standardizeBeforeSaving(params.item);
-        this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
+        params.updateData = this.setModified(params.updateData);
+        this._db.object(`${this.collection()}/${params.key}`).update(params.updateData).then(() => {
             if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
         })
     }

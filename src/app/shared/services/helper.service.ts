@@ -5,6 +5,7 @@ import date from 'date-and-time';
 import { formatDate } from '@angular/common';
 
 declare let $: any;
+
 @Injectable({
     providedIn: 'root'
 })
@@ -141,6 +142,14 @@ export class HelperService {
 
     public toHtml(string: string): any {
         return this._sanitized.bypassSecurityTrustHtml(string);
+    }
+
+    public selectAllItems(): void {
+        $('.table-row-checkbox').prop('checked', true);
+    }
+
+    public unSelectAllItems(): void {
+        $('.table-row-checkbox').prop('checked', false);
     }
 }
 

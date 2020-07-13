@@ -25,6 +25,11 @@
                     <span [innerHTML]="head.title"></span>
                 </ng-template>
 
+                <ng-template [ngIf]="head.isCheckAll">
+                    <app-admin-table-input (onSelect)="onTheadCheckBoxCheck($event)" [inputData]="{type: 'thead-checkbox'}">
+                    </app-admin-table-input>
+                </ng-template>
+
                 <ng-template [ngIf]="!head.html">
                     {{ head.title | titlecase }}
                 </ng-template>

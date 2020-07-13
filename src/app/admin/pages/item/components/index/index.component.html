@@ -18,11 +18,15 @@
     <div class="row mt-3">
         <div class="col-12">
             <table class="admin-main-table table table-striped table-responsive-sm">
-                <thead app-thead-admin-main-table [controller]="_controller" [thead-data]="
+                <thead *ngIf="this.getTotalItemSelected() > 0" app-thead-action-bar [controller]="_controller"
+                    [totalItemsSelected]="getTotalItemSelected()" (submittedAction)="onSubmittedAction($event)"
+                    (onCancel)="onCheckAll(false)"> </thead>
+
+                <thead *ngIf="this.getTotalItemSelected() == 0" (onTheadCheckBoxCheck)="onCheckAll($event)"
+                    app-thead-admin-main-table [controller]="_controller" [thead-data]="
                         [
                             {
-                                title: '#',
-                                html: true
+                                isCheckAll: true
                             }, {
                                 title: 'name',
                                 field: 'name'
@@ -38,12 +42,15 @@
                             }, {
                                 title: 'action'
                             }
-                        ] "> </thead>
+                        ] ">
+                </thead>
                 <tbody>
                     <ng-template [ngIf]="_items != null">
                         <tr *ngFor="let item of _items; let i = index" [attr.data-key]="item['$key']">
                             <th class="align-middle" scope="row">
-                                <app-admin-table-input [inputData]="{type: 'checkbox', item: item}"></app-admin-table-input>
+                                <app-admin-table-input (onSelect)="onSelect($event)"
+                                    [inputData]="{type: 'table-row-checkbox', item: item}">
+                                </app-admin-table-input>
                             </th>
                             <td class="align-middle">
                                 <div>

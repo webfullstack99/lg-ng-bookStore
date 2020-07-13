@@ -186,4 +186,40 @@ export class AdminModelService {
         }
         return filterCount;
     }
+
+    /**
+     * Determines whether multi task on
+     * @param data - {task, value}
+     */
+    public changeMulti(data: any, items: any[], doneCallback?: () => void): void {
+        let promises: Promise<boolean>[] = [];
+        if (data.task == 'delete') {
+            for (let item of items) {
+                promises.push(
+                    new Promise((resolve) => {
+                        this.saveItem({ item }, {
+                            task: 'delete-by-key', doneCallback: () => { resolve(true); }
+                        })
+                    })
+
+                )
+            }
+        } else if (data.task == 'change') {
+            for (let item of items) {
+                promises.push(
+                    new Promise((resolve) => {
+                        this.saveItem({ updateData: { [data.field]: data.value }, key: item.$key }, {
+                            task: 'update-by-key', doneCallback: () => { resolve(true); }
+                        });
+                    })
+                )
+            }
+        }
+        Promise.all(promises)
+            .then((result) => {
+                if (this._helperService.isFn(doneCallback)) doneCallback();
+            })
+    }
+
+    public saveItem(params: any, options: any) { }
 }

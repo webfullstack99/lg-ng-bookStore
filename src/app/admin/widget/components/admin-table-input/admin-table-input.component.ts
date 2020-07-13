@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { HelperService } from 'src/app/shared/services/helper.service';
 
 @Component({
     selector: 'app-admin-table-input',
@@ -7,11 +8,22 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class AdminTableInputComponent implements OnInit {
 
+    @Input('controller') _controller: string;
     @Input('inputData') _inputData: any = {}
+    @Output('onSelect') _onSelect = new EventEmitter<any>();
 
-    constructor() { }
+    constructor(
+        public _helperService: HelperService,
+    ) { }
 
     ngOnInit() {
     }
 
+    public onSelect($event, item: any): void {
+        this._onSelect.emit({ item, isChecked: $event.target.checked });
+    }
+
+    public onTheadCheckBoxCheck($event): void {
+        this._onSelect.emit($event.target.checked);
+    }
 }
