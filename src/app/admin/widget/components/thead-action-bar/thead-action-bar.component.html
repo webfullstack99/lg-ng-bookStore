@@ -21,7 +21,7 @@
             <div *ngIf="_selectedAction" class="col-3 d-flex align-items-center">
                 <ng-template [ngIf]="['status'].includes(_selectedAction)">
                     <button *ngFor="let option of getActionOptions()" (click)="onChooseOption(option)"
-                        [class]="'ml-2 '+getOptionData(option).classes">{{ getOptionData(option).content}}</button>
+                        [class]="'ml-2 '+getBtnClass(option)">{{ getOptionData(option).content}}</button>
                 </ng-template>
             </div>
         </div>

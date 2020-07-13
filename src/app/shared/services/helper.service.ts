@@ -30,7 +30,7 @@ export class HelperService {
      * @param data {userId, time, user}
      * @returns history 
      */
-    public showHistory(data: any): string {
+    public showHistory(data: any): any {
         let result: string = '';
         if (data) {
             let timePatterns = this._conf.format.time;
@@ -40,7 +40,7 @@ export class HelperService {
             let userStr = `<div> <i class="far fa-user fa-fw"></i> ${username}</div>`;
             let timeStr = `<div title="${longTime}"> <i class="far fa-clock fa-fw"></i> ${shortTime}</div>`;
             result = ` <div>${userStr} ${timeStr}</div> `
-            return result;
+            return this._sanitized.bypassSecurityTrustHtml(result);
         }
     }
 
@@ -150,6 +150,11 @@ export class HelperService {
 
     public unSelectAllItems(): void {
         $('.table-row-checkbox').prop('checked', false);
+    }
+
+    public selectItems(items: any[]): void {
+        for (let item of items)
+            $(`input#${item.$key}`).prop('checked', true);
     }
 }
 

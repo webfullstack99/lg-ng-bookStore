@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Upload } from '../defines/upload';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/storage';
 import { environment } from 'src/environments/environment';
 
 @Injectable({

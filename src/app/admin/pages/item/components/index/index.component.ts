@@ -46,15 +46,9 @@ export class IndexComponent implements OnInit {
 
         this._urlService.getClientFilter(this._controller, (clientFilter: any) => {
             this._clientFilter = clientFilter;
+            this._selectedItems = [];
             this.listData();
         })
-        let obj = {
-            created: {
-                username: 'admin',
-            }
-        }
-        delete obj['created']['username'];
-
     }
 
     private listData(): void {
@@ -144,9 +138,11 @@ export class IndexComponent implements OnInit {
      */
     public onSubmittedAction(data: any): void {
         this._modelService.changeMulti(data, this._selectedItems, () => {
-            this._selectedItems = [];
-            //if (data.task == 'delete') this._selectedItems = [];
-            //else this.onCheckAll(true);
+            if (data.task == 'delete') this._selectedItems = [];
+            else {
+                if (this._clientFilter.filter[data.field] != 'all') this._selectedItems = [];
+                else this._helperService.selectItems(this._selectedItems);
+            }
         });
     }
 }

@@ -45,4 +45,8 @@ export class TheadActionBarComponent implements OnInit {
     public onChooseOption(value): void {
         this.onSubmittedAction({ task: 'change', field: this._selectedAction, value });
     }
+
+    public getBtnClass(value: string): string {
+        return this.getOptionData(value).classes.replace('btn-sm', '');
+    }
 }

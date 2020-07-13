@@ -202,8 +202,12 @@ export class ItemModelService extends AdminModelService {
         let items = params.items;
         items = items.filter((item) => {
             for (let key in params.clientFilter.filter) {
-                if (params.clientFilter.filter[key] != 'all')
-                    if (item[key] != params.clientFilter.filter[key]) return false;
+                if (params.clientFilter.filter[key] != 'all') {
+                    if (item[key] != params.clientFilter.filter[key]) {
+                        return false;
+                    }else{
+                    }
+                }
             }
             return true;
         })
