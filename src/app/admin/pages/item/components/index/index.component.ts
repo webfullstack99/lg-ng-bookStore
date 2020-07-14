@@ -21,6 +21,7 @@ export class IndexComponent implements OnInit {
     public _items: IItem[];
     public _clientFilter: any = {};
     public _filterCount: any = {};
+    public _pagination: any = {};
     public _selectedItems: any[] = [];
     public _hasData: boolean;
     public _changeActionField: string;
@@ -46,6 +47,16 @@ export class IndexComponent implements OnInit {
             this._selectedItems = [];
             this.listData();
         })
+
+        this.setPagination();
+    }
+
+    private setPagination(): void {
+        this._pagination = {
+            itemsPerPage: 5,
+            pageRange: 4,
+            totalItems: 16,
+        }
     }
 
     private listData(): void {
@@ -61,6 +72,7 @@ export class IndexComponent implements OnInit {
             },
             doneCallback: (data: IItem[]) => {
                 this._items = this._highlightService.highlightSearchDataForAdminMainTable(this._clientFilter, data, this._controller);
+                //this._pagination.totalItems = this._items.length;
             }
         });
     }
@@ -147,4 +159,5 @@ export class IndexComponent implements OnInit {
             }
         });
     }
+
 }

@@ -86,7 +86,7 @@
     <ng-template [ngIf]="_items != null">
         <div *ngIf="_items.length > 0" class="row mt-3">
             <div class="col-12">
-                <app-pagination></app-pagination>
+                <app-pagination [controller]="_controller" [paginationData]="_pagination"></app-pagination>
             </div>
         </div>
     </ng-template>

@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { UcfirstPipe } from './pipes/ucfirst.pipe';
+import { PaginationService } from './services/pagination.service';
 
 
 

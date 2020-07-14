@@ -1,4 +1,4 @@
-<div class="pagination-widget">
+<div *ngIf="isShow()" class="pagination-widget">
     <div class="d-flex justify-content-between">
         <h4>Pagination</h4>
         <button data-toggle="collapse" data-target="#pagination" class="btn btn-light chevron-btn">
@@ -8,24 +8,24 @@
     <div class="collapse show" id="pagination">
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                <li class="page-item" [class.disabled]="isDisabled('start')">
+                    <button (click)="goTo(1)" class="page-link">Start</button>
                 </li>
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">
+                <li class="page-item" [class.disabled]="isDisabled('prev')">
+                    <button class="page-link" (click)="goTo(_paginationService._currentPage - 1)">
                         <i class="far fa-chevron-double-left"></i>
-                    </a>
+                    </button>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" tabindex="-1">
+                <li *ngFor="let page of _paginationService._pageArr" class="page-item"
+                    [class.active]="page == _paginationService._currentPage"><button (click)="goTo(page)"
+                        class="page-link">{{ page }}</button></li>
+                <li class="page-item" [class.disabled]="isDisabled('next')">
+                    <button class="page-link" (click)="goTo(_paginationService._currentPage + 1)">
                         <i class="far fa-chevron-double-right"></i>
-                    </a>
+                    </button>
                 </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
+                <li class="page-item" [class.disabled]="isDisabled('end')">
+                    <button (click)="goTo(_paginationService._totalPage)" class="page-link">End</button>
                 </li>
             </ul>
         </nav>

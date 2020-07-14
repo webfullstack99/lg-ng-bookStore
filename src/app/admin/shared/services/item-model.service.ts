@@ -97,7 +97,7 @@ export class ItemModelService extends AdminModelService {
 
             items = this.runLocalFilter({ ...params, ...{ items } }, {});
             items = this.runLocalSort({ ...params, ...{ items } }, {});
-
+            items = this.runLocalPagination({ ...params, ...{ items } }, {});
             if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
         })
     }
@@ -153,6 +153,13 @@ export class ItemModelService extends AdminModelService {
                 })
             }
         }
+        return items;
+    }
+
+    private runLocalPagination(params: any, options: any): any {
+        let items = params.items;
+        //console.log('pagination');
+        //console.log(params);
         return items;
     }
 

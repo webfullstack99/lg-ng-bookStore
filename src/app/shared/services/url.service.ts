@@ -6,7 +6,6 @@ import { Router, ActivatedRoute } from '@angular/router';
     providedIn: 'root'
 })
 export class UrlService {
-    public _queryParams: any;
     public _urlSearchParams: URLSearchParams;
 
     constructor(
@@ -15,16 +14,23 @@ export class UrlService {
         private _activatedRoute: ActivatedRoute,
     ) { }
 
+    public subscribeQueryParams(callback: (data: any) => void): void {
+        this._activatedRoute.queryParams.subscribe((data: any) => {
+            this._urlSearchParams = new URLSearchParams(window.location.search);
+            if (this._helperService.isFn(callback)) callback(data);
+        })
+    }
+
+
+
     /**
      * Gets client filter: search and filter
      * @param controller 
      * @returns client filter 
      */
     public getClientFilter(controller: string, doneCallback: (clientFilter: any) => void): any {
-        // btn filter
-        this._activatedRoute.queryParams.subscribe((data) => {
-            this._urlSearchParams = new URLSearchParams(window.location.search);
-            this._queryParams = data;
+        this.subscribeQueryParams((data) => {
+            // btn filter
             let filters: string[] = this._helperService.getTemplateConf(controller).filter;
             let searchArr: string[] = this._helperService.getTemplateConf(controller).search;
             let sortArr: string[] = this._helperService.getTemplateConf(controller).sort;
@@ -74,6 +80,13 @@ export class UrlService {
         }
     }
 
+
+    /**
+     * Gets url
+     * @param params - {queryParams}
+     * @param options - {task}
+     * @returns url 
+     */
     public getUrl(params: any, options: any): string {
         let url: string = window.location.pathname;
         this._urlSearchParams = new URLSearchParams(window.location.search);
