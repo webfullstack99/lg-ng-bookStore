@@ -15,11 +15,10 @@ declare let $: any;
 @Component({
     selector: 'app-index',
     templateUrl: './index.component.html',
-    styleUrls: ['./index.component.css']
 })
 export class IndexComponent extends AdminController implements OnInit {
     public _controller: string;
-    public _items: IItem[];
+    public _items: IItem[] = [];
     public _selectedItems: IItem[] = [];
     public _clientFilter: any = {};
     public _filterCount: any = {};

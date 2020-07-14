@@ -1,9 +1,4 @@
 <div class="admin-manage-page">
-    <!-- 
-    <app-test-db [testFor]="'creating'" [itemQty]="500"></app-test-db>
-    <app-test-db [testFor]="'retrieving'"></app-test-db>
-     -->
-
     <!-- PAGE TITLE -->
     <div class="row">
         <div class="col-12 ">
@@ -49,45 +44,39 @@
                         ] ">
                 </thead>
                 <tbody>
-                    <ng-template [ngIf]="_items != null">
-                        <tr *ngFor="let item of _items; let i = index" [attr.data-key]="item['$key']">
-                            <th class="align-middle" scope="row">
-                                <app-admin-table-input (onSelect)="onSelect($event)"
-                                    [inputData]="{type: 'table-row-checkbox', item: item}">
-                                </app-admin-table-input>
-                            </th>
-                            <td class="align-middle">
-                                <div>
-                                    <div> <strong> Name: </strong> <span [innerHTML]="item.name.value"></span> </div>
-                                </div>
-                                <p> <img [src]="item.thumb" class="admin-main-table-img rounded"
-                                        [alt]="item.name.value"> </p>
-                            </td>
-                            <td class="align-middle" (click)="onStatusClick(item)"
-                                [innerHTML]="_helperService.showStatusButton(item.status)"> </td>
+                    <tr *ngFor="let item of _items; let i = index" [attr.data-key]="item['$key']">
+                        <th class="align-middle" scope="row">
+                            <app-admin-table-input (onSelect)="onSelect($event)"
+                                [inputData]="{type: 'table-row-checkbox', item: item}">
+                            </app-admin-table-input>
+                        </th>
+                        <td class="align-middle">
+                            <div>
+                                <div> <strong> Name: </strong> <span [innerHTML]="item.name.value"></span> </div>
+                            </div>
+                            <p> <img [src]="item.thumb" class="admin-main-table-img rounded" [alt]="item.name.value">
+                            </p>
+                        </td>
+                        <td class="align-middle" (click)="onStatusClick(item)"
+                            [innerHTML]="_helperService.showStatusButton(item.status)"> </td>
 
-                            <td class="align-middle" [innerHTML]="_helperService.showHistory(item.created)"></td>
-                            <td class="align-middle" [innerHTML]="_helperService.showHistory(item.modified)"></td>
+                        <td class="align-middle" [innerHTML]="_helperService.showHistory(item.created)"></td>
+                        <td class="align-middle" [innerHTML]="_helperService.showHistory(item.modified)"></td>
 
-                            <td class="align-middle" [appActionButtons]="_controller" [item]="item"
-                                (btnClick)="onActionClick($event)"> </td>
-                        </tr>
-                    </ng-template>
+                        <td class="align-middle" [appActionButtons]="_controller" [item]="item"
+                            (btnClick)="onActionClick($event)"> </td>
+                    </tr>
 
-                    <ng-template [ngIf]="_items != null">
-                        <tr *ngIf="_items.length == 0" app-table-emtpy-message></tr>
-                    </ng-template>
+                    <tr *ngIf="_items.length == 0" app-table-empty-message></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
     <!-- PAGINATION -->
-    <ng-template [ngIf]="_items != null">
-        <div *ngIf="_items.length > 0" class="row mt-3">
-            <div class="col-12">
-                <app-pagination [showLastPage]="true" [controller]="_controller"
-                    [paginationBehavior]="_pagination.behaviorSubject"></app-pagination>
-            </div>
+    <div *ngIf="_items.length > 0" class="row mt-3">
+        <div class="col-12">
+            <app-pagination [showLastPage]="true" [controller]="_controller"
+                [paginationBehavior]="_pagination.behaviorSubject"></app-pagination>
         </div>
-    </ng-template>
+    </div>

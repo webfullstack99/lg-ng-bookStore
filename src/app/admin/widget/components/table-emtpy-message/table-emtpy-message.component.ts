@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-    selector: '[app-table-emtpy-message]',
+    selector: '[app-table-empty-message]',
     templateUrl: './table-emtpy-message.component.html',
     styleUrls: ['./table-emtpy-message.component.css']
 })
