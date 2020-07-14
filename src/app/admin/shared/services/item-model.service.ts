@@ -98,19 +98,7 @@ export class ItemModelService extends AdminModelService {
             items = this.runLocalFilter({ ...params, ...{ items } }, {});
             items = this.runLocalSort({ ...params, ...{ items } }, {});
 
-            this.lookup({
-                items,
-                from: 'users',
-                localFields: ['created', 'modified'],
-                foreignField: '$key',
-                localPath: 'userId',
-                newPath: 'user',
-            }, {
-                doneCallback: (items: any[]) => {
-                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
-                },
-            });
-
+            if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
         })
     }
 
@@ -205,7 +193,7 @@ export class ItemModelService extends AdminModelService {
                 if (params.clientFilter.filter[key] != 'all') {
                     if (item[key] != params.clientFilter.filter[key]) {
                         return false;
-                    }else{
+                    } else {
                     }
                 }
             }

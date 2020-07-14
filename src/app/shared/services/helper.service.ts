@@ -27,7 +27,7 @@ export class HelperService {
 
     /**
      * Shows history
-     * @param data {userId, time, user}
+     * @param data {time, user}
      * @returns history 
      */
     public showHistory(data: any): any {
@@ -37,7 +37,7 @@ export class HelperService {
             let shortTime = formatDate(data.time, timePatterns.short_time, this._conf.format.time.locale);
             let longTime = formatDate(data.time, timePatterns.long_time, this._conf.format.time.locale);
             let username = this.getVal(data, 'user.username');
-            let userStr = `<div> <i class="far fa-user fa-fw"></i> ${username}</div>`;
+            let userStr = (username) ? `<div> <i class="far fa-user fa-fw"></i> ${username}</div>` : '';
             let timeStr = `<div title="${longTime}"> <i class="far fa-clock fa-fw"></i> ${shortTime}</div>`;
             result = ` <div>${userStr} ${timeStr}</div> `
             return this._sanitized.bypassSecurityTrustHtml(result);
@@ -155,6 +155,20 @@ export class HelperService {
     public selectItems(items: any[]): void {
         for (let item of items)
             $(`input#${item.$key}`).prop('checked', true);
+    }
+
+
+    /**
+     * Syncs select items with changes
+     * @param items 
+     * @param data - {task, value}
+     * @returns select items with changes 
+     */
+    public syncSelectItemsWithChanges(items: any[], data: any): any[] {
+        return items.map((item) => {
+            item[data.field] = data.value;
+            return item;
+        })
     }
 }
 

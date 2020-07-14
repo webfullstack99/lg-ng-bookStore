@@ -23,19 +23,25 @@ export class AdminModelService {
     }
 
     protected setCreated(item: any) {
-        let userId: string = '-MBruIHFZL-VKjuO-qMv';
         item.created = {
-            userId,
             time: Date.now(),
+            user: {
+                time: 1594370898380,
+                status: 'active',
+                username: 'admin',
+            }
         }
         return item;
     }
 
     protected setModified(item: any) {
-        let userId: string = '-MBruIHFZL-VKjuO-qMv';
         item.modified = {
-            userId,
             time: Date.now(),
+            user: {
+                time: 1594370898380,
+                status: 'active',
+                username: 'admin',
+            }
         }
         return item;
     }
@@ -206,7 +212,7 @@ export class AdminModelService {
             }
         } else if (data.task == 'change') {
             for (let item of items) {
-                //if (item[data.field] != data.value)
+                if (item[data.field] != data.value)
                     promises.push(
                         new Promise((resolve) => {
                             this.saveItem({ updateData: { [data.field]: data.value }, key: item.$key }, {

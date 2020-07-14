@@ -101,7 +101,7 @@ export class IndexComponent implements OnInit {
         delete tempItem.$key;
         tempItem.status = this._helperService.getNewStatusValue(item.status);
         this._modelService.saveItem({ updateData: { status: tempItem.status, }, key }, { task: 'update-by-key', });
-        //this._selectedItems = [];
+        this._selectedItems = [];
     }
 
 
@@ -116,7 +116,7 @@ export class IndexComponent implements OnInit {
 
     public onCheckAll(isChecked: boolean): void {
         if (isChecked) {
-            this._selectedItems = [...this._items];
+            this._selectedItems = this._items;
             this._helperService.selectAllItems();
         } else {
             this._selectedItems = [];
@@ -130,8 +130,9 @@ export class IndexComponent implements OnInit {
 
 
     // CHANGE MULTI
+
     /**
-     * Determines whether multi task on
+     * Determines whether submitted action on
      * @param data - {task, value}
      */
     public onSubmittedAction(data: any): void {
@@ -139,7 +140,10 @@ export class IndexComponent implements OnInit {
             if (data.task == 'delete') this._selectedItems = [];
             else {
                 if (this._clientFilter.filter[data.field] != 'all') this._selectedItems = [];
-                else this._helperService.selectItems(this._selectedItems);
+                else {
+                    this._selectedItems = this._helperService.syncSelectItemsWithChanges(this._selectedItems, data);
+                    this._helperService.selectItems(this._selectedItems);
+                }
             }
         });
     }
