@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { PaginationService } from 'src/app/shared/services/pagination.service';
 import { Router } from '@angular/router';
 import { UrlService } from 'src/app/shared/services/url.service';
 import { Conf } from 'src/app/shared/defines/conf';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-pagination',
@@ -13,8 +14,9 @@ import { Conf } from 'src/app/shared/defines/conf';
 })
 export class PaginationComponent implements OnInit {
 
-    @Input('paginationData') _paginationData: any;
+    @Input('paginationBehavior') _paginationBehavior: BehaviorSubject<any>;
     @Input('controller') _controller: string;
+    @Input('showLastPage') _showLastPage: boolean = false;
 
     constructor(
         public _paginationService: PaginationService,
@@ -24,7 +26,9 @@ export class PaginationComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this._paginationService.init(this._paginationData);
+        this._paginationBehavior.subscribe((pagination) => {
+            this._paginationService.init(pagination);
+        })
     }
 
     public goTo(page: number): void {
@@ -45,5 +49,17 @@ export class PaginationComponent implements OnInit {
     public isShow(): boolean {
         if (this._paginationService._totalItems <= this._paginationService._itemsPerPage) return false;
         return true;
+    }
+
+    public isShowLastPage(): boolean {
+        return (this._showLastPage && this._paginationService._currentPage < (this._paginationService._totalPage - (Math.ceil(this._paginationService._pageRange / 2)) + 1));
+
+    }
+
+    public getLastPageContent(): string {
+        let content: string = `${this._paginationService._totalPage}`;
+        if (this._paginationService._totalPage >= this._paginationService._originalData._pageRange)
+            content = (this._paginationService._currentPage >= this._paginationService._totalItems - 2) ? content : `...${content}`;
+        return content;
     }
 }

@@ -6,6 +6,4 @@ export class PageService {
     public _controller: string = 'item';
 
     constructor() { }
-
-
 }

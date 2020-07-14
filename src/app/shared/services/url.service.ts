@@ -34,7 +34,7 @@ export class UrlService {
             let filters: string[] = this._helperService.getTemplateConf(controller).filter;
             let searchArr: string[] = this._helperService.getTemplateConf(controller).search;
             let sortArr: string[] = this._helperService.getTemplateConf(controller).sort;
-            let clientFilter: any = { filter: {}, sort: {}, search: {} };
+            let clientFilter: any = { filter: {}, sort: {}, search: {}, other: {} };
 
 
             // filter property
@@ -60,6 +60,9 @@ export class UrlService {
                     break;
                 }
             }
+
+            // other
+            clientFilter.other.page = data.page;
 
             // done callback
             if (this._helperService.isFn(doneCallback)) doneCallback(clientFilter);

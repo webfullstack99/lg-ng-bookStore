@@ -11,6 +11,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { UcfirstPipe } from './pipes/ucfirst.pipe';
 import { PaginationService } from './services/pagination.service';
+import { UploadService } from './services/upload.service';
+import { HelperService } from './services/helper.service';
+import { StrFormatService } from './services/str-format.service';
 
 
 
@@ -32,6 +35,9 @@ import { PaginationService } from './services/pagination.service';
         Conf,
         UrlService,
         HighlightService,
+        UploadService,
+        HelperService,
+        StrFormatService,
     ]
 
 })

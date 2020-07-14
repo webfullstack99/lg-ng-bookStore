@@ -3,11 +3,14 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { FirebaseDatabase } from 'angularfire2';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { Schema } from '../defines/schema';
+import { UploadService } from 'src/app/shared/services/upload.service';
+import { Upload } from 'src/app/shared/defines/upload';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AdminModelService {
+
     protected _searchFields: string[];
     protected _sortFields: string[];
     protected _controller: string;
@@ -16,7 +19,170 @@ export class AdminModelService {
     constructor(
         protected _db: AngularFireDatabase,
         protected _helperService: HelperService,
+        protected _uploadService: UploadService,
     ) { }
+
+    // GENERAL ===========
+    protected getItemByKey(params: any, options: any) {
+        this._db.object(`${this.collection()}/${params.key}`).valueChanges().subscribe((data: any) => {
+            if (data) data.$key = params.key;
+            options.doneCallback(data);
+        })
+    }
+
+    protected updateByKey(params: any, options: any): void {
+        params.updateData = this.setModified(params.updateData);
+        this._db.object(`${this.collection()}/${params.key}`).update(params.updateData).then(() => {
+            if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+        })
+    }
+
+    protected editChangeThumb(params: any, options: any): void {
+        params.item = this.syncForSearch(params.item);
+        params.item = this.setModified(params.item);
+        params.item = this.standardizeBeforeSaving(params.item);
+        this._uploadService.upload(new Upload(params.item.thumb), this._controller, (upload: Upload) => {
+            // upload done
+            params.item.thumb = upload._url;
+
+            // delete old thumb
+            this._uploadService.deleteOneByUrl(params.oldThumb);
+
+            // update to db
+            this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
+                if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+            })
+
+        }, (upload: Upload) => {
+            // in progress
+            if (this._helperService.isFn(options.progressCallback)) options.progressCallback(upload);
+        })
+    }
+
+    protected editNotChangeThumb(params: any, options: any): void {
+        params.item = this.syncForSearch(params.item);
+        params.item = this.setModified(params.item);
+        params.item = this.standardizeBeforeSaving(params.item);
+        this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
+            if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+        })
+    }
+
+    protected deleteByKey(params, options): void {
+        let fn = (): void => {
+            this._db.object(`${this.collection()}/${params.item.$key}`).remove()
+                .then(() => {
+                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                });
+        }
+
+        // delete thumb if exists
+        if (params.item.thumb) this._uploadService.deleteOneByUrl(params.item.thumb, () => { fn(); })
+        else fn();
+    }
+
+    protected getSearchRef(params: any, options: any): any {
+        let field = params.clientFilter.search.search_field;
+        let value = params.clientFilter.search.search_value.toLowerCase();
+        if (this._searchFields.includes(field)) {
+            if (value.trim() != '') {
+                if (field != 'all') {
+                    return params.ref
+                        .orderByChild(`${field}/forSearch`)
+                        .startAt(value)
+                        .endAt(`${value}\uf8ff`)
+                }
+            }
+        }
+        return params.ref;
+    }
+
+    protected runLocalFilter(params: any, options: any): any {
+        params.items = this.runPropertyFilter(params, options);
+        params.items = this.runLocalSearch(params, options);
+        return params.items;
+    }
+
+    protected runLocalSearch(params: any, options: any): any {
+        let items = params.items;
+        let searchField = params.clientFilter.search.search_field;
+        let searchValue = params.clientFilter.search.search_value;
+
+        if (searchField.trim() != '' && searchValue.trim() != '') {
+            if (searchField == 'all') {
+                items = items.filter((item) => {
+                    for (let field of this._searchFields) {
+                        if (item[field])
+                            if (item[field].forSearch.indexOf(searchValue.toLowerCase()) > -1)
+                                return true;
+                    }
+                    return false;
+                })
+            }
+        }
+        return items;
+    }
+
+    protected runLocalPagination(params: any, options: any): any {
+        let items: any[] = params.items;
+        let page: number = this._helperService.getValidPageNumber({
+            totalItems: items.length,
+            page: params.clientFilter.other.page,
+            ...params.pagination,
+        });
+        let start: number = ((page - 1) * params.pagination.itemsPerPage);
+        let end: number = params.pagination.itemsPerPage + start;
+        return items.slice(start, end);
+    }
+
+    protected runLocalSort(params: any, options: any): any {
+        let items = params.items;
+        let field = params.clientFilter.sort.sort_field;
+        let order = params.clientFilter.sort.sort_order;
+        if (this._sortFields.includes(field) && ['desc', 'asc'].includes(order)) {
+            items = items.sort((a, b) => {
+                let aPath: string;
+                let bPath: string;
+                if (['created', 'modified',].includes(field)) {
+                    aPath = `${field}.time`;
+                    bPath = `${field}.time`;
+                } else {
+                    aPath = (this._searchFields.includes(field)) ? `${field}.forSearch` : field;
+                    bPath = (this._searchFields.includes(field)) ? `${field}.forSearch` : field;
+                }
+                let aVal = this._helperService.getVal(a, aPath);
+                let bVal = this._helperService.getVal(b, bPath);
+                let comparison: number = (typeof aVal == 'string') ? aVal.localeCompare(bVal) : (aVal - bVal);
+                return (order == 'asc') ? comparison : -comparison;
+            })
+        } else {
+            items = items.sort((a, b) => {
+                let aVal: string = a.$key;
+                let bVal: string = b.$key;
+                return -(aVal.localeCompare(bVal));
+            })
+        }
+        return items;
+    }
+
+    protected runPropertyFilter(params: any, options: any): void {
+        let items = params.items;
+        items = items.filter((item) => {
+            for (let key in params.clientFilter.filter) {
+                if (params.clientFilter.filter[key] != 'all') {
+                    if (item[key] != params.clientFilter.filter[key]) {
+                        return false;
+                    } else {
+                    }
+                }
+            }
+            return true;
+        })
+        return items;
+    }
+
+
+    // END GENERAL ========
 
     protected collection(): string {
         return `${this._controller}s`;
@@ -89,7 +255,6 @@ export class AdminModelService {
         return item;
     }
 
-    // Lookup 
     /**
      * Syncs items ref
      * @param params - { items: any[], from: string, localFields:string[], localPath: string - ref to localFields, newPath?: string}
@@ -228,5 +393,6 @@ export class AdminModelService {
             })
     }
 
+    // ABSTRACTION METHODS
     public saveItem(params: any, options: any) { }
 }

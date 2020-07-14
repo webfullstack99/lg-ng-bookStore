@@ -15,7 +15,7 @@ import { SharedModule } from '../shared/shared.module';
         SharedModule,
     ],
     exports: [AdminMainComponent],
-    providers: [UploadService],
+    providers: [],
 
 })
 export class AdminModule { }

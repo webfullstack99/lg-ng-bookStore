@@ -1,4 +1,12 @@
+import { BehaviorSubject } from 'rxjs';
+
 export class Conf {
+
+    message = {
+        crud: {
+            DELETE_WARNING: 'Do you want to delete {0}?',
+        }
+    }
 
     params = {
         defaultTimeout: 400,
@@ -107,5 +115,19 @@ export class Conf {
             search: ['name', 'all'],
             sort: ['name', 'status', 'created', 'modified'],
         },
+    }
+
+    page = {
+        item: {
+            pagination: {
+                pageRange: 3,
+                itemsPerPage: 5,
+                behaviorSubject: new BehaviorSubject(this),
+            }
+        }
+    }
+
+    public noSlashes(str: string): string {
+        return str.replace(/\//, '');
     }
 }

@@ -13,8 +13,10 @@ export class TestDbComponent implements OnInit {
     public _collection: string = 'tests';
     public _createdQty: number = 0;
     public _progress: number = 0;
+    public _testForArr: string[];
+    public _message: string[] = [];
 
-    @Input('testFor') _testFor: string;
+    @Input('testFor') _testFor: string = 'creating';
     @Input('itemQty') _itemQty: number = 100;
 
     constructor(
@@ -22,9 +24,12 @@ export class TestDbComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this._testForArr = ['creating', 'retrieving'];
     }
 
     public runTest(): void {
+        this._progress = 0;
+        this._createdQty = 0;
         switch (this._testFor) {
             case 'creating':
                 this.runTestForCreating();
@@ -63,7 +68,7 @@ export class TestDbComponent implements OnInit {
         }
         Promise.all(promises).then(() => {
             let timeConsuming = ((Date.now() - startingTime) / 1000).toFixed(3);
-            console.log(`${this._itemQty} items created in ${timeConsuming}s`);
+            this._message.push(`${this._itemQty} items created in ${timeConsuming}s`);
         })
     }
 
@@ -71,7 +76,7 @@ export class TestDbComponent implements OnInit {
         let startingTime: number = Date.now();
         this._retrievingSubscription = this._model.db.list(this._collection).valueChanges().subscribe((data) => {
             let timeConsuming = ((Date.now() - startingTime) / 1000).toFixed(3);
-            console.log(`${data.length} items retrieved in ${timeConsuming}s`);
+            this._message.push(`${data.length} items retrieved in ${timeConsuming}s`);
             this._progress = 100;
             this._retrievingSubscription.unsubscribe();
         })
@@ -79,12 +84,17 @@ export class TestDbComponent implements OnInit {
 
     public clearTest(): void {
         this._model.db.list(this._collection).remove().then(() => {
-            console.log('Cleared');
+            this._message.push('Cleared');
         });
     }
 
     public reset(): void {
         this._progress = 0;
         this._createdQty = 0;
+        this._message = [];
+    }
+
+    public onTestForChange(value: string): void {
+        this._testFor = value;
     }
 }

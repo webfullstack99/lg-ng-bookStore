@@ -19,14 +19,26 @@
                 <li *ngFor="let page of _paginationService._pageArr" class="page-item"
                     [class.active]="page == _paginationService._currentPage"><button (click)="goTo(page)"
                         class="page-link">{{ page }}</button></li>
+
+                <!-- SHOW LAST PAGE -->
+                <li class="page-item" *ngIf="isShowLastPage()">
+                    <button (click)="goTo(_paginationService._totalPage)"
+                        class="page-link">{{ getLastPageContent() }}</button>
+                </li>
+                <!-- END SHOW LAST PAGE -->
+
                 <li class="page-item" [class.disabled]="isDisabled('next')">
                     <button class="page-link" (click)="goTo(_paginationService._currentPage + 1)">
                         <i class="far fa-chevron-double-right"></i>
                     </button>
                 </li>
-                <li class="page-item" [class.disabled]="isDisabled('end')">
+
+                <!-- NOTE: SHOW END BUTTON (DEFAULT): NOT SHOW IF SHOW LAST PAGE IS ENABLED -->
+                <li *ngIf="!_showLastPage" class="page-item" [class.disabled]="isDisabled('end')">
                     <button (click)="goTo(_paginationService._totalPage)" class="page-link">End</button>
                 </li>
+                <!-- END NOTE -->
+                
             </ul>
         </nav>
     </div>

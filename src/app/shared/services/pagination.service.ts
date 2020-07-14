@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { UrlService } from './url.service';
 import { ThrowStmt } from '@angular/compiler';
+import { HelperService } from './helper.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PaginationService {
+    public _originalData: any;
+
     public _itemsPerPage: number;
     public _pageRange: number;
     public _totalItems: number;
@@ -18,6 +21,7 @@ export class PaginationService {
 
     constructor(
         private _urlService: UrlService,
+        private _helperService: HelperService,
     ) { }
 
 
@@ -26,23 +30,19 @@ export class PaginationService {
      * @param data - {itemsPerPage, pageRange, totalItems, currentPage}
      */
     public init(paginationData: any): void {
+        this._originalData = paginationData;
         this._itemsPerPage = paginationData.itemsPerPage || 5;
         this._totalItems = paginationData.totalItems || 0;
         this._totalPage = Math.ceil(paginationData.totalItems / paginationData.itemsPerPage);
         this._urlService.subscribeQueryParams((data) => {
-            this.setCurrentPage(data.page);
+            this.setCurrentPage({ ...paginationData, page: data.page });
             this.setPageRange(paginationData.pageRange);
             this.running();
         })
     }
 
-    private setCurrentPage(n: string): void {
-        if (n) {
-            let page: number = Number.parseInt(n);
-            page = (Number.isNaN(page) || page <= 0) ? 1 : page;
-            page = (page > this._totalPage) ? this._totalPage : page;
-            this._currentPage = page;
-        } else this._currentPage = 1;
+    private setCurrentPage(paginationData: any): void {
+        this._currentPage = this._helperService.getValidPageNumber(paginationData);
     }
 
     private setPageRange(n: number): void {
@@ -51,7 +51,6 @@ export class PaginationService {
     }
 
     public running(): void {
-        //this.showInfo();
         this._startAt = this.getStartPage();
         this._endAt = this.getEndPage();
         this.createPageArr();
@@ -82,18 +81,4 @@ export class PaginationService {
         else startAt = this._currentPage - temp + 1;
         return startAt;
     }
-
-    public showInfo(): void {
-        console.log('items per page');
-        console.log(this._itemsPerPage);
-        console.log('total items');
-        console.log(this._totalItems);
-        console.log('total page');
-        console.log(this._totalPage);
-        console.log('page range');
-        console.log(this._pageRange);
-        console.log('current page');
-        console.log(this._currentPage);
-    }
-
 }

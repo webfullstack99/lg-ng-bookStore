@@ -13,7 +13,7 @@ export class UploadService {
         firebase.initializeApp(environment.firebase);
     }
 
-    public upload(upload: Upload, basePath: string, callback, progressCallback = null) {
+    public upload(upload: Upload, basePath: string, doneCallback: (upload: Upload) => void, progressCallback?: (upload: Upload) => void) {
         let filePath = `${basePath}/${Date.now()}`;
         let fileRef = firebase.storage().ref(filePath);
         let task = fileRef.put(upload._file);
@@ -35,7 +35,7 @@ export class UploadService {
             task.snapshot.ref.getDownloadURL().then(function (downloadURL) {
                 upload._url = downloadURL;
                 upload._name = upload._file.name;
-                callback(upload);
+                doneCallback(upload);
             });
         })
     }

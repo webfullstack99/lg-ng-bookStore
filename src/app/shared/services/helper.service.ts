@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Conf } from '../defines/conf';
 import { DomSanitizer } from '@angular/platform-browser';
-import date from 'date-and-time';
 import { formatDate } from '@angular/common';
 
 declare let $: any;
@@ -170,5 +169,22 @@ export class HelperService {
             return item;
         })
     }
-}
 
+
+    /**
+     * Gets valid page
+     * @param data - {itemsPerPage, pageRange, totalItems, page}
+     */
+    public getValidPageNumber(data: any): number {
+        let page: number = 1;
+        if (data.page) {
+            let totalPage = (!data.totalPage) ? Math.ceil(data.totalItems / data.itemsPerPage) : data.totalPage;
+            page = Number.parseInt(data.page);
+            page = (Number.isNaN(page) || page <= 0) ? 1 : page;
+            page = (page > totalPage) ? totalPage : page;
+        }
+        return page;
+    }
+
+
+}
