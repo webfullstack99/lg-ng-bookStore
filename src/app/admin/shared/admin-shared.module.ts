@@ -1,13 +1,19 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { AdminFormComponent } from '../widget/components/admin-form/admin-form.component';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { AdminWidgetModule } from '../widget/admin-widget.module';
 
 
 @NgModule({
-    declarations: [],
+    declarations: [AdminFormComponent],
     imports: [
         SharedModule,
+        AdminWidgetModule,
+        ReactiveFormsModule,
+        FormsModule,
     ],
-    exports: [],
+    exports: [AdminFormComponent],
     providers: [],
 })
 export class AdminSharedModule { }

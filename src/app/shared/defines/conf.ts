@@ -43,6 +43,14 @@ export class Conf {
                 content: 'Something went wrong',
                 type: 'error',
             },
+            create_success: {
+                content: 'Item created',
+                type: 'default',
+            },
+            create_fail: {
+                content: 'Something went wrong',
+                type: 'error',
+            },
         }
     }
 
@@ -72,7 +80,7 @@ export class Conf {
                 special: {
                     yes: {
                         content: 'Yes',
-                        classes: 'btn btn-primary',
+                        classes: 'btn btn-success',
                     },
                     no: {
                         content: 'No',
@@ -170,7 +178,7 @@ export class Conf {
             action: ['edit', 'delete'],
             filter: ['status', 'special'],
             search: ['all', 'title', 'author', 'description'],
-            sort: ['title', 'author', 'price', 'status', 'created', 'modified'],
+            sort: ['title', 'category', 'author', 'price', 'special', 'saleOff', 'status', 'created', 'modified'],
         },
     }
 
@@ -201,7 +209,7 @@ export class Conf {
             }
         },
         behaviour: {
-            autoHide: 5000,
+            autoHide: 2000,
             stacking: 5,
         },
     }

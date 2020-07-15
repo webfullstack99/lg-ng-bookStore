@@ -1,0 +1,103 @@
+<div class="admin-manage-page">
+    <!-- PAGE TITLE -->
+    <div class="row">
+        <div class="col-12 ">
+            <app-page-title [controller]="_controller" pageType="index"></app-page-title>
+        </div>
+    </div>
+
+    <!-- FILTER -->
+    <div *ngIf="_hasData == true" class="row mt-3">
+        <div class="col-12">
+            <app-filter [filterCount]="_filterCount" [controller]="_controller"></app-filter>
+        </div>
+    </div>
+
+    <!-- LIST OF ITEMS -->
+    <div class="row mt-3">
+        <div class="col-12">
+            <table class="admin-main-table table table-striped table-responsive-sm">
+                <thead *ngIf="this.getTotalItemSelected() > 0" app-thead-action-bar [controller]="_controller"
+                    [totalItemsSelected]="getTotalItemSelected()" (submittedAction)="onSubmittedAction($event)"
+                    (onCancel)="onCheckAll(false)"> </thead>
+
+                <thead *ngIf="this.getTotalItemSelected() == 0" (onTheadCheckBoxCheck)="onCheckAll($event)"
+                    app-thead-admin-main-table [controller]="_controller" [thead-data]="
+                        [
+                            {
+                                isCheckAll: true
+                            }, {
+                                title: 'title',
+                                field: 'title'
+                            }, {
+                                title: 'author',
+                                field: 'author'
+                            }, {
+                                title: 'category',
+                                field: 'category'
+                            }, {
+                                title: 'special',
+                                field: 'special'
+                            }, {
+                                title: 'sale off',
+                                field: 'saleOff'
+                            }, {
+                                title: 'price',
+                                field: 'price'
+                            }, {
+                                title: 'status',
+                                field: 'status'
+                            }, {
+                                title: 'created',
+                                field: 'created'
+                            }, {
+                                title: 'modified',
+                                field: 'modified'
+                            }, {
+                                title: 'action'
+                            }
+                        ] ">
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of _items; let i = index" [attr.data-key]="item['$key']">
+                        <th class="align-middle" scope="row">
+                            <app-admin-table-input (onSelect)="onSelect($event)"
+                                [inputData]="{type: 'table-row-checkbox', item: item}">
+                            </app-admin-table-input>
+                        </th>
+                        <td class="align-middle">
+                            <div>
+                                <div> <strong> Title: </strong> <span [innerHTML]="item.title.value"></span> </div>
+                            </div>
+                            <p> <img [src]="item.thumb" class="admin-main-table-img rounded" [alt]="item.title.value">
+                            </p>
+                        </td>
+
+                        <td class="align-middle">{{item.author.value}}</td>
+                        <td class="align-middle">{{item.category}}</td>
+                        <td class="align-middle">{{item.special}}</td>
+                        <td class="align-middle">{{item.saleOff}}</td>
+                        <td class="align-middle">{{item.price}}</td>
+                        <td class="align-middle" (click)="onStatusClick(item)"
+                            [innerHTML]="_helperService.showStatusButton(item.status)"> </td>
+
+                        <td class="align-middle" [innerHTML]="_helperService.showHistory(item.created)"></td>
+                        <td class="align-middle" [innerHTML]="_helperService.showHistory(item.modified)"></td>
+
+                        <td class="align-middle" [appActionButtons]="_controller" [item]="item"
+                            (btnClick)="onActionClick($event)"> </td>
+                    </tr>
+
+                    <tr *ngIf="_items.length == 0" app-table-empty-message></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div *ngIf="_items.length > 0" class="row mt-3">
+        <div class="col-12">
+            <app-pagination [showLastPage]="true" [controller]="_controller"
+                [paginationBehavior]="_pagination.behaviorSubject"></app-pagination>
+        </div>
+    </div>

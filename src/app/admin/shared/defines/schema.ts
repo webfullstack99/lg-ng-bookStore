@@ -12,12 +12,9 @@ export class Schema {
     ]
 
     book = [
-        'title.value',
-        'title.forSearch',
-        'author.value',
-        'author.forSearch',
-        'description.value',
-        'description.forSearch',
+        'title.value', 'title.forSearch',
+        'author.value', 'author.forSearch',
+        'description.value', 'description.forSearch',
         'price',
         'thumb',
         'category',

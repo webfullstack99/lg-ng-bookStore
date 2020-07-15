@@ -70,7 +70,9 @@ export class AdminModelService {
         params.item = this.setModified(params.item);
         params.item = this.standardizeBeforeSaving(params.item);
         this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
-            if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+            if (this._helperService.isFn(options.doneCallback)) {
+                options.doneCallback();
+            }
         })
     }
 
@@ -197,7 +199,8 @@ export class AdminModelService {
     // END GENERAL ========
 
     protected collection(): string {
-        return `${this._controller}s`;
+        let temp = (this._controller.slice(-1) == 'y') ? this._controller.replace(/y$/, 'ie') : this._controller;
+        return `${temp}s`;
     }
 
     protected setCreated(item: any) {
@@ -409,7 +412,7 @@ export class AdminModelService {
     // ABSTRACTION METHODS
     public listItems(params: any, options: any) { }
 
-    public getItems(params: any, options: any) { }
+    public getItem(params: any, options: any) { }
 
     public saveItem(params: any, options: any) { }
 }

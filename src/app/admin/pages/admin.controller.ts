@@ -144,7 +144,7 @@ export abstract class AdminController {
             });
             else $(slt).removeClass('bg-delete-warning');
         }, this._conf.params.delayForAvoidAsyncTime);
-
+        this.onCheckAll(false);
     }
 
     protected onAction(data: any): void {
@@ -169,6 +169,6 @@ export abstract class AdminController {
                 }, 'show')
             }
         });
-        this._selectedItems = [];
+        this.onCheckAll(false);
     }
 }

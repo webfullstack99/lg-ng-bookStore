@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminSharedModule } from '../../shared/admin-shared.module';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { AdminFormComponent } from '../../widget/components/admin-form/admin-form.component';
 
 
 
@@ -15,13 +16,13 @@ import { SharedModule } from 'src/app/shared/shared.module';
     imports: [
         SharedModule,
         FormsModule,
-        ReactiveFormsModule,
+        ReactiveFormsModule, 
         AdminWidgetModule,
-        AdminSharedModule
+        AdminSharedModule,
     ],
     exports: [
         IndexComponent, FormComponent
     ],
     providers: []
 })
-export class ItemModule { }
+export class BookModule { }

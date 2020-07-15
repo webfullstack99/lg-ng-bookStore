@@ -4,6 +4,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { UploadService } from 'src/app/shared/services/upload.service';
 import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
+import { IBook } from 'src/app/shared/defines/book.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -93,19 +94,33 @@ export class BookModelService extends AdminModelService {
     private insertOne(params: any, options: any): void {
         this._uploadService.upload({ upload: new Upload(params.item.thumb), basePath: this._controller }, {
             doneCallback: (upload: Upload) => {
-                // upload done
-                let item: any = {
-                    name: {
-                        value: params.item.name,
-                        forSearch: params.item.name.toLowerCase(),
-                    },
-                    status: params.item.status,
-                    thumb: upload._url,
-                }
-                item = this.setCreated(item);
-                this._db.list(this.collection()).push(item).then(() => {
-                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback(upload)
-                });
+                try {
+                    // upload done
+                    let item: IBook = {
+                        title: {
+                            value: params.item.title,
+                            forSearch: params.item.title.toLowerCase(),
+                        },
+                        author: {
+                            value: params.item.author,
+                            forSearch: params.item.author.toLowerCase(),
+                        },
+                        description: {
+                            value: params.item.description,
+                            forSearch: params.item.description.toLowerCase(),
+                        },
+                        category: {},
+                        price: params.item.price,
+                        status: params.item.status,
+                        special: params.item.special,
+                        saleOff: params.item.saleOff,
+                        thumb: upload._url,
+                    }
+                    item = this.setCreated(item);
+                    this._db.list(this.collection()).push(item)
+                        .then(() => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(upload) })
+                        .catch((e) => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e) });
+                } catch (e) { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e) }
             },
             progressCallback: (upload: Upload) => {
                 // in progress

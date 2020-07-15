@@ -12,8 +12,9 @@ export interface IBook {
         value: string
         forSearch: string,
     };
-    status: string;
     price: number;
+    status: string;
+    special: string;
     saleOff: number;
     thumb: string;
     category: any,

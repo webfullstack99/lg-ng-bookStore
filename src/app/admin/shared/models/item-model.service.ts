@@ -4,6 +4,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { UploadService } from 'src/app/shared/services/upload.service';
 import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
+import { IItem } from 'src/app/shared/defines/item.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -93,19 +94,23 @@ export class ItemModelService extends AdminModelService {
     private insertOne(params: any, options: any): void {
         this._uploadService.upload({ upload: new Upload(params.item.thumb), basePath: this._controller }, {
             doneCallback: (upload: Upload) => {
-                // upload done
-                let item: any = {
-                    name: {
-                        value: params.item.name,
-                        forSearch: params.item.name.toLowerCase(),
-                    },
-                    status: params.item.status,
-                    thumb: upload._url,
+                try {
+                    // upload done
+                    let item: IItem = {
+                        name: {
+                            value: params.item.name,
+                            forSearch: params.item.name.toLowerCase(),
+                        },
+                        status: params.item.status,
+                        thumb: upload._url,
+                    }
+                    item = this.setCreated(item);
+                    this._db.list(this.collection()).push(item)
+                        .then(() => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(); })
+                        .catch((e) => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e); })
+                } catch (e) {
+                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e)
                 }
-                item = this.setCreated(item);
-                this._db.list(this.collection()).push(item).then(() => {
-                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback(upload)
-                });
             },
             progressCallback: (upload: Upload) => {
                 // in progress

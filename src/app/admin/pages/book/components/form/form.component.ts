@@ -1,8 +1,8 @@
 const _pageConfig = new pageConfig();
 
 import { Component, OnInit } from '@angular/core';
-import { ItemModelService as _ModelService } from 'src/app/admin/shared/models/item-model.service';
-import { ItemValidate as _MainValidate } from 'src/app/admin/shared/validates/item.validate';
+import { BookModelService as _ModelService } from 'src/app/admin/shared/models/book-model.service';
+import { BookValidate as _MainValidate } from 'src/app/admin/shared/validates/book.validate';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
@@ -46,12 +46,35 @@ export class FormComponent extends FormGeneral implements OnInit {
         this.initForm();
     }
 
+    protected initForm() {
+        let key = this._activatedRoute.snapshot.paramMap.get('key');
+        if (key) {
+            // edit
+            this._formType = 'edit';
+            this._modelService.getItem({ key }, {
+                task: 'by-key', doneCallback: (data: any) => {
+                    this._currentItem = data || {};
+                    this.initiateFormProfile();
+                }
+            })
+        } else {
+            // add
+            this._formType = 'add';
+            this.initiateFormProfile();
+        }
+    }
+
     // HAS THUMB
-    // OVERRIDE
     protected initiateFormProfile(): void {
         let formData = {
-            name: [this._helperService.getVal(this._currentItem, 'name.value') || ''],
+            title: [this._helperService.getVal(this._currentItem, 'title.value') || ''],
+            author: [this._helperService.getVal(this._currentItem, 'author.value') || ''],
+            description: [this._helperService.getVal(this._currentItem, 'description.value') || ''],
+            price: [this._currentItem.price || ''],
+            category: [this._helperService.getVal(this._currentItem, 'category.name.value') || ''],
             status: [this._currentItem.status || ''],
+            special: [this._currentItem.special || ''],
+            saleOff: [this._currentItem.saleOff || ''],
             thumb: [''],
         }
         new _MainValidate().runValidate(this._currentItem, formData)
@@ -67,7 +90,17 @@ export class FormComponent extends FormGeneral implements OnInit {
                 progressCallback: (upload: Upload) => {
                     this._uploadProgress = upload._progress;
                 },
-                doneCallback: this.getSavingDoneCallback(),
+
+                doneCallback: (error) => {
+                    let crudType = (this._formType == 'add') ? 'create' : 'update';
+                    let resultStatus = (error) ? 'fail' : 'success';
+                    this._helperService.notifier({
+                        notifierData: {
+                            type: this._conf.message.crud[`${crudType}_${resultStatus}`].type,
+                            message: this._conf.message.crud[`${crudType}_${resultStatus}`].content,
+                        }
+                    }, 'show');
+                }
             }
 
             // solve submit
