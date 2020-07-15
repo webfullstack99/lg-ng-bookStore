@@ -1,11 +1,8 @@
 <div *ngIf="isShow()" class="pagination-widget">
-    <div class="d-flex justify-content-between">
-        <h4>Pagination</h4>
-        <button data-toggle="collapse" data-target="#pagination" class="btn btn-light chevron-btn">
-            <i class="far fa-chevron-down fa-lg text-dark on-click-switch-chevron"></i>
-        </button>
-    </div>
-    <div class="collapse show" id="pagination">
+    <ng-template [ngIf]="_showTitle">
+        <app-x-title [title]="'pagination'" [id]="'pagination-container'"></app-x-title>
+    </ng-template>
+    <div class="collapse show" id="pagination-container">
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <li class="page-item" [class.disabled]="isDisabled('start')">
@@ -38,7 +35,7 @@
                     <button (click)="goTo(_paginationService._totalPage)" class="page-link">End</button>
                 </li>
                 <!-- END NOTE -->
-                
+
             </ul>
         </nav>
     </div>

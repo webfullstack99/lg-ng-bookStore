@@ -1,11 +1,6 @@
 <div class="filter-widget">
-    <div class="d-flex justify-content-between">
-        <h4>Filter</h4>
-        <button data-toggle="collapse" data-target="#contentId" class="btn btn-light chevron-btn">
-            <i class="far fa-chevron-down fa-lg text-dark on-click-switch-chevron"></i>
-        </button>
-    </div>
-    <div class="collapse show" id="contentId">
+    <app-x-title [title]="'filter'" [id]="'filter-container'"></app-x-title>
+    <div class="collapse show" id="filter-container">
         <div class="row py-3">
 
             <!-- FILTER BUTTONS -->

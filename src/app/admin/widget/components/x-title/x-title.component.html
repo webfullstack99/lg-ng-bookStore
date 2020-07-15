@@ -1,1 +1,8 @@
-<p>x-title works!</p>
+<ng-template [ngIf]="_title">
+    <div class="d-flex justify-content-between">
+        <h4>{{_title | titlecase}}</h4>
+        <button data-toggle="collapse" [attr.data-target]="'#'+_id" class="btn btn-light chevron-btn">
+            <i class="far fa-chevron-down fa-lg text-dark on-click-switch-chevron"></i>
+        </button>
+    </div>
+</ng-template>

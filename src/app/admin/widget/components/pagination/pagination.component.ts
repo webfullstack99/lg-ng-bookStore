@@ -17,6 +17,7 @@ export class PaginationComponent implements OnInit {
     @Input('paginationBehavior') _paginationBehavior: BehaviorSubject<any>;
     @Input('controller') _controller: string;
     @Input('showLastPage') _showLastPage: boolean = false;
+    @Input('showTitle') _showTitle: boolean = false;
 
     constructor(
         public _paginationService: PaginationService,
