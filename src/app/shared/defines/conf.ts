@@ -69,6 +69,17 @@ export class Conf {
                 chooseFile: 'choose file',
             },
             button: {
+                special: {
+                    yes: {
+                        content: 'Yes',
+                        classes: 'btn btn-primary',
+                    },
+                    no: {
+                        content: 'No',
+                        classes: 'btn btn-light',
+                    },
+                    get all() { return new Conf().template.format.button.all; }
+                },
                 display: {
                     yes: {
                         content: 'Yes',
@@ -131,6 +142,7 @@ export class Conf {
         },
         selectData: {
             status: ['active', 'inactive'],
+            special: ['yes', 'no'],
             display: ['yes', 'no'],
         },
         form: {
@@ -153,10 +165,24 @@ export class Conf {
             search: ['name', 'all'],
             sort: ['name', 'status', 'created', 'modified'],
         },
+
+        book: {
+            action: ['edit', 'delete'],
+            filter: ['status', 'special'],
+            search: ['all', 'title', 'author', 'description'],
+            sort: ['title', 'author', 'price', 'status', 'created', 'modified'],
+        },
     }
 
     page = {
         item: {
+            pagination: {
+                pageRange: 3,
+                itemsPerPage: 5,
+                behaviorSubject: new BehaviorSubject(this),
+            }
+        },
+        book: {
             pagination: {
                 pageRange: 3,
                 itemsPerPage: 5,
