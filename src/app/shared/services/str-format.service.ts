@@ -13,6 +13,7 @@ export class StrFormatService {
             string = string.replace(`{${i}}`, arg);
             i++;
         }
+        string = string.replace(/ \{\d+\}/g, '');
         return string;
     }
 }

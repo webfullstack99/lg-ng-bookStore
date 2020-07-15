@@ -19,6 +19,7 @@ export class ItemModelService extends AdminModelService {
     }
 
     // MAIN METHODS ============
+    // @OVERRIDE
     public listItems(params: any, options: any) {
         switch (options.task) {
             case 'list-for-main-table':
@@ -27,6 +28,7 @@ export class ItemModelService extends AdminModelService {
         }
     }
 
+    // @OVERRIDE
     public getItem(params: any, options: any) {
         switch (options.task) {
             case 'by-key':
@@ -89,23 +91,26 @@ export class ItemModelService extends AdminModelService {
     }
 
     private insertOne(params: any, options: any): void {
-        this._uploadService.upload(new Upload(params.item.thumb), this._controller, (upload: Upload) => {
-            // upload done
-            let item: any = {
-                name: {
-                    value: params.item.name,
-                    forSearch: params.item.name.toLowerCase(),
-                },
-                status: params.item.status,
-                thumb: upload._url,
+        this._uploadService.upload({ upload: new Upload(params.item.thumb), basePath: this._controller }, {
+            doneCallback: (upload: Upload) => {
+                // upload done
+                let item: any = {
+                    name: {
+                        value: params.item.name,
+                        forSearch: params.item.name.toLowerCase(),
+                    },
+                    status: params.item.status,
+                    thumb: upload._url,
+                }
+                item = this.setCreated(item);
+                this._db.list(this.collection()).push(item).then(() => {
+                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback(upload)
+                });
+            },
+            progressCallback: (upload: Upload) => {
+                // in progress
+                if (this._helperService.isFn(options.progressCallback)) options.progressCallback(upload);
             }
-            item = this.setCreated(item);
-            this._db.list(this.collection()).push(item).then(() => {
-                if (this._helperService.isFn(options.doneCallback)) options.doneCallback(upload)
-            });
-        }, (upload: Upload) => {
-            // in progress
-            if (this._helperService.isFn(options.progressCallback)) options.progressCallback(upload);
         })
     }
 }

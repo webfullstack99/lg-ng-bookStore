@@ -1,6 +1,5 @@
-import { AngularFireStorage } from "@angular/fire/storage";
+import { NotifierModule } from "angular-notifier";
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { Conf } from './defines/conf';
 import { ShowTimeComponent } from './components/show-time/show-time.component';
@@ -10,15 +9,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { UcfirstPipe } from './pipes/ucfirst.pipe';
-import { PaginationService } from './services/pagination.service';
 import { UploadService } from './services/upload.service';
 import { HelperService } from './services/helper.service';
 import { StrFormatService } from './services/str-format.service';
 import { ItemModelService } from '../admin/shared/models/item-model.service';
 import { AdminModelService } from '../admin/shared/models/admin-model.service';
 import { Schema } from '../admin/shared/defines/schema';
-
-
+const _conf = new Conf();
 
 @NgModule({
     declarations: [NotFoundComponent, ShowTimeComponent, UcfirstPipe],
@@ -26,6 +23,7 @@ import { Schema } from '../admin/shared/defines/schema';
         RouterModule,
         BrowserModule,
         ReactiveFormsModule,
+        NotifierModule.withConfig(_conf.notifier),
     ],
     exports: [
         NotFoundComponent,
@@ -33,6 +31,7 @@ import { Schema } from '../admin/shared/defines/schema';
         RouterModule,
         BrowserModule,
         UcfirstPipe,
+        NotifierModule,
     ],
     providers: [
         Conf,
@@ -43,8 +42,8 @@ import { Schema } from '../admin/shared/defines/schema';
         StrFormatService,
 
         // admin
-        ItemModelService, 
-        AdminModelService, 
+        ItemModelService,
+        AdminModelService,
         Schema
     ]
 

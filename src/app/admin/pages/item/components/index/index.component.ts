@@ -77,4 +77,8 @@ export class IndexComponent extends AdminController implements OnInit {
     public onActionClick(data: any): void {
         this.onAction(data);
     }
+
+    public onStatusClick(item: any): void {
+        this.onStatus(item);
+    }
 }

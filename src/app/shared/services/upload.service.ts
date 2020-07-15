@@ -13,17 +13,17 @@ export class UploadService {
         firebase.initializeApp(environment.firebase);
     }
 
-    public upload(upload: Upload, basePath: string, doneCallback: (upload: Upload) => void, progressCallback?: (upload: Upload) => void) {
-        let filePath = `${basePath}/${Date.now()}`;
+    public upload(params: any, options: any): void {
+        let filePath = `${params.basePath}/${Date.now()}`;
         let fileRef = firebase.storage().ref(filePath);
-        let task = fileRef.put(upload._file);
+        let task = fileRef.put(params.upload._file);
 
         task.on('state_changed', (snapshot) => {
             // In Progress 
-            if (progressCallback) {
+            if (options.progressCallback) {
                 let percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                upload._progress = percent;
-                progressCallback(upload);
+                params.upload._progress = percent;
+                options.progressCallback(params.upload);
             }
         }, (error) => {
             // Error
@@ -33,23 +33,24 @@ export class UploadService {
         }, () => {
             // Done
             task.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                upload._url = downloadURL;
-                upload._name = upload._file.name;
-                doneCallback(upload);
+                params.upload._url = downloadURL;
+                params.upload._name = params.upload._file.name;
+                options.doneCallback(params.upload);
             });
         })
     }
 
-    public deleteOneByUrl(downloadUrl, doneCallback?: () => void) {
+    public deleteOneByUrl(params: any, options: any) {
         // Create a reference to the file to delete
-        let fileRef = firebase.storage().refFromURL(downloadUrl);
+        let fileRef = firebase.storage().refFromURL(params.downloadUrl);
 
         // Delete the file
         fileRef.delete()
             .then(function () {
-                if (typeof doneCallback == 'function') doneCallback();
+                if (typeof options.doneCallback == 'function') options.doneCallback();
             }).catch((error) => {
                 console.log('Failed to delete file');
+                if (typeof options.doneCallback == 'function') options.doneCallback(error);
             });
     }
 }

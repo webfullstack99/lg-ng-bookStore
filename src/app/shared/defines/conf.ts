@@ -1,10 +1,48 @@
 import { BehaviorSubject } from 'rxjs';
+import { NotifierOptions } from 'angular-notifier';
 
 export class Conf {
 
     message = {
         crud: {
-            DELETE_WARNING: 'Do you want to delete {0}?',
+            multi_delete_warning: {
+                content: 'Do you want to delete these items?',
+            },
+            delete_warning: {
+                content: 'Do you want to delete {0}?',
+            },
+            update_success: {
+                content: 'Update item successfully!',
+                type: 'default',
+            },
+            update_fail: {
+                content: 'Something went wrong!',
+                type: 'danger',
+            },
+            multi_update_success: {
+                content: 'Update {0} items successfully!',
+                type: 'default',
+            },
+            multi_update_fail: {
+                content: 'Something went wrong!',
+                type: 'danger',
+            },
+            delete_success: {
+                content: 'Delete item successfully!',
+                type: 'default',
+            },
+            delete_fail: {
+                content: 'Something went wrong!',
+                type: 'error',
+            },
+            multi_delete_success: {
+                content: 'Delete {0} items successfully!',
+                type: 'default',
+            },
+            multi_delete_fail: {
+                content: 'Something went wrong!',
+                type: 'error',
+            },
         }
     }
 
@@ -125,6 +163,21 @@ export class Conf {
                 behaviorSubject: new BehaviorSubject(this),
             }
         }
+    }
+
+    notifier: NotifierOptions = {
+        position: {
+            horizontal: {
+                position: "right",
+            },
+            vertical: {
+                position: "top",
+            }
+        },
+        behaviour: {
+            autoHide: 2000,
+            stacking: 10,
+        },
     }
 
     public noSlashes(str: string): string {

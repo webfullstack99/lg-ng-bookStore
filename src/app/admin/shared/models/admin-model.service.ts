@@ -32,30 +32,36 @@ export class AdminModelService {
 
     protected updateByKey(params: any, options: any): void {
         params.updateData = this.setModified(params.updateData);
-        this._db.object(`${this.collection()}/${params.key}`).update(params.updateData).then(() => {
-            if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
-        })
+        this._db.object(`${this.collection()}/${params.key}`).update(params.updateData)
+            .then(() => {
+                if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+            })
+            .catch((error) => {
+                if (this._helperService.isFn(options.doneCallback)) options.doneCallback(error);
+            })
     }
 
     protected editChangeThumb(params: any, options: any): void {
         params.item = this.syncForSearch(params.item);
         params.item = this.setModified(params.item);
         params.item = this.standardizeBeforeSaving(params.item);
-        this._uploadService.upload(new Upload(params.item.thumb), this._controller, (upload: Upload) => {
-            // upload done
-            params.item.thumb = upload._url;
+        this._uploadService.upload({ upload: new Upload(params.item.thumb), basePath: this._controller }, {
+            doneCallback: (upload: Upload) => {
+                // upload done
+                params.item.thumb = upload._url;
 
-            // delete old thumb
-            this._uploadService.deleteOneByUrl(params.oldThumb);
+                // delete old thumb
+                this._uploadService.deleteOneByUrl({ downloadUrl: params.oldThumb }, {});
 
-            // update to db
-            this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
-                if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
-            })
-
-        }, (upload: Upload) => {
-            // in progress
-            if (this._helperService.isFn(options.progressCallback)) options.progressCallback(upload);
+                // update to db
+                this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
+                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                })
+            },
+            progressCallback: (upload: Upload) => {
+                // in progress
+                if (this._helperService.isFn(options.progressCallback)) options.progressCallback(upload);
+            }
         })
     }
 
@@ -69,15 +75,21 @@ export class AdminModelService {
     }
 
     protected deleteByKey(params, options): void {
-        let fn = (): void => {
-            this._db.object(`${this.collection()}/${params.item.$key}`).remove()
-                .then(() => {
-                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
-                });
+        let fn = (error?): void => {
+            if (!error) {
+                this._db.object(`${this.collection()}/${params.item.$key}`).remove()
+                    .then(() => {
+                        if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                    })
+                    .catch((error) => {
+                        if (this._helperService.isFn(options.doneCallback)) options.doneCallback(error);
+                    })
+            } else if (this._helperService.isFn(options.doneCallback)) options.doneCallback(error);
         }
 
         // delete thumb if exists
-        if (params.item.thumb) this._uploadService.deleteOneByUrl(params.item.thumb, () => { fn(); })
+        if (params.item.thumb)
+            this._uploadService.deleteOneByUrl({ downloadUrl: params.item.thumb }, { doneCallback: (error) => fn(error) })
         else fn();
     }
 
@@ -362,7 +374,7 @@ export class AdminModelService {
      * Determines whether multi task on
      * @param data - {task, value}
      */
-    public changeMulti(data: any, items: any[], doneCallback?: () => void): void {
+    public changeMulti(data: any, items: any[], doneCallback?: (affectedRows: number) => void): void {
         let promises: Promise<boolean>[] = [];
         if (data.task == 'delete') {
             for (let item of items) {
@@ -372,7 +384,6 @@ export class AdminModelService {
                             task: 'delete-by-key', doneCallback: () => { resolve(true); }
                         })
                     })
-
                 )
             }
         } else if (data.task == 'change') {
@@ -381,18 +392,24 @@ export class AdminModelService {
                     promises.push(
                         new Promise((resolve) => {
                             this.saveItem({ updateData: { [data.field]: data.value }, key: item.$key }, {
-                                task: 'update-by-key', doneCallback: () => { resolve(true); }
+                                task: 'update-by-key', doneCallback: () => {
+                                    resolve(true);
+                                }
                             });
                         })
                     )
             }
         }
         Promise.all(promises)
-            .then((result) => {
-                if (this._helperService.isFn(doneCallback)) doneCallback();
+            .then((result: any[]) => {
+                if (this._helperService.isFn(doneCallback)) doneCallback(result.length);
             })
     }
 
     // ABSTRACTION METHODS
+    public listItems(params: any, options: any) { }
+
+    public getItems(params: any, options: any) { }
+
     public saveItem(params: any, options: any) { }
 }

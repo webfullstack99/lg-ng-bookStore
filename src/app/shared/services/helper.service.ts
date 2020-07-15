@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Conf } from '../defines/conf';
 import { DomSanitizer } from '@angular/platform-browser';
 import { formatDate } from '@angular/common';
+import { NotifierService } from 'angular-notifier';
 
 declare let $: any;
 
@@ -13,7 +14,7 @@ export class HelperService {
     constructor(
         public _conf: Conf,
         private _sanitized: DomSanitizer,
-
+        private _notifier: NotifierService,
     ) { }
 
     public showStatusButton(statusVal: string): any {
@@ -188,5 +189,25 @@ export class HelperService {
 
     public setDefaultTextForCustomFileInput(): void {
         $('.img-file-input').text(this.ucfirst(this.getConf_text('chooseFile')));
+    }
+
+    public notifier(params: any, task: string): void {
+        switch (task) {
+            case 'show':
+                this._notifier.show(params.notifierData)
+                break;
+
+            case 'hide-by-id':
+                this._notifier.hide(params.id)
+                break;
+
+            case 'hide-all':
+                this._notifier.hideAll()
+                break;
+        }
+    }
+
+    public getNotifierId(id: string): string {
+        if (id) return `${id}_notifier`;
     }
 }
