@@ -13,14 +13,6 @@
         </div>
     </div>
 
-    <!-- PAGINATION -->
-    <div *ngIf="_items.length > 0 && _items.length > 5" class="row mt-3">
-        <div class="col-12">
-            <app-pagination [showTitle]="false" [showLastPage]="true" [controller]="_controller"
-                [paginationBehavior]="_pagination.behaviorSubject"></app-pagination>
-        </div>
-    </div>
-
     <!-- LIST OF ITEMS -->
     <div class="row mt-3">
         <div class="col-12">
@@ -105,7 +97,7 @@
     <!-- PAGINATION -->
     <div *ngIf="_items.length > 0" class="row mt-3">
         <div class="col-12">
-            <app-pagination [showTitle]="true" [showLastPage]="true" [controller]="_controller"
+            <app-pagination [showTitle]="false" [showLastPage]="true" [controller]="_controller"
                 [paginationBehavior]="_pagination.behaviorSubject"></app-pagination>
         </div>
     </div>
