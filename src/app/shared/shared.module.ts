@@ -1,4 +1,3 @@
-import { NotifierModule } from "angular-notifier";
 import { NgModule } from '@angular/core';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { Conf } from './defines/conf';
@@ -15,7 +14,6 @@ import { StrFormatService } from './services/str-format.service';
 import { ItemModelService } from '../admin/shared/models/item-model.service';
 import { AdminModelService } from '../admin/shared/models/admin-model.service';
 import { Schema } from '../admin/shared/defines/schema';
-const _conf = new Conf();
 
 @NgModule({
     declarations: [NotFoundComponent, ShowTimeComponent, UcfirstPipe],
@@ -23,7 +21,6 @@ const _conf = new Conf();
         RouterModule,
         BrowserModule,
         ReactiveFormsModule,
-        NotifierModule.withConfig(_conf.notifier),
     ],
     exports: [
         NotFoundComponent,
@@ -31,7 +28,6 @@ const _conf = new Conf();
         RouterModule,
         BrowserModule,
         UcfirstPipe,
-        NotifierModule,
     ],
     providers: [
         Conf,

@@ -43,7 +43,7 @@ export abstract class AdminController {
 
     public onCheckAll(isChecked: boolean): void {
         if (isChecked) {
-            this._selectedItems = this._items;
+            this._selectedItems = [...this._items];
             this._helperService.selectAllItems();
         } else {
             this._selectedItems = [];
@@ -70,7 +70,6 @@ export abstract class AdminController {
                         notifierData: {
                             type: this._conf.message.crud[`multi_delete_${resultStatus}`].type,
                             message: this._strFormat.format(this._conf.message.crud[`multi_delete_${resultStatus}`].content, affectedRows),
-                            id: this._helperService.getNotifierId(context),
                         }
                     }, 'show')
                 } else {
@@ -78,7 +77,6 @@ export abstract class AdminController {
                         notifierData: {
                             type: this._conf.message.crud[`multi_update_${resultStatus}`].type,
                             message: this._strFormat.format(this._conf.message.crud[`multi_update_${resultStatus}`].content, affectedRows),
-                            id: this._helperService.getNotifierId(context),
                         }
                     }, 'show')
                     if (this._clientFilter.filter[data.field] != 'all') this._selectedItems = [];
@@ -139,7 +137,6 @@ export abstract class AdminController {
                         notifierData: {
                             type: this._conf.message.crud[`delete_${resultStatus}`].type,
                             message: this._conf.message.crud[`delete_${resultStatus}`].content,
-                            id: this._helperService.getNotifierId(context),
                         }
                     }, 'show')
 
@@ -168,12 +165,10 @@ export abstract class AdminController {
                     notifierData: {
                         type: this._conf.message.crud[`update_${resultStatus}`].type,
                         message: this._conf.message.crud[`update_${resultStatus}`].content,
-                        id: this._helperService.getNotifierId(context),
                     }
                 }, 'show')
             }
         });
         this._selectedItems = [];
     }
-
 }

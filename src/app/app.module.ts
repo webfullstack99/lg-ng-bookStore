@@ -14,13 +14,17 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { environment } from '../environments/environment';
 import { SharedModule } from './shared/shared.module';
+import { Conf } from './shared/defines/conf';
+import { NotifierModule } from 'angular-notifier';
 
+const _conf = new Conf();
 
 @NgModule({
     declarations: [
         AppComponent,
     ],
     imports: [
+        NotifierModule.withConfig(_conf.notifier),
         SharedModule,
 
         // firebase 
