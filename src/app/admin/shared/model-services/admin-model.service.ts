@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { FirebaseDatabase } from 'angularfire2';
-import { HelperService } from './node_modules/src/app/shared/services/helper.service';
+import { HelperService } from 'src/app/shared/services/helper.service';
 import { Schema } from '../defines/schema';
-import { UploadService } from './node_modules/src/app/shared/services/upload.service';
-import { Upload } from './node_modules/src/app/shared/defines/upload';
+import { UploadService } from 'src/app/shared/services/upload.service';
+import { Upload } from 'src/app/shared/defines/upload';
 
 @Injectable({
     providedIn: 'root'

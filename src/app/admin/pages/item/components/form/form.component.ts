@@ -31,7 +31,6 @@ export class FormComponent implements OnInit {
         private _modelService: _ModelService,
         private _helperService: HelperService,
         private _formBuilder: FormBuilder,
-        private _router: Router,
         private _activatedRoute: ActivatedRoute,
     ) { }
 
@@ -126,7 +125,7 @@ export class FormComponent implements OnInit {
 
     private resetForm(): void {
         this._formProfile.reset();
-        $('.img-file-input').text(this._helperService.ucfirst(this._helperService.getConf_text('chooseFile')));
+        this._helperService.setDefaultTextForCustomFileInput();
         this._selectedFiles = null;
     }
 }

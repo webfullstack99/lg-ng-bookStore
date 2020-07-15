@@ -186,5 +186,7 @@ export class HelperService {
         return page;
     }
 
-
+    public setDefaultTextForCustomFileInput(): void {
+        $('.img-file-input').text(this.ucfirst(this.getConf_text('chooseFile')));
+    }
 }
