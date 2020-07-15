@@ -10,7 +10,7 @@ import { StrFormatService } from 'src/app/shared/services/str-format.service';
 import { AdminController } from '../../../admin.controller';
 
 import { ItemModelService as _ModelService } from 'src/app/admin/shared/models/item-model.service';
-import { IItem } from 'src/app/shared/defines/book.interface';
+import { IItem } from 'src/app/shared/defines/item.interface';
 import { pageConfig } from '../../defines/pageConfig';
 
 declare let $: any;
