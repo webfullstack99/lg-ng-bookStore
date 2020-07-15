@@ -1,6 +1,6 @@
+const _pageConfig = new pageConfig();
+
 import { Component, OnInit } from '@angular/core';
-import { ItemModelService as _ModelService } from 'src/app/admin/shared/services/item-model.service';
-import { PageService } from '../../services/page.service';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { Router } from '@angular/router';
 import { Conf } from 'src/app/shared/defines/conf';
@@ -8,7 +8,10 @@ import { UrlService } from 'src/app/shared/services/url.service';
 import { HighlightService } from 'src/app/shared/services/highlight.service';
 import { StrFormatService } from 'src/app/shared/services/str-format.service';
 import { AdminController } from '../../../admin.controller';
+
+import { ItemModelService as _ModelService } from 'src/app/admin/shared/services/item-model.service';
 import { IItem } from 'src/app/shared/defines/item.interface';
+import { pageConfig } from '../../defines/pageConfig';
 
 declare let $: any;
 
@@ -16,6 +19,7 @@ declare let $: any;
     selector: 'app-index',
     templateUrl: './index.component.html',
 })
+
 export class IndexComponent extends AdminController implements OnInit {
     public _controller: string;
     public _items: IItem[] = [];
@@ -30,7 +34,6 @@ export class IndexComponent extends AdminController implements OnInit {
         public _helperService: HelperService,
         public _highlightService: HighlightService,
         public _conf: Conf,
-        protected _pageService: PageService,
         protected _modelService: _ModelService,
         protected _urlService: UrlService,
         protected _router: Router,
@@ -41,7 +44,7 @@ export class IndexComponent extends AdminController implements OnInit {
 
     ngOnInit(): void {
         // assign controller
-        this._controller = this._pageService._controller;
+        this._controller = _pageConfig._controller;
         this._modelService.controller = this._controller;
         this._pagination = this._conf.page[this._controller].pagination;
 

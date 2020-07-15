@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AdminModelService } from './admin-model.service';
-import { AngularFireDatabase, QueryFn } from 'angularfire2/database';
+import { AngularFireDatabase } from 'angularfire2/database';
 import { UploadService } from 'src/app/shared/services/upload.service';
 import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';

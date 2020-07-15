@@ -6,7 +6,6 @@ import { AdminWidgetModule } from '../../widget/admin-widget.module';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminSharedModule } from '../../shared/admin-shared.module';
-import { PageService } from './services/page.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AdminFormComponent } from '../../widget/components/admin-form/admin-form.component';
 
@@ -15,14 +14,14 @@ import { AdminFormComponent } from '../../widget/components/admin-form/admin-for
 @NgModule({
     declarations: [IndexComponent, FormComponent, AdminFormComponent],
     imports: [
-        AdminWidgetModule,
-        FormsModule,
         SharedModule,
+        FormsModule,
         ReactiveFormsModule, 
+        AdminWidgetModule,
     ],
     exports: [
         IndexComponent, FormComponent
     ],
-    providers: [PageService]
+    providers: []
 })
 export class ItemModule { }

@@ -1,13 +1,15 @@
+const _pageConfig = new pageConfig();
+
 import { Component, OnInit } from '@angular/core';
 import { ItemModelService as _ModelService } from 'src/app/admin/shared/services/item-model.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { PageService } from '../../services/page.service';
 import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IItem } from 'src/app/shared/defines/item.interface';
+import { pageConfig } from '../../defines/pageConfig';
 
 declare var $: any;
+
 @Component({
     selector: 'app-form',
     templateUrl: './form.component.html',
@@ -24,7 +26,6 @@ export class FormComponent implements OnInit {
     public _formProfile: FormGroup;
 
     constructor(
-        private _pageService: PageService,
         private _modelService: _ModelService,
         private _helperService: HelperService,
         private _formBuilder: FormBuilder,
@@ -34,7 +35,7 @@ export class FormComponent implements OnInit {
 
     ngOnInit(): void {
         // assign controller
-        this._controller = this._pageService._controller;
+        this._controller = _pageConfig._controller;
         this._modelService.controller = this._controller;
         this.initForm();
     }
@@ -45,7 +46,7 @@ export class FormComponent implements OnInit {
             // edit
             this._formType = 'edit';
             this._modelService.getItem({ key }, {
-                task: 'by-key', doneCallback: (data: IItem) => {
+                task: 'by-key', doneCallback: (data: any) => {
                     this._currentItem = data || {};
                     this.initiateFormProfile();
                 }
