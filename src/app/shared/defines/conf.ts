@@ -175,8 +175,8 @@ export class Conf {
             }
         },
         behaviour: {
-            autoHide: 2000,
-            stacking: 10,
+            autoHide: 5000,
+            stacking: 4,
         },
     }
 

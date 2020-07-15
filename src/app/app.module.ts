@@ -13,6 +13,7 @@ import { AdminWidgetModule } from './admin/widget/admin-widget.module';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { environment } from '../environments/environment';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
@@ -20,8 +21,7 @@ import { environment } from '../environments/environment';
         AppComponent,
     ],
     imports: [
-        BrowserModule,
-        RouterModule,
+        SharedModule,
 
         // firebase 
         AngularFireModule.initializeApp(environment.firebase, 'book-store'),
