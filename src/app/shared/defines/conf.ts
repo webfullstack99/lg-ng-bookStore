@@ -12,35 +12,35 @@ export class Conf {
                 content: 'Do you want to delete {0}?',
             },
             update_success: {
-                content: 'Update item successfully!',
+                content: 'Item updated',
                 type: 'default',
             },
             update_fail: {
-                content: 'Something went wrong!',
+                content: 'Something went wrong',
                 type: 'danger',
             },
             multi_update_success: {
-                content: 'Update {0} items successfully!',
+                content: '{0} items updated',
                 type: 'default',
             },
             multi_update_fail: {
-                content: 'Something went wrong!',
+                content: 'Something went wrong',
                 type: 'danger',
             },
             delete_success: {
-                content: 'Delete item successfully!',
+                content: 'Item deleted',
                 type: 'default',
             },
             delete_fail: {
-                content: 'Something went wrong!',
+                content: 'Something went wrong',
                 type: 'error',
             },
             multi_delete_success: {
-                content: 'Delete {0} items successfully!',
+                content: '{0} items deleted',
                 type: 'default',
             },
             multi_delete_fail: {
-                content: 'Something went wrong!',
+                content: 'Something went wrong',
                 type: 'error',
             },
         }

@@ -90,6 +90,7 @@ export abstract class AdminController {
             });
         }
 
+        // multi delete warning
         if (data.task == 'delete') {
             let r = confirm(this._conf.message.crud.multi_delete_warning.content);
             if (r) fn();
