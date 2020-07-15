@@ -90,7 +90,7 @@ export abstract class AdminController {
 
         // multi delete warning
         if (data.task == 'delete') {
-            let r = confirm(this._conf.message.crud.multi_delete_warning.content);
+            let r = confirm(this._strFormat.format(this._conf.message.crud.multi_delete_warning.content, this._selectedItems.length));
             if (r) fn();
         } else fn();
     }

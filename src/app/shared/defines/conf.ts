@@ -6,7 +6,7 @@ export class Conf {
     message = {
         crud: {
             multi_delete_warning: {
-                content: 'Do you want to delete these items?',
+                content: 'Do you want to delete {0} items?',
             },
             delete_warning: {
                 content: 'Do you want to delete {0}?',
