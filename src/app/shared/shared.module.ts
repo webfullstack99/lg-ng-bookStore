@@ -14,8 +14,8 @@ import { PaginationService } from './services/pagination.service';
 import { UploadService } from './services/upload.service';
 import { HelperService } from './services/helper.service';
 import { StrFormatService } from './services/str-format.service';
-import { ItemModelService } from '../admin/shared/services/item-model.service';
-import { AdminModelService } from '../admin/shared/services/admin-model.service';
+import { ItemModelService } from '../admin/shared/models/item-model.service';
+import { AdminModelService } from '../admin/shared/models/admin-model.service';
 import { Schema } from '../admin/shared/defines/schema';
 
 

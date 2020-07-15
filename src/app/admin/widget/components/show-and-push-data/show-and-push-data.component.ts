@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { HelperService } from 'src/app/shared/services/helper.service';
-import { AdminModelService } from 'src/app/admin/shared/services/admin-model.service';
+import { AdminModelService } from 'src/app/admin/shared/models/admin-model.service';
 
 @Component({
     selector: 'app-show-and-push-data',

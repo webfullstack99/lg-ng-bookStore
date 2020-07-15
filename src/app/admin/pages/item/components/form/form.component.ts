@@ -1,12 +1,14 @@
 const _pageConfig = new pageConfig();
 
 import { Component, OnInit } from '@angular/core';
-import { ItemModelService as _ModelService } from 'src/app/admin/shared/services/item-model.service';
+import { ItemModelService as _ModelService } from 'src/app/admin/shared/models/item-model.service';
+import { ItemValidate as _MainValidate } from 'src/app/admin/shared/validates/item.validate';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pageConfig } from '../../defines/pageConfig';
+
 
 declare var $: any;
 
@@ -58,18 +60,15 @@ export class FormComponent implements OnInit {
         }
     }
 
+    // HAS THUMB
     private initiateFormProfile(): void {
-        let thumbValidates = [];
-        if (!this._currentItem.thumb) thumbValidates.push(Validators.required);
-        this._formProfile = this._formBuilder.group({
-            name: [this._helperService.getVal(this._currentItem, 'name.value') || '', [
-                Validators.required,
-            ]],
-            status: [this._currentItem.status || '', [
-                Validators.required,
-            ]],
-            thumb: ['', thumbValidates],
-        });
+        let formData = {
+            name: [this._helperService.getVal(this._currentItem, 'name.value') || ''],
+            status: [this._currentItem.status || ''],
+            thumb: [''],
+        }
+        new _MainValidate().runValidate(this._currentItem, formData)
+        this._formProfile = this._formBuilder.group(formData);
     }
 
     public onSelectedFile($event): void {

@@ -9,7 +9,7 @@ import { HighlightService } from 'src/app/shared/services/highlight.service';
 import { StrFormatService } from 'src/app/shared/services/str-format.service';
 import { AdminController } from '../../../admin.controller';
 
-import { ItemModelService as _ModelService } from 'src/app/admin/shared/services/item-model.service';
+import { ItemModelService as _ModelService } from 'src/app/admin/shared/models/item-model.service';
 import { IItem } from 'src/app/shared/defines/item.interface';
 import { pageConfig } from '../../defines/pageConfig';
 

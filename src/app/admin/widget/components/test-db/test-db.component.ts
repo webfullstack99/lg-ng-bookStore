@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AdminModelService } from 'src/app/admin/shared/services/admin-model.service';
+import { AdminModelService } from 'src/app/admin/shared/models/admin-model.service';
 import { Subscription } from 'rxjs';
 
 @Component({
