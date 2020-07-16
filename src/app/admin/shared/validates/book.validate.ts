@@ -1,9 +1,16 @@
 import { Validators } from '@angular/forms';
 import { CustomValidators } from '../defines/custom-validators';
+import { Conf } from 'src/app/shared/defines/conf';
 
 export class BookValidate {
 
-    constructor() { }
+    private _controller: string = 'book';
+    private _vldParams: any;
+
+
+    constructor() { 
+        this._vldParams = new Conf().templateConf[this._controller].validationParams;
+    }
 
     public runValidate(item: any, formData: any): any {
         // thumb
@@ -13,19 +20,19 @@ export class BookValidate {
         let validateData: any = {
             title: [
                 Validators.required,
-                CustomValidators.lengthBetween(10, 200),
+                CustomValidators.lengthBetween(this._vldParams.title.min, this._vldParams.max),
             ],
             author: [
                 Validators.required,
-                CustomValidators.lengthBetween(5, 50),
+                CustomValidators.lengthBetween(this._vldParams.author.min, this._vldParams.author.max),
             ],
             description: [
                 Validators.required,
-                CustomValidators.lengthBetween(10, 5000),
+                CustomValidators.lengthBetween(this._vldParams.description.min, this._vldParams.description.max),
             ],
             price: [
                 Validators.required,
-                CustomValidators.between(5000, 1000000),
+                CustomValidators.between(this._vldParams.price.min, this._vldParams.price.max),
             ],
             //category: [Validators.required,],
 
@@ -39,7 +46,7 @@ export class BookValidate {
             ],
             saleOff: [
                 Validators.required,
-                CustomValidators.between(1, 100),
+                CustomValidators.between(this._vldParams.saleOff.min, this._vldParams.saleOff.max),
             ],
             thumb: thumbValidates,
         };

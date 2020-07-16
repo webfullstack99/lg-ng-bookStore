@@ -46,7 +46,8 @@
                             }, {
                                 title: 'price',
                                 field: 'price',
-                                width: '10%'
+                                width: '10%',
+                                classes: 'admin-price-thead'
                             }, {
                                 title: 'status',
                                 field: 'status'
@@ -76,7 +77,7 @@
                             </p>
                         </td>
 
-                        <td class="align-middle">{{item.author.value}}</td>
+                        <td class="align-middle" [innerHTML]="item.author.value"></td>
                         <td class="align-middle">{{item.category}}</td>
                         <td class="align-middle">
                             <app-field-button [field]="'special'" [item]="item" (onClick)="onSpecialClick($event)">
@@ -84,11 +85,12 @@
                         </td>
                         <td class="align-middle">
                             <app-field-input [field]="'saleOff'" [item]="item" [type]="'number'"
-                                (onChange)="onSaleOffChange(item, $event)"></app-field-input>
+                                [controller]="_controller" (onChange)="onSaleOffChange(item, $event)"></app-field-input>
                         </td>
                         <td class="align-middle">
                             <app-field-input [field]="'price'" [item]="item" [type]="'number'"
-                                (onChange)="onPriceChange(item, $event)" [step]="1000"></app-field-input>
+                                [controller]="_controller" (onChange)="onPriceChange(item, $event)" [step]="1000">
+                            </app-field-input>
                         </td>
                         <td class="align-middle">
                             <app-field-button [field]="'status'" [item]="item" (onClick)="onStatusClick($event)">

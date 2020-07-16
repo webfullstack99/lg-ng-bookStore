@@ -1,1 +1,2 @@
-<input [type]="_type" class="form-control form-control-sm" [value]="_inputVal" (change)="onChange($event.target.value)" [attr.step]="getAttr('_step')">
+<input [type]="_type" class="form-control form-control-sm" [value]="_inputVal" (change)="onChange($event)"
+    [attr.step]="getAttr('_step')" [attr.min]="getAttr('_min')" [attr.max]="getAttr('_max')">

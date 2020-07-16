@@ -62,4 +62,9 @@ export class TheadAdminMainTableComponent implements OnInit, AfterViewInit {
         if (width) return `${width}`;
         return '';
     }
+
+    public getClass(classes: string): string{
+        if (classes) return classes;
+        return '';
+    }
 }

@@ -51,6 +51,10 @@ export class Conf {
                 content: 'Something went wrong',
                 type: 'error',
             },
+            update_invalid: {
+                content: 'Invalid data',
+                type: 'error',
+            }
         },
         form: {
             lengthBetween: 'Length must between {0} and {1}',
@@ -150,6 +154,7 @@ export class Conf {
                 email: 'Search by email',
                 title: 'Search by title',
                 description: 'Search by description',
+                author: 'Search by author',
                 content: 'Search by content',
                 all: 'Search by all',
             },
@@ -194,6 +199,11 @@ export class Conf {
             filter: ['status'],
             search: ['name', 'all'],
             sort: ['name', 'status', 'created', 'modified'],
+            pagination: {
+                pageRange: 3,
+                itemsPerPage: 5,
+                behaviorSubject: new BehaviorSubject(this),
+            }
         },
 
         book: {
@@ -201,24 +211,34 @@ export class Conf {
             filter: ['status', 'special'],
             search: ['all', 'title', 'author', 'description'],
             sort: ['title', 'category', 'author', 'price', 'special', 'saleOff', 'status', 'created', 'modified'],
-        },
-    }
-
-    page = {
-        item: {
             pagination: {
                 pageRange: 3,
                 itemsPerPage: 5,
                 behaviorSubject: new BehaviorSubject(this),
+            },
+            validationParams: {
+                title: {
+                    min: 10,
+                    max: 200,
+                },
+                author: {
+                    min: 5,
+                    max: 50,
+                },
+                description: {
+                    min: 10,
+                    max: 5000,
+                },
+                price: {
+                    min: 5000,
+                    max: 1000000,
+                },
+                saleOff: {
+                    min: 1,
+                    max: 100,
+                },
             }
         },
-        book: {
-            pagination: {
-                pageRange: 3,
-                itemsPerPage: 5,
-                behaviorSubject: new BehaviorSubject(this),
-            }
-        }
     }
 
     notifier: NotifierOptions = {
@@ -232,7 +252,7 @@ export class Conf {
         },
         behaviour: {
             autoHide: 2000,
-            stacking: 5,
+            stacking: 10,
         },
     }
 

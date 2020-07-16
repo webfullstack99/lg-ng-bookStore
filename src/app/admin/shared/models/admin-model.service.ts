@@ -10,7 +10,6 @@ import { Upload } from 'src/app/shared/defines/upload';
     providedIn: 'root'
 })
 export class AdminModelService {
-
     protected _searchFields: string[];
     protected _sortFields: string[];
     protected _controller: string;

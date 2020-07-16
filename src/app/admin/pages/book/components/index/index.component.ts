@@ -46,7 +46,7 @@ export class IndexComponent extends AdminController implements OnInit {
         // assign controller
         this._controller = _pageConfig._controller;
         this._modelService.controller = this._controller;
-        this._pagination = this._conf.page[this._controller].pagination;
+        this._pagination = this._helperService.getConf_pagination(this._controller);
 
         this._urlService.getClientFilter(this._controller, (clientFilter: any) => {
             this._clientFilter = clientFilter;

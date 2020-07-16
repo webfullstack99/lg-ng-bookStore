@@ -103,7 +103,12 @@ input.ng-dirty.ng-valid, input.ng-touched.ng-valid {
     max-width: 100px;
 }
 
-.admin-thead{
+.no-wrap{
     white-space: nowrap;
 }
+
+.admin-price-thead{
+    min-width: 100px;
+}
+
 .admin-checkbox {}
