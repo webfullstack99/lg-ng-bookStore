@@ -21,6 +21,7 @@ import { TestDbComponent } from './components/test-db/test-db.component';
 import { FieldButtonComponent } from './components/field-button/field-button.component';
 import { FieldSelectComponent } from './components/field-select/field-select.component';
 import { FieldInputComponent } from './components/fieldInput/fieldInput.component';
+import { ShowErrorMessageComponent } from './components/show-error-message/show-error-message.component';
 
 
 
@@ -45,6 +46,7 @@ import { FieldInputComponent } from './components/fieldInput/fieldInput.componen
         FieldButtonComponent,
         FieldSelectComponent,
         FieldInputComponent,
+        ShowErrorMessageComponent,
     ],
     imports: [
         SharedModule,
@@ -68,6 +70,7 @@ import { FieldInputComponent } from './components/fieldInput/fieldInput.componen
         FieldButtonComponent,
         FieldSelectComponent,
         FieldInputComponent,
+        ShowErrorMessageComponent,
     ]
 })
 export class AdminWidgetModule { }

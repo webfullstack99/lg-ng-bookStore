@@ -46,24 +46,6 @@ export class FormComponent extends FormGeneral implements OnInit {
         this.initForm();
     }
 
-    protected initForm() {
-        let key = this._activatedRoute.snapshot.paramMap.get('key');
-        if (key) {
-            // edit
-            this._formType = 'edit';
-            this._modelService.getItem({ key }, {
-                task: 'by-key', doneCallback: (data: any) => {
-                    this._currentItem = data || {};
-                    this.initiateFormProfile();
-                }
-            })
-        } else {
-            // add
-            this._formType = 'add';
-            this.initiateFormProfile();
-        }
-    }
-
     // HAS THUMB
     protected initiateFormProfile(): void {
         let formData = {
@@ -79,6 +61,9 @@ export class FormComponent extends FormGeneral implements OnInit {
         }
         new _MainValidate().runValidate(this._currentItem, formData)
         this._formProfile = this._formBuilder.group(formData);
+        //this._formProfile.valueChanges.subscribe(()=>{
+            //console.log(this._formProfile.controls.title);
+        //})
     }
 
     public onSubmitForm(): void {

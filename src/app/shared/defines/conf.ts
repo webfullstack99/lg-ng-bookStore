@@ -51,6 +51,10 @@ export class Conf {
                 content: 'Something went wrong',
                 type: 'error',
             },
+        },
+        form: {
+            lengthBetween: 'Length must between {0} and {1}',
+            between: 'Value must between {0} and {1}',
         }
     }
 
@@ -157,13 +161,29 @@ export class Conf {
         },
         form: {
             admin: {
-                label: 'col-sm-2 col-form-label',
-                input: 'col-sm-10 form-control',
-                fileContainer: 'col-sm-10',
-                fileInput: 'custom-file-input',
-                fileInputLabel: 'img-file-input custom-file-label',
-                submit: 'col-sm-2 offset-lg-2 btn btn-primary',
-                select: 'col-sm-10 custom-select',
+                label: {
+                    classes: 'col-sm-2 col-form-label'
+                },
+                input: {
+                    classes: 'form-control',
+                    containerClasses: 'col-sm-10',
+                },
+                textarea: {
+                    classes: 'form-control',
+                    containerClasses: 'col-sm-10',
+                },
+                fileInput: {
+                    labelClasses: 'img-file-input custom-file-label',
+                    classes: 'custom-file-input',
+                    containerClasses: 'col-sm-10',
+                },
+                submit: {
+                    classes: 'col-sm-2 offset-lg-2 btn btn-primary',
+                },
+                select: {
+                    classes: 'custom-select',
+                    containerClasses: 'col-sm-10',
+                },
             }
         }
     }

@@ -3,40 +3,64 @@
         <div [ngSwitch]="input.type" class="form-group row">
 
             <label *ngIf="input.type!='submit'" [for]="input.name"
-                [class]="getClass('label')">{{ input.displayName | titlecase }}</label>
+                [class]="getClass('label').classes">{{ input.displayName | titlecase }}</label>
 
             <!-- GENERAL TYPE FOR INPUT TYPE: text, password, number, ... -->
             <ng-template [ngSwitchCase]="'general'">
-                <input [type]="input.inputType" [class]="getClass('input')" [id]="input.name"
-                    [formControlName]="input.name" >
+                <div [class]="getClass('input').containerClasses">
+                    <input [type]="input.inputType" [class]="getClass('input').classes" [id]="input.name"
+                        [formControlName]="input.name">
+                    <app-show-error-message [displayName]="input.displayName"
+                        [control]="_formProfile.controls[input.name]">
+                    </app-show-error-message>
+                </div>
+            </ng-template>
+
+            <!-- TEXTAREA TYPE-->
+            <ng-template [ngSwitchCase]="'textarea'">
+                <div [class]="getClass('textarea').containerClasses">
+                    <textarea [class]="getClass('textarea').classes" [id]="input.name" [formControlName]="input.name"
+                        rows="5"></textarea>
+                    <app-show-error-message [displayName]="input.displayName"
+                        [control]="_formProfile.controls[input.name]">
+                    </app-show-error-message>
+                </div>
             </ng-template>
 
             <!-- SELECT TYPE -->
             <ng-template [ngSwitchCase]="'select'">
-                <select [class]="getClass('select')" [id]="input.name" [formControlName]="input.name">
-                    <option value="" disabled selected>{{getDefaultSelectContent(input.name) | ucfirst }}</option>
-                    <option *ngFor="let value of _helperService.getConf_selectData()[input.name]" [value]="value">
-                        {{_helperService.getConf_btnTemplate()[input.name][value].content}}
-                    </option>
-                </select>
+                <div [class]="getClass('select').containerClasses">
+                    <select [class]="getClass('select').classes" [id]="input.name" [formControlName]="input.name">
+                        <option value="" disabled selected>{{getDefaultSelectContent(input.name) | ucfirst }}</option>
+                        <option *ngFor="let value of _helperService.getConf_selectData()[input.name]" [value]="value">
+                            {{_helperService.getConf_btnTemplate()[input.name][value].content}}
+                        </option>
+                    </select>
+                    <app-show-error-message [displayName]="input.displayName"
+                        [control]="_formProfile.controls[input.name]">
+                    </app-show-error-message>
+                </div>
             </ng-template>
 
             <!-- FILE TYPE -->
             <ng-template [ngSwitchCase]="'file'">
-                <div class="custom-file" [class]="getClass('fileContainer')">
-                    <input type="file" [class]="getClass('fileInput')" [id]="input.name" [formControlName]="input.name"
-                        accept="image/*" (change)="onFileChange($event)">
-                    <label [class]="getClass('fileInputLabel')"
+                <div class="custom-file" [class]="getClass('fileInput').containerClasses">
+                    <input type="file" [class]="getClass('fileInput').classes" [id]="input.name"
+                        [formControlName]="input.name" accept="image/*" (change)="onFileChange($event)">
+                    <label [class]="getClass('fileInput').labelClasses"
                         [for]="input.name">{{ _helperService.getConf_text('chooseFile') | ucfirst}}</label>
+                    <app-show-error-message [displayName]="input.displayName"
+                        [control]="_formProfile.controls[input.name]">
+                    </app-show-error-message>
                 </div>
-                <p *ngIf="_currentItem.thumb">
+                <p *ngIf="_currentItem.thumb" class="mt-5">
                     <img [src]="_currentItem.thumb" [alt]="input.displayName+' image'" class="img-fluid rounded">
                 </p>
             </ng-template>
 
             <!-- SUBMIT TYPE -->
             <ng-template [ngSwitchCase]="'submit'">
-                <input type="submit" [class]="getClass('submit')" [value]="input.displayName"
+                <input type="submit" [class]="getClass('submit').classes" [value]="input.displayName"
                     [disabled]="!isFormValid()">
             </ng-template>
         </div>

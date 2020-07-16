@@ -1,4 +1,5 @@
 import { Validators } from '@angular/forms';
+import { CustomValidators } from '../defines/custom-validators';
 
 export class BookValidate {
 
@@ -10,15 +11,36 @@ export class BookValidate {
         if (!item.thumb) thumbValidates.push(Validators.required);
 
         let validateData: any = {
-            title: [Validators.required,],
-            author: [Validators.required,],
-            description: [],
-            price: [Validators.required,],
+            title: [
+                Validators.required,
+                CustomValidators.lengthBetween(10, 200),
+            ],
+            author: [
+                Validators.required,
+                CustomValidators.lengthBetween(5, 50),
+            ],
+            description: [
+                Validators.required,
+                CustomValidators.lengthBetween(10, 5000),
+            ],
+            price: [
+                Validators.required,
+                CustomValidators.between(5000, 1000000),
+            ],
             //category: [Validators.required,],
 
-            status: [Validators.required,],
-            special: [Validators.required,],
-            saleOff: [Validators.required,],
+            status: [
+                Validators.required,
+                CustomValidators.fieldSelectData('status'),
+            ],
+            special: [
+                Validators.required,
+                CustomValidators.fieldSelectData('special'),
+            ],
+            saleOff: [
+                Validators.required,
+                CustomValidators.between(1, 100),
+            ],
             thumb: thumbValidates,
         };
 

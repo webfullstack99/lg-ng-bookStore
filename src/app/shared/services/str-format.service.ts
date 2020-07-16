@@ -14,6 +14,6 @@ export class StrFormatService {
             i++;
         }
         string = string.replace(/ \{\d+\}/g, '');
-        return string;
+        return string.trim();
     }
 }
