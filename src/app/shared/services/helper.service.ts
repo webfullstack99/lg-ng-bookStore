@@ -3,6 +3,7 @@ import { Conf } from '../defines/conf';
 import { DomSanitizer } from '@angular/platform-browser';
 import { formatDate } from '@angular/common';
 import { NotifierService } from 'angular-notifier';
+import { StrFormatService } from './str-format.service';
 
 declare let $: any;
 
@@ -15,6 +16,7 @@ export class HelperService {
         public _conf: Conf,
         private _sanitized: DomSanitizer,
         private _notifier: NotifierService,
+        private _strFormat: StrFormatService,
     ) { }
 
     public showStatusButton(statusVal: string): any {
@@ -209,5 +211,24 @@ export class HelperService {
 
     public getNotifierId(id: string): string {
         if (id) return `${id}_notifier`;
+    }
+
+    public getSlt(name: string, ...args): string {
+        let $this: HelperService = this;
+        let _slt = {
+            adminTableRowById: this._strFormat.format(`tr[data-key="{0}"]`, args[0]),
+            get adminTableRowsByIds() {
+                let slt: string = '';
+                for (let item of args[0]) slt += `${$this.getSlt('adminTableRowById', item.$key)}, `;
+                return slt.replace(/,\s*$/, '');
+            }
+        }
+        return _slt[name];
+    }
+
+    public getKeysFromItems(items: any[]): string[] {
+        let keys: string[] = [];
+        for (let item of items) keys.push(item.$key);
+        return keys;
     }
 }

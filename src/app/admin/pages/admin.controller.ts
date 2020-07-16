@@ -90,8 +90,13 @@ export abstract class AdminController {
 
         // multi delete warning
         if (data.task == 'delete') {
-            let r = confirm(this._strFormat.format(this._conf.message.crud.multi_delete_warning.content, this._selectedItems.length));
-            if (r) fn();
+            let slt = this._helperService.getSlt('adminTableRowsByIds', this._selectedItems);
+            $(slt).addClass('bg-delete-warning');
+            setTimeout(() => {
+                let r = confirm(this._strFormat.format(this._conf.message.crud.multi_delete_warning.content, this._selectedItems.length));
+                if (r) fn();
+                else $(slt).removeClass('bg-delete-warning');
+            }, this._conf.params.delayForAvoidAsyncTime);
         } else fn();
     }
 
@@ -125,7 +130,7 @@ export abstract class AdminController {
 
     protected onDelete(item: any, displayName: string): void {
         let context = 'delete';
-        let slt = `tr[data-key="${item.$key}"]`;
+        let slt = this._helperService.getSlt('adminTableRowById', item.$key);
         $(slt).addClass('bg-delete-warning');
         setTimeout(() => {
             let r = confirm(this._strFormat.format(this._conf.message.crud.delete_warning.content, displayName));
