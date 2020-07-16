@@ -61,7 +61,9 @@ export abstract class AdminController {
      */
     public onSubmittedAction(data: any): void {
         let context = 'multi-change';
+        let buttonsSlt = this._helperService.getSlt('adminTheadActionBarButtons');
         let fn = () => {
+            $(buttonsSlt).addClass('disabled');
             this._modelService.changeMulti(data, this._selectedItems, (affectedRows: number) => {
                 let resultStatus = 'success';
                 if (data.task == 'delete') {
@@ -85,6 +87,7 @@ export abstract class AdminController {
                         this._helperService.selectItems(this._selectedItems);
                     }
                 }
+                $(buttonsSlt).removeClass('disabled');
             });
         }
 
@@ -156,13 +159,28 @@ export abstract class AdminController {
         this[`on${this._helperService.ucfirst(data.action)}Click`](data.item);
     }
 
-    public onStatus(item: any): void {
-        let context = 'status';
+    public onFieldButton(field: string, item: any): void {
         let tempItem = { ...item };
         let key = item.$key;
         delete tempItem.$key;
-        tempItem.status = this._helperService.getNewStatusValue(item[context]);
-        this._modelService.saveItem({ updateData: { [context]: tempItem[context], }, key }, {
+        tempItem[field] = this._helperService.getNewFieldButtonValue(field, item[field]);
+        this._modelService.saveItem({ updateData: { [field]: tempItem[field], }, key }, {
+            task: 'update-by-key',
+            doneCallback: (error) => {
+                let resultStatus = (error) ? 'fail' : 'success';
+                this._helperService.notifier({
+                    notifierData: {
+                        type: this._conf.message.crud[`update_${resultStatus}`].type,
+                        message: this._conf.message.crud[`update_${resultStatus}`].content,
+                    }
+                }, 'show')
+            }
+        });
+        this.onCheckAll(false);
+    }
+
+    public onFieldChange(item: any, field: string, value: string): void {
+        this._modelService.saveItem({ updateData: { [field]: value }, key: item.$key }, {
             task: 'update-by-key',
             doneCallback: (error) => {
                 let resultStatus = (error) ? 'fail' : 'success';

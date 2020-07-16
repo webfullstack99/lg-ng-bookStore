@@ -79,6 +79,19 @@ export class IndexComponent extends AdminController implements OnInit {
     }
 
     public onStatusClick(item: any): void {
-        this.onStatus(item);
+        this.onFieldButton('status', item);
     }
+
+    public onSpecialClick(item: any): void {
+        this.onFieldButton('special', item);
+    }
+
+    public onSaleOffChange(item: any, value: string): void {
+        this.onFieldChange(item, 'saleOff', value);
+    }
+
+    public onPriceChange(item: any, value: string): void {
+        this.onFieldChange(item, 'price', value);
+    }
+
 }

@@ -48,7 +48,7 @@
     grid-column-gap: 3px;
 }
 
-.one-row-buttons>a, .one-row-buttons>button {
+.one-row-buttons > *, .one-row-buttons >* button {
     grid-row: 1;
     margin-top: 0px !important;
     padding: 4px 0px;
@@ -103,4 +103,7 @@ input.ng-dirty.ng-valid, input.ng-touched.ng-valid {
     max-width: 100px;
 }
 
+.admin-thead{
+    white-space: nowrap;
+}
 .admin-checkbox {}

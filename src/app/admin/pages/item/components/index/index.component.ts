@@ -79,6 +79,6 @@ export class IndexComponent extends AdminController implements OnInit {
     }
 
     public onStatusClick(item: any): void {
-        this.onStatus(item);
+        this.onFieldButton('status', item);
     }
 }

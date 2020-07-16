@@ -16,7 +16,7 @@
     <!-- LIST OF ITEMS -->
     <div class="row mt-3">
         <div class="col-12">
-            <table class="admin-main-table table table-striped table-responsive-sm">
+            <table class="admin-main-table table table-striped table-responsive-md">
                 <thead *ngIf="this.getTotalItemSelected() > 0" app-thead-action-bar [controller]="_controller"
                     [totalItemsSelected]="getTotalItemSelected()" (submittedAction)="onSubmittedAction($event)"
                     (onCancel)="onCheckAll(false)"> </thead>
@@ -40,10 +40,13 @@
                                 field: 'special'
                             }, {
                                 title: 'sale off',
-                                field: 'saleOff'
+                                field: 'saleOff',
+                                width: '10%'
+
                             }, {
                                 title: 'price',
-                                field: 'price'
+                                field: 'price',
+                                width: '10%'
                             }, {
                                 title: 'status',
                                 field: 'status'
@@ -58,7 +61,7 @@
                             }
                         ] ">
                 </thead>
-                <tbody>
+                <tbody class="admin-tbody">
                     <tr *ngFor="let item of _items; let i = index" [attr.data-key]="item['$key']">
                         <th class="align-middle" scope="row">
                             <app-admin-table-input (onSelect)="onSelect($event)"
@@ -75,11 +78,22 @@
 
                         <td class="align-middle">{{item.author.value}}</td>
                         <td class="align-middle">{{item.category}}</td>
-                        <td class="align-middle">{{item.special}}</td>
-                        <td class="align-middle">{{item.saleOff}}</td>
-                        <td class="align-middle">{{item.price}}</td>
-                        <td class="align-middle" (click)="onStatusClick(item)"
-                            [innerHTML]="_helperService.showStatusButton(item.status)"> </td>
+                        <td class="align-middle">
+                            <app-field-button [field]="'special'" [item]="item" (onClick)="onSpecialClick($event)">
+                            </app-field-button>
+                        </td>
+                        <td class="align-middle">
+                            <app-field-input [field]="'saleOff'" [item]="item" [type]="'number'"
+                                (onChange)="onSaleOffChange(item, $event)"></app-field-input>
+                        </td>
+                        <td class="align-middle">
+                            <app-field-input [field]="'price'" [item]="item" [type]="'number'"
+                                (onChange)="onPriceChange(item, $event)" [step]="1000"></app-field-input>
+                        </td>
+                        <td class="align-middle">
+                            <app-field-button [field]="'status'" [item]="item" (onClick)="onStatusClick($event)">
+                            </app-field-button>
+                        </td>
 
                         <td class="align-middle" [innerHTML]="_helperService.showHistory(item.created)"></td>
                         <td class="align-middle" [innerHTML]="_helperService.showHistory(item.modified)"></td>

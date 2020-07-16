@@ -56,6 +56,8 @@ export class Conf {
 
     params = {
         defaultTimeout: 400,
+        shortInputChangeTimeout: 1000,
+        longInputChangeTimeout: 2000,
         delayForAvoidAsyncTime: 100,
     }
 
@@ -80,22 +82,22 @@ export class Conf {
                 special: {
                     yes: {
                         content: 'Yes',
-                        classes: 'btn btn-success',
+                        classes: 'btn btn-success btn-sm',
                     },
                     no: {
                         content: 'No',
-                        classes: 'btn btn-light',
+                        classes: 'btn btn-light btn-sm',
                     },
                     get all() { return new Conf().template.format.button.all; }
                 },
                 display: {
                     yes: {
                         content: 'Yes',
-                        classes: 'btn btn-primary',
+                        classes: 'btn btn-primary btn-sm',
                     },
                     no: {
                         content: 'No',
-                        classes: 'btn btn-light',
+                        classes: 'btn btn-light btn-sm',
                     },
                     get all() { return new Conf().template.format.button.all; }
                 },

@@ -1,0 +1,3 @@
+<select class="custom-select" (change)="onChange($event.target.value)">
+    <option *ngFor="let option of _selectData" [value]="option">{{ option | ucfirst}}</option>
+</select>

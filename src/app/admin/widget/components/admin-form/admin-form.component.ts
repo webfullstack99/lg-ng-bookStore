@@ -45,11 +45,5 @@ export class AdminFormComponent implements OnInit {
         return `select ${name}`;
     }
 
-    public getPropertyString(propertyObj): string {
-        let result: string = '';
-        for (let key in propertyObj)
-            result += ` ${key}="${propertyObj[key]}"`;
-        return result;
-    }
 }
 

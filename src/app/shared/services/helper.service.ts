@@ -19,11 +19,10 @@ export class HelperService {
         private _strFormat: StrFormatService,
     ) { }
 
-    public showStatusButton(statusVal: string): any {
+    public showFieldButton(field: string, item: any): any {
         let result: string = '';
-
-        let myBtn = this._conf.template.format.button.status[statusVal];
-        result = `<button class="status-btn ${myBtn.classes}">${myBtn.content}</button>`;
+        let myBtn = this._conf.template.format.button[field][item[field]];
+        result = `<button key="${item.$key}" class="${field}-btn ${myBtn.classes}">${myBtn.content}</button>`;
         return this._sanitized.bypassSecurityTrustHtml(result);
     }
 
@@ -50,8 +49,14 @@ export class HelperService {
         $($event.target).next('.custom-file-label').html($event.target.value);
     }
 
-    public getNewStatusValue(status) {
-        return (status === 'active') ? 'inactive' : 'active';
+    public getNewFieldButtonValue(field: string, currentValue: string) {
+        switch (field) {
+            case 'status':
+                return (currentValue === 'active') ? 'inactive' : 'active';
+            case 'special':
+            case 'display':
+                return (currentValue === 'yes') ? 'no' : 'yes';
+        }
     }
 
     public limit(str: string, limitNumber: number): string {
@@ -216,12 +221,15 @@ export class HelperService {
     public getSlt(name: string, ...args): string {
         let $this: HelperService = this;
         let _slt = {
+            adminTable: '.admin-main-table',
             adminTableRowById: this._strFormat.format(`tr[data-key="{0}"]`, args[0]),
             get adminTableRowsByIds() {
                 let slt: string = '';
                 for (let item of args[0]) slt += `${$this.getSlt('adminTableRowById', item.$key)}, `;
                 return slt.replace(/,\s*$/, '');
-            }
+            },
+            adminTheadActionBarButtons: '.thead-action-bar-container button',
+            get adminTableFieldButton() { return `${this.adminTable} ` + $this._strFormat.format(`button[class="{0}-btn"][key="{1}"]`, args[0], args[1]) },
         }
         return _slt[name];
     }
@@ -230,5 +238,11 @@ export class HelperService {
         let keys: string[] = [];
         for (let item of items) keys.push(item.$key);
         return keys;
+    }
+
+    public getPropertyString(propertyObj): string {
+        let result: string = '';
+        for (let key in propertyObj) result += ` ${key}="${propertyObj[key]}" `;
+        return result;
     }
 }

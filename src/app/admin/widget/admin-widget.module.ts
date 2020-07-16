@@ -18,6 +18,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { AdminTableInputComponent } from './components/admin-table-input/admin-table-input.component';
 import { TheadActionBarComponent } from './components/thead-action-bar/thead-action-bar.component';
 import { TestDbComponent } from './components/test-db/test-db.component';
+import { FieldButtonComponent } from './components/field-button/field-button.component';
+import { FieldSelectComponent } from './components/field-select/field-select.component';
+import { FieldInputComponent } from './components/fieldInput/fieldInput.component';
 
 
 
@@ -39,6 +42,9 @@ import { TestDbComponent } from './components/test-db/test-db.component';
         AdminTableInputComponent,
         TheadActionBarComponent,
         TestDbComponent,
+        FieldButtonComponent,
+        FieldSelectComponent,
+        FieldInputComponent,
     ],
     imports: [
         SharedModule,
@@ -59,6 +65,9 @@ import { TestDbComponent } from './components/test-db/test-db.component';
         AdminTableInputComponent,
         TheadActionBarComponent,
         TestDbComponent,
+        FieldButtonComponent,
+        FieldSelectComponent,
+        FieldInputComponent,
     ]
 })
 export class AdminWidgetModule { }

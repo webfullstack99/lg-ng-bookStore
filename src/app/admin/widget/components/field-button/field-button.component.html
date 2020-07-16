@@ -1,0 +1,3 @@
+<ng-template [ngIf]="_item && _field">
+    <button (click)="onClick(_item)" [attr.data-key]="_item.$key" [ngClass]="getClasses()">{{ _myBtn.content }}</button>
+</ng-template>

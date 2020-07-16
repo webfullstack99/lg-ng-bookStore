@@ -57,4 +57,9 @@ export class TheadAdminMainTableComponent implements OnInit, AfterViewInit {
     public onTheadCheckBoxCheck($event): void {
         this._onTheadCheckBoxCheck.emit($event);
     }
+
+    public getWidth(width: string): string {
+        if (width) return `${width}`;
+        return '';
+    }
 }
