@@ -47,7 +47,7 @@
                                 title: 'price',
                                 field: 'price',
                                 width: '10%',
-                                classes: 'admin-price-thead'
+                                classes: 'min-width-100px'
                             }, {
                                 title: 'status',
                                 field: 'status'
@@ -70,10 +70,9 @@
                             </app-admin-table-input>
                         </th>
                         <td class="align-middle">
-                            <div>
-                                <div> <strong> Title: </strong> <span [innerHTML]="item.title.value"></span> </div>
-                            </div>
-                            <p> <img [src]="item.thumb" class="admin-main-table-img rounded" [alt]="item.title.value">
+                            <div> <div> <strong> Title: </strong> <span [innerHTML]="item.title.value"></span> </div> </div>
+                            <div> <div> <strong> Slug: </strong> <span [innerHTML]="item.slug"></span> </div> </div>
+                            <p class="mt-2"> <img [src]="item.thumb" class="admin-main-table-img rounded" [alt]="item.title.value">
                             </p>
                         </td>
 

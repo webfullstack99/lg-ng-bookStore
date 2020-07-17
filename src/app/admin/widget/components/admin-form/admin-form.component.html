@@ -1,15 +1,30 @@
+<!-- 
+    with each input name will has prefix '_', because ck editor not access id as description, but 
+    in our project has description field
+ -->
+
 <form *ngIf="_formProfile" [formGroup]="_formProfile" (ngSubmit)="onSubmitForm()" action="#">
     <ng-template ngFor let-input [ngForOf]="_formData">
         <div [ngSwitch]="input.type" class="form-group row">
 
-            <label *ngIf="input.type!='submit'" [for]="input.name"
+            <label *ngIf="input.type!='submit'" [for]="'_'+input.name"
                 [class]="getClass('label').classes">{{ input.displayName | titlecase }}</label>
 
             <!-- GENERAL TYPE FOR INPUT TYPE: text, password, number, ... -->
             <ng-template [ngSwitchCase]="'general'">
                 <div [class]="getClass('input').containerClasses">
-                    <input [type]="input.inputType" [class]="getClass('input').classes" [id]="input.name"
+
+                    <!-- Input NO option params -->
+                    <input *ngIf="!input.options" [type]="input.inputType" [class]="getClass('input').classes"
+                        [id]="'_'+input.name" [formControlName]="input.name">
+                    <!-- End input NO option params -->
+
+                    <!-- Input HAS option params -->
+                    <input *ngIf="input.options" (keyup)="onKeyup($event, input.name, input.options)"
+                        [type]="input.inputType" [class]="getClass('input').classes" [id]="'_'+input.name"
                         [formControlName]="input.name">
+                    <!-- End input HAS option params -->
+
                     <app-show-error-message [displayName]="input.displayName"
                         [control]="_formProfile.controls[input.name]">
                     </app-show-error-message>
@@ -18,19 +33,25 @@
 
             <!-- TEXTAREA TYPE-->
             <ng-template [ngSwitchCase]="'textarea'">
+
                 <div [class]="getClass('textarea').containerClasses">
-                    <textarea [class]="getClass('textarea').classes" [id]="input.name" [formControlName]="input.name"
-                        rows="5"></textarea>
+                    <textarea [class]="getClass('textarea').classes" [name]="input.name" [id]="'_'+input.name"
+                         rows="5"></textarea>
+                    <p *ngIf="getCkEditorMessage()"><span
+                            class="badge badge-danger">{{getCkEditorMessage() | ucfirst}}</span></p>
+                    <!-- 
+
                     <app-show-error-message [displayName]="input.displayName"
                         [control]="_formProfile.controls[input.name]">
                     </app-show-error-message>
+                         -->
                 </div>
             </ng-template>
 
             <!-- SELECT TYPE -->
             <ng-template [ngSwitchCase]="'select'">
                 <div [class]="getClass('select').containerClasses">
-                    <select [class]="getClass('select').classes" [id]="input.name" [formControlName]="input.name">
+                    <select [class]="getClass('select').classes" [id]="'_'+input.name" [formControlName]="input.name">
                         <option value="" disabled selected>{{getDefaultSelectContent(input.name) | ucfirst }}</option>
                         <option *ngFor="let value of _helperService.getConf_selectData()[input.name]" [value]="value">
                             {{_helperService.getConf_btnTemplate()[input.name][value].content}}
@@ -45,7 +66,7 @@
             <!-- FILE TYPE -->
             <ng-template [ngSwitchCase]="'file'">
                 <div class="custom-file" [class]="getClass('fileInput').containerClasses">
-                    <input type="file" [class]="getClass('fileInput').classes" [id]="input.name"
+                    <input type="file" [class]="getClass('fileInput').classes" [id]="'_'+input.name"
                         [formControlName]="input.name" accept="image/*" (change)="onFileChange($event)">
                     <label [class]="getClass('fileInput').labelClasses"
                         [for]="input.name">{{ _helperService.getConf_text('chooseFile') | ucfirst}}</label>

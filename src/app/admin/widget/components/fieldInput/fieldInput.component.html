@@ -1,2 +1,3 @@
 <input [type]="_type" class="form-control form-control-sm" [value]="_inputVal" (change)="onChange($event)"
-    [attr.step]="getAttr('_step')" [attr.min]="getAttr('_min')" [attr.max]="getAttr('_max')">
+    [attr.step]="getAttr('_step')" [attr.min]="getAttr('_min')" [attr.max]="getAttr('_max')" (keyup)="onKeyup($event)">
+<span *ngIf="_message" class="admin-table-input-message badge badge-danger">{{ _message }}</span>

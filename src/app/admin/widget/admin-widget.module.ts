@@ -26,6 +26,9 @@ import { ShowErrorMessageComponent } from './components/show-error-message/show-
 
 
 @NgModule({
+    imports: [
+        SharedModule,
+    ],
     declarations: [
         LogoutModalComponent,
         PaginationComponent,
@@ -47,9 +50,6 @@ import { ShowErrorMessageComponent } from './components/show-error-message/show-
         FieldSelectComponent,
         FieldInputComponent,
         ShowErrorMessageComponent,
-    ],
-    imports: [
-        SharedModule,
     ],
     exports: [
         LogoutModalComponent,

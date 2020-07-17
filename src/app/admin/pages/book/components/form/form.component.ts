@@ -1,6 +1,6 @@
 const _pageConfig = new pageConfig();
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { BookModelService as _ModelService } from 'src/app/admin/shared/models/book-model.service';
 import { BookValidate as _MainValidate } from 'src/app/admin/shared/validates/book.validate';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -19,7 +19,7 @@ declare var $: any;
     templateUrl: './form.component.html',
     providers: [],
 })
-export class FormComponent extends FormGeneral implements OnInit {
+export class FormComponent extends FormGeneral implements OnInit, AfterViewInit {
 
     public _controller: string;
     public _formType: string;
@@ -35,9 +35,14 @@ export class FormComponent extends FormGeneral implements OnInit {
         protected _helperService: HelperService,
         protected _formBuilder: FormBuilder,
         protected _activatedRoute: ActivatedRoute,
+
+        private _elementRef: ElementRef,
     ) {
         super(_conf, _helperService, _formBuilder, _activatedRoute);
     }
+    ngAfterViewInit(): void {
+    }
+
 
     ngOnInit(): void {
         // assign controller
@@ -52,6 +57,7 @@ export class FormComponent extends FormGeneral implements OnInit {
             title: [this._helperService.getVal(this._currentItem, 'title.value') || ''],
             author: [this._helperService.getVal(this._currentItem, 'author.value') || ''],
             description: [this._helperService.getVal(this._currentItem, 'description.value') || ''],
+            slug: [this._currentItem.slug || ''],
             price: [this._currentItem.price || ''],
             category: [this._helperService.getVal(this._currentItem, 'category.name.value') || ''],
             status: [this._currentItem.status || ''],
@@ -61,14 +67,12 @@ export class FormComponent extends FormGeneral implements OnInit {
         }
         new _MainValidate().runValidate(this._currentItem, formData)
         this._formProfile = this._formBuilder.group(formData);
-        //this._formProfile.valueChanges.subscribe(()=>{
-            //console.log(this._formProfile.controls.title);
-        //})
     }
 
     public onSubmitForm(): void {
         if (this._formProfile.dirty && this._formProfile.valid) {
             this._submittedForm = this._formProfile.value;
+            console.log(this._submittedForm);
 
             let callbacks: any = {
                 // upload in progress call back

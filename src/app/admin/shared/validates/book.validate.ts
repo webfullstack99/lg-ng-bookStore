@@ -8,7 +8,7 @@ export class BookValidate {
     private _vldParams: any;
 
 
-    constructor() { 
+    constructor() {
         this._vldParams = new Conf().templateConf[this._controller].validationParams;
     }
 
@@ -20,7 +20,7 @@ export class BookValidate {
         let validateData: any = {
             title: [
                 Validators.required,
-                CustomValidators.lengthBetween(this._vldParams.title.min, this._vldParams.max),
+                CustomValidators.lengthBetween(this._vldParams.title.min, this._vldParams.title.max),
             ],
             author: [
                 Validators.required,
@@ -29,6 +29,10 @@ export class BookValidate {
             description: [
                 Validators.required,
                 CustomValidators.lengthBetween(this._vldParams.description.min, this._vldParams.description.max),
+            ],
+            slug: [
+                Validators.required,
+                CustomValidators.lengthBetween(this._vldParams.slug.min, this._vldParams.slug.max),
             ],
             price: [
                 Validators.required,

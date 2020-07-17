@@ -109,6 +109,7 @@ export class BookModelService extends AdminModelService {
                             value: params.item.description,
                             forSearch: params.item.description.toLowerCase(),
                         },
+                        slug: params.item.slug,
                         category: {},
                         price: params.item.price,
                         status: params.item.status,

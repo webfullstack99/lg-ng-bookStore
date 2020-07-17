@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Conf } from 'src/app/shared/defines/conf';
@@ -29,6 +29,7 @@ export abstract class FormGeneral {
 
     // ABSTRACT METHODS
     protected initiateFormProfile(): void { }
+
 
     protected initForm() {
         let key = this._activatedRoute.snapshot.paramMap.get('key');
@@ -104,6 +105,6 @@ export abstract class FormGeneral {
     }
 
     // NO THUMB
-    protected solveEditSubmitNoThumb(callbacks: any): void {}
-    protected solveAddSubmitNoThumb(callbacks: any): void {}
+    protected solveEditSubmitNoThumb(callbacks: any): void { }
+    protected solveAddSubmitNoThumb(callbacks: any): void { }
 }

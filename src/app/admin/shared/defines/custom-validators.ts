@@ -10,7 +10,8 @@ export class CustomValidators {
 
     public static lengthBetween(min: number, max: number): ValidatorFn {
         return (control: AbstractControl) => {
-            if (control.value.length >= min && control.value.length <= max) return null;
+            let value = (control.value == null) ? '' : control.value;
+            if (value.length >= min && value.length <= max) return null;
             return {
                 lengthBetween: { min, max }
             }
@@ -36,16 +37,16 @@ export class CustomValidators {
         };
     }
 
-    
+
     ///**
-     //* Thumbs custom validators
-     //* @param data - {ext}
-     //* @returns thumb 
-     //*/
+    //* Thumbs custom validators
+    //* @param data - {ext}
+    //* @returns thumb 
+    //*/
     //public static thumb(data: any): ValidatorFn {
-        //return (control: AbstractControl) => {
-            //let file =
-            //return {};
-        //};
+    //return (control: AbstractControl) => {
+    //let file =
+    //return {};
+    //};
     //}
 }

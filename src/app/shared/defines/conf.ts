@@ -64,6 +64,8 @@ export class Conf {
 
     params = {
         defaultTimeout: 400,
+        loadCkEditorTime: 1000,
+        loadSpecificCkEditor: 1500,
         shortInputChangeTimeout: 1000,
         longInputChangeTimeout: 2000,
         delayForAvoidAsyncTime: 100,
@@ -228,6 +230,10 @@ export class Conf {
                 description: {
                     min: 10,
                     max: 5000,
+                },
+                slug: {
+                    min: 10,
+                    max: 200,
                 },
                 price: {
                     min: 5000,

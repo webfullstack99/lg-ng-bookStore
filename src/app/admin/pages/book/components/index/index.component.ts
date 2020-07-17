@@ -93,5 +93,4 @@ export class IndexComponent extends AdminController implements OnInit {
     public onPriceChange(item: any, value: string): void {
         this.onFieldChange(item, 'price', value);
     }
-
 }

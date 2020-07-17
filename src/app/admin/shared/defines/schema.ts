@@ -15,6 +15,7 @@ export class Schema {
         'title.value', 'title.forSearch',
         'author.value', 'author.forSearch',
         'description.value', 'description.forSearch',
+        'slug',
         'price',
         'thumb',
         'category',
