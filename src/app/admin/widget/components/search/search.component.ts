@@ -14,7 +14,7 @@ export class SearchComponent implements OnInit {
     public _searchTemplate: any;
     public _clientSearch: any;
     private _searchTimeout: any;
-    private _timeout: number = this._conf.params.defaultTimeout;
+    private _timeout: number = this._conf.params.delayForSearchTime;
 
     @Input('controller') _controller: string
 

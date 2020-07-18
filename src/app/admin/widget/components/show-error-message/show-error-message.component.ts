@@ -14,6 +14,8 @@ export class ShowErrorMessageComponent implements OnInit {
     @Input('control') _control: FormControl;
     @Input('group') _group: FormGroup;
     @Input('displayName') _displayName: string;
+    @Input('forceMessage') _forceMessage: any;
+
 
     constructor(
         public _conf: Conf,

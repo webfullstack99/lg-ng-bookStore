@@ -1,6 +1,6 @@
 const _pageConfig = new pageConfig();
 
-import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { BookModelService as _ModelService } from 'src/app/admin/shared/models/book-model.service';
 import { BookValidate as _MainValidate } from 'src/app/admin/shared/validates/book.validate';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -19,7 +19,7 @@ declare var $: any;
     templateUrl: './form.component.html',
     providers: [],
 })
-export class FormComponent extends FormGeneral implements OnInit, AfterViewInit {
+export class FormComponent extends FormGeneral implements OnInit  {
 
     public _controller: string;
     public _formType: string;
@@ -40,9 +40,6 @@ export class FormComponent extends FormGeneral implements OnInit, AfterViewInit 
     ) {
         super(_conf, _helperService, _formBuilder, _activatedRoute);
     }
-    ngAfterViewInit(): void {
-    }
-
 
     ngOnInit(): void {
         // assign controller

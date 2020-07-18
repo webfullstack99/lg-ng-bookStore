@@ -69,6 +69,7 @@ export class HelperService {
         return str
     }
 
+
     public getConf_text(val: string): string {
         return this._conf.template.format.text[val];
     }
@@ -77,8 +78,8 @@ export class HelperService {
         return this._conf.templateConf[controller].pagination;
     }
 
-    public getConf_vldParams(controller: string): any {
-        return this._conf.templateConf[controller].validationParams;
+    public getConf_formParams(controller: string): any {
+        if (controller) return this.getTemplateConf(controller).formParams;
     }
 
     public getConf_btnTemplate(): any {

@@ -59,6 +59,7 @@ export class Conf {
         form: {
             lengthBetween: 'Length must between {0} and {1}',
             between: 'Value must between {0} and {1}',
+            unique: 'Must be unique',
         }
     }
 
@@ -68,6 +69,7 @@ export class Conf {
         loadSpecificCkEditor: 1500,
         shortInputChangeTimeout: 1000,
         longInputChangeTimeout: 2000,
+        delayForSearchTime: 400,
         delayForAvoidAsyncTime: 100,
     }
 
@@ -218,7 +220,7 @@ export class Conf {
                 itemsPerPage: 5,
                 behaviorSubject: new BehaviorSubject(this),
             },
-            validationParams: {
+            formParams: {
                 title: {
                     min: 10,
                     max: 200,
@@ -238,10 +240,12 @@ export class Conf {
                 price: {
                     min: 5000,
                     max: 1000000,
+                    step: 10000,
                 },
                 saleOff: {
                     min: 1,
                     max: 100,
+                    step: 5,
                 },
             }
         },

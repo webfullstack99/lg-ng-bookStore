@@ -1,6 +1,6 @@
 <tr>
     <ng-template ngFor let-head [ngForOf]="_data">
-        <th class="no-wrap" [width]="getWidth(head.width)" [class]="getClass(head.classes)">
+        <th class="no-wrap align-middle" [width]="getWidth(head.width)" [class]="getClass(head.classes)">
             <ng-template [ngIf]="head.hasSort">
                 <a (click)="onSortClick($event, head.field)" href="#" class="one-row-buttons">
                     <span> {{ head.title | titlecase }} </span>

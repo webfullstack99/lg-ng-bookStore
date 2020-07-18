@@ -29,6 +29,34 @@ export class AdminModelService {
         })
     }
 
+    public getItemByFieldPathAndValue(params: any, options: any) {
+        this._db.list(`${this.toCollection(params.controller)}`, ref => ref
+            .orderByChild(params.fieldPath)
+            .equalTo(params.value)
+        ).snapshotChanges().forEach((itemsSnapshot) => {
+            let items: any = [];
+
+            // add $key into each item
+            itemsSnapshot.forEach((itemSnapshot) => {
+                let item = itemSnapshot.payload.toJSON();
+                item['$key'] = itemSnapshot.key;
+                items.push(item);
+            })
+            let item = (items[0]) ? items[0] : null;
+            if (this._helperService.isFn(options.doneCallback)) options.doneCallback(item);
+        })
+    }
+
+    public checkExist(params: any, options: any) {
+        this.getItemByFieldPathAndValue(params, {
+            doneCallback: (item: any) => {
+                let isExist: boolean = (item) ? true : false;
+                if (isExist) isExist = (params.key == item.$key) ? false : isExist;
+                if (this._helperService.isFn(options.doneCallback)) options.doneCallback(isExist);
+            }
+        });
+    }
+
     protected updateByKey(params: any, options: any): void {
         params.updateData = this.setModified(params.updateData);
         this._db.object(`${this.collection()}/${params.key}`).update(params.updateData)
@@ -198,7 +226,11 @@ export class AdminModelService {
     // END GENERAL ========
 
     protected collection(): string {
-        let temp = (this._controller.slice(-1) == 'y') ? this._controller.replace(/y$/, 'ie') : this._controller;
+        return this.toCollection(this._controller);
+    }
+
+    public toCollection(controller: string) {
+        let temp = (controller.slice(-1) == 'y') ? controller.replace(/y$/, 'ie') : controller;
         return `${temp}s`;
     }
 

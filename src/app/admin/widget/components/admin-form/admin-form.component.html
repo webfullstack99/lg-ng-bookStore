@@ -14,16 +14,30 @@
             <ng-template [ngSwitchCase]="'general'">
                 <div [class]="getClass('input').containerClasses">
 
-                    <!-- Input NO option params -->
-                    <input *ngIf="!input.options" [type]="input.inputType" [class]="getClass('input').classes"
-                        [id]="'_'+input.name" [formControlName]="input.name">
-                    <!-- End input NO option params -->
+                    <!-- NUMBER INPUT -->
+                    <ng-template [ngIf]="input.inputType =='number'">
+                        <!-- Input NO option params -->
+                        <input *ngIf="!input.options" [type]="input.inputType" [class]="getClass('input').classes"
+                            [id]="'_'+input.name" [formControlName]="input.name"
+                            [attr.min]="getFormParam(input.name, 'min')" [attr.step]="getFormParam(input.name, 'step')"
+                            [attr.max]="getFormParam(input.name, 'max')">
+                        <!-- End input NO option params -->
 
-                    <!-- Input HAS option params -->
-                    <input *ngIf="input.options" (keyup)="onKeyup($event, input.name, input.options)"
-                        [type]="input.inputType" [class]="getClass('input').classes" [id]="'_'+input.name"
-                        [formControlName]="input.name">
-                    <!-- End input HAS option params -->
+                    </ng-template>
+
+                    <!-- OTHER INPUT -->
+                    <ng-template [ngIf]="input.inputType !='number'">
+                        <!-- Input NO option params -->
+                        <input *ngIf="!input.options" [type]="input.inputType" [class]="getClass('input').classes"
+                            [id]="'_'+input.name" [formControlName]="input.name">
+                        <!-- End input NO option params -->
+
+                        <!-- Input HAS option params -->
+                        <input *ngIf="input.options" (keyup)="onKeyup($event, input.name, input.options)"
+                            [type]="input.inputType" [class]="getClass('input').classes" [id]="'_'+input.name"
+                            [formControlName]="input.name">
+                        <!-- End input HAS option params -->
+                    </ng-template>
 
                     <app-show-error-message [displayName]="input.displayName"
                         [control]="_formProfile.controls[input.name]">
@@ -35,8 +49,8 @@
             <ng-template [ngSwitchCase]="'textarea'">
 
                 <div [class]="getClass('textarea').containerClasses">
-                    <textarea [class]="getClass('textarea').classes" [name]="input.name" [id]="'_'+input.name"
-                        rows="5" [formControlName]="input.name"></textarea>
+                    <textarea [class]="getClass('textarea').classes" [name]="input.name" [id]="'_'+input.name" rows="5"
+                        [formControlName]="input.name"></textarea>
                     <p *ngIf="getCkEditorMessage()"><span
                             class="badge badge-info">{{getCkEditorMessage() | ucfirst}}</span></p>
                     <app-show-error-message [displayName]="input.displayName"

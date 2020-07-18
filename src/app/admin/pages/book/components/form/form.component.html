@@ -15,12 +15,13 @@
                         inputType: 'text',
                         name: 'title',   
                         displayName: 'title',
-                        options: { type: 'slug', for: 'slug' }
+                        options: { type: 'create-slug', field: 'slug', isPartnerUnique: true }
                     }, {
                         type: 'general',
                         inputType: 'text',
                         name: 'slug',   
-                        displayName: 'slug'
+                        displayName: 'slug',
+                        options: {type: 'unique'}
                     }, {
                         type: 'general',
                         inputType: 'text',
@@ -57,7 +58,8 @@
                         displayName: 'submit'
                     }
                 ]" [selectedFiles]="_selectedFiles" (_onSelectedFiles)="onSelectedFile($event)"
-                [controller]="_controller" [ckEditor]="'description'" (onSubmit)="onSubmitForm()" [formType]="_formType"></div>
+                [controller]="_controller" [ckEditor]="'description'" (onSubmit)="onSubmitForm()"
+                [formType]="_formType"></div>
             <!-- PROGRESS BAR -->
             <div *ngIf="_uploadProgress!=null" [appProgressBar]="_uploadProgress" title="Saving"> </div>
         </div>

@@ -1,1 +1,7 @@
-<p *ngIf="isShow() && getMessage()"><span class="badge badge-danger">{{getMessage() | ucfirst}}</span></p>
+<ng-template [ngIf]="!_forceMessage">
+    <p *ngIf="isShow() && getMessage()"><span class="badge badge-danger">{{getMessage() | ucfirst}}</span></p>
+</ng-template>
+
+<ng-template [ngIf]="_forceMessage">
+    <p ><span class="badge badge-danger">{{_forceMessage | ucfirst}}</span></p>
+</ng-template>

@@ -14,8 +14,9 @@ export class FieldInputComponent implements OnInit {
 
     public _inputVal: any;
     public _originVal: any;
-    public _vldParams: any;
+    public _formParams: any;
     public _message: string;
+    public _timeoutObj: any;
 
     @Input('controller') _controller: string;
     @Input('item') _item: any;
@@ -36,30 +37,26 @@ export class FieldInputComponent implements OnInit {
     ngOnInit() {
         this._inputVal = this._item[this._field];
         this._originVal = this._inputVal;
-        this._vldParams = (this._helperService.getConf_vldParams(this._controller)[this._field])
-            ? this._helperService.getConf_vldParams(this._controller)[this._field]
-            : null;
+        this.setFormParams();
+    }
+
+    private setFormParams(): void {
+        this._formParams = this._helperService.getConf_formParams(this._controller)[this._field];
     }
 
     public getAttr(name: string): string {
-        if (['_min', '_max'].includes(name)) {
-            return this._vldParams[name.replace(/^_/, '')];
-        } else {
-            if (this[name]) return `${this[name]}`;
-            return '';
-        }
+        if (this._formParams) return this._formParams[name];
+        return '';
     }
 
     public onChange($event: any) {
         let value = $event.target.value;
-        if (this.onCheck($event)) {
-            this._inputVal = value;
-            let timeout: any;
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                this._onChange.emit(value);
-            }, this._conf.params.shortInputChangeTimeout);
-        }
+        this._inputVal = value;
+        clearTimeout(this._timeoutObj);
+        this._timeoutObj = setTimeout(() => {
+            console.log('timeout');
+            if (this.onCheck($event)) this._onChange.emit(value);
+        }, this._conf.params.shortInputChangeTimeout);
     }
 
     private onCheck($event: any): boolean {
@@ -68,8 +65,8 @@ export class FieldInputComponent implements OnInit {
 
         if (value.trim() != '') {
             let n = this.toVldNumber(value);
-            if (this._vldParams.min) flag = (n < this._vldParams.min) ? false : true;
-            if (this._vldParams.max && flag) flag = (n > this._vldParams.max) ? false : true;
+            if (this._formParams.min) flag = (n < this._formParams.min) ? false : true;
+            if (this._formParams.max && flag) flag = (n > this._formParams.max) ? false : true;
         } else flag = false;
 
         // ok
@@ -89,13 +86,13 @@ export class FieldInputComponent implements OnInit {
     public onKeyup($event: any): void {
         let value = $event.target.value;
         let n = this.toVldNumber(value);
-        if (this._vldParams && (value.trim() == '' || n < this._vldParams.min || n > this._vldParams.max)) this.showMessage();
+        if (this._formParams && (value.trim() == '' || n < this._formParams.min || n > this._formParams.max)) this.showMessage();
         else this._message = null;
     }
 
     public showMessage() {
         let messageType: string = (this._type == 'number') ? 'between' : 'lengthBetween';
-        this._message = this._strFormat.format(this._conf.message.form[messageType], this._vldParams.min, this._vldParams.max);
+        this._message = this._strFormat.format(this._conf.message.form[messageType], this._formParams.min, this._formParams.max);
     }
 
     public toVldNumber(value: any): number {
@@ -110,7 +107,7 @@ export class FieldInputComponent implements OnInit {
         }
     }
 
-    private reset($event: any): void{
+    private reset($event: any): void {
         $($event.target).val(this._originVal);
         this._message = null;
     }

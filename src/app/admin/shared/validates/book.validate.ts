@@ -7,9 +7,8 @@ export class BookValidate {
     private _controller: string = 'book';
     private _vldParams: any;
 
-
     constructor() {
-        this._vldParams = new Conf().templateConf[this._controller].validationParams;
+        this._vldParams = new Conf().templateConf[this._controller].formParams;
     }
 
     public runValidate(item: any, formData: any): any {
