@@ -14,7 +14,11 @@ declare const $: any;
 })
 export class AdminFormComponent implements OnInit {
 
+    public _ckEditorVal: string;
+
     @Input('formData') _formData: any[];
+    @Input('formType') _formType: string;
+    @Input('controller') _controller: string;
     @Input('appAdminForm') _formProfile: FormGroup;
     @Input('currentItem') _currentItem: any;
     @Input('selectedFiles') _selectedFiles: any;
@@ -31,42 +35,41 @@ export class AdminFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.setupCkEditor();
-        this.solveCkEditor();
-        this._formProfile.valueChanges.subscribe((data) => {
-            console.log(this._formProfile.value);
-        })
+        //this._formProfile.valueChanges.subscribe((data) => {
+        //console.log(this._formProfile.value);
+        //})
     }
 
     protected setupCkEditor(): void {
-        const s = document.createElement('script');
-        s.type = 'text/javascript';
-        s.src = `/assets/plugins/ckeditor/ckeditor.js`;
-        this._elementRef.nativeElement.appendChild(s);
+        if (this.hasCkEditor()) {
+            const s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.src = `/assets/plugins/ckeditor/ckeditor.js`;
+            this._elementRef.nativeElement.appendChild(s);
 
-        setTimeout(() => {
-            const x = document.createElement('script');
-            x.type = 'text/javascript';
-            x.innerHTML = `CKEDITOR.replace( '_description' );`;
-            this._elementRef.nativeElement.appendChild(x);
-        }, this._conf.params.loadCkEditorTime);
-
+            setTimeout(() => {
+                const x = document.createElement('script');
+                x.type = 'text/javascript';
+                x.innerHTML = `CKEDITOR.replace( '_description' );`;
+                this._elementRef.nativeElement.appendChild(x);
+            }, this._conf.params.loadCkEditorTime);
+            this._ckEditorVal = this._formProfile.controls[this._ckEditor].value;
+            this.solveCkEditor();
+        }
     }
 
     private solveCkEditor(): void {
         let $this: AdminFormComponent = this;
         setTimeout(() => {
             CKEDITOR.instances[`_${this._ckEditor}`].on('key', function (e) {
-                $this._formProfile.controls[$this._ckEditor].markAsTouched();
-                $this._formProfile.controls[$this._ckEditor].setValue(this.getData());
-                $this._formProfile.controls[$this._ckEditor].patchValue(this.getData());
-                $this._formProfile.controls[$this._ckEditor].markAsDirty();
-                $this._formProfile.controls[$this._ckEditor].updateValueAndValidity();
-                $this._formProfile.updateValueAndValidity();
+                $this._formProfile.controls[$this._ckEditor].setValue(this.getData())
+                $this._ckEditorVal = $this._formProfile.controls[$this._ckEditor].value;
             });
         }, this._conf.params.loadSpecificCkEditor);
     }
 
     public onSubmitForm(): void {
+        if (this.hasCkEditor() && this._formType == 'add') CKEDITOR.instances._description.setData('', function () { this.updateElement(); })
         this._onSubmit.emit(this._formProfile);
     }
 
@@ -99,19 +102,15 @@ export class AdminFormComponent implements OnInit {
 
     public getCkEditorMessage(): string {
         let message = '';
-        let control = this._formProfile.controls[this._ckEditor];
-        console.log(control.errors);
-        if (control.dirty && control.invalid) {
-            let errorType: string = Object.keys(control.errors)[0];
-            if (errorType) {
-                let err: any = control.errors[errorType];
-                console.log(err);
-                if (errorType == 'lengthBetween') message = this._strFormat.format(this._conf.message.form.lengthBetween, err.min, err.max);
-                else message = `${this._ckEditor} is invalid`;
-            }
+        if (this.hasCkEditor) {
+            let ckEditorVldParams = this._conf.templateConf[this._controller].validationParams[this._ckEditor];
+            message = this._strFormat.format(this._conf.message.form.lengthBetween, ckEditorVldParams.min, ckEditorVldParams.max);
         }
-
         return message;
+    }
+
+    public hasCkEditor(): boolean {
+        return (this._ckEditor) ? true : false;
     }
 }
 

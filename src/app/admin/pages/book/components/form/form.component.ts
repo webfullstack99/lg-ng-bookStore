@@ -72,8 +72,6 @@ export class FormComponent extends FormGeneral implements OnInit, AfterViewInit 
     public onSubmitForm(): void {
         if (this._formProfile.dirty && this._formProfile.valid) {
             this._submittedForm = this._formProfile.value;
-            console.log(this._submittedForm);
-
             let callbacks: any = {
                 // upload in progress call back
                 progressCallback: (upload: Upload) => {

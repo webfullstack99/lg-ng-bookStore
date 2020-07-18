@@ -36,15 +36,12 @@
 
                 <div [class]="getClass('textarea').containerClasses">
                     <textarea [class]="getClass('textarea').classes" [name]="input.name" [id]="'_'+input.name"
-                         rows="5"></textarea>
+                        rows="5" [formControlName]="input.name"></textarea>
                     <p *ngIf="getCkEditorMessage()"><span
-                            class="badge badge-danger">{{getCkEditorMessage() | ucfirst}}</span></p>
-                    <!-- 
-
+                            class="badge badge-info">{{getCkEditorMessage() | ucfirst}}</span></p>
                     <app-show-error-message [displayName]="input.displayName"
                         [control]="_formProfile.controls[input.name]">
                     </app-show-error-message>
-                         -->
                 </div>
             </ng-template>
 

@@ -119,7 +119,7 @@ export class BookModelService extends AdminModelService {
                     }
                     item = this.setCreated(item);
                     this._db.list(this.collection()).push(item)
-                        .then(() => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(upload) })
+                        .then(() => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback() })
                         .catch((e) => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e) });
                 } catch (e) { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e) }
             },
