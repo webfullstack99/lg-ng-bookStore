@@ -9,6 +9,7 @@ import { SharedModule } from '../shared/shared.module';
 import { BookModule } from './pages/book/book.module';
 import { AdminWidgetModule } from './widget/admin-widget.module';
 import { AdminElementModule } from './element/admin-element.module';
+import { UserModule } from './pages/user/user.module';
 
 @NgModule({
     declarations: [AdminMainComponent, DashboardComponent],
@@ -16,6 +17,7 @@ import { AdminElementModule } from './element/admin-element.module';
         // pages
         ItemModule,
         BookModule,
+        UserModule,
         SharedModule,
     ],
     exports: [AdminMainComponent],

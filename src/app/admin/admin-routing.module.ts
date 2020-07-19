@@ -5,9 +5,12 @@ import { IndexComponent as itemIndex } from './pages/item/components/index/index
 import { FormComponent as itemForm } from './pages/item/components/form/form.component';
 import { IndexComponent as bookIndex } from './pages/book/components/index/index.component';
 import { FormComponent as bookForm } from './pages/book/components/form/form.component';
+import { IndexComponent as userIndex } from './pages/user/components/index/index.component';
+import { FormComponent as userForm } from './pages/user/components/form/form.component';
 import { Conf } from '../shared/defines/conf';
 import { TestDbComponent } from './widget/components/test-db/test-db.component';
 import { HelperService } from '../shared/services/helper.service';
+import { RawDataComponent } from './widget/components/raw-data/raw-data.component';
 
 const _conf = new Conf;
 const routes: Routes = [
@@ -30,8 +33,17 @@ const routes: Routes = [
                     { path: '', component: bookIndex, },
                 ]
 
+            }, {
+                path: 'user',
+                children: [
+                    { path: 'form', component: userForm, },
+                    { path: 'form/:key', component: userForm, },
+                    { path: '', component: userIndex, },
+                ]
+
             },
             { path: 'test-database', component: TestDbComponent },
+            { path: 'raw-data', component: RawDataComponent },
             { path: '', component: DashboardComponent }
         ]
     },

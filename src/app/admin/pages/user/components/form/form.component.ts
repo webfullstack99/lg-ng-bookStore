@@ -1,8 +1,8 @@
 const _pageConfig = new pageConfig();
 
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { BookModelService as _ModelService } from 'src/app/admin/shared/models/book-model.service';
-import { BookValidate as _MainValidate } from 'src/app/admin/shared/validates/book.validate';
+import { UserModelService as _ModelService } from 'src/app/admin/shared/models/user-model.service';
+import { UserValidate as _MainValidate } from 'src/app/admin/shared/validates/user.validate';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
@@ -51,15 +51,13 @@ export class FormComponent extends FormGeneral implements OnInit {
     // HAS THUMB
     protected initiateFormProfile(): void {
         let formData = {
-            title: [this._helperService.getVal(this._currentItem, 'title.value') || ''],
-            author: [this._helperService.getVal(this._currentItem, 'author.value') || ''],
-            description: [this._helperService.getVal(this._currentItem, 'description.value') || ''],
-            slug: [this._currentItem.slug || ''],
-            price: [this._currentItem.price || ''],
-            category: [this._helperService.getVal(this._currentItem, 'category.name.value') || ''],
+            username: [this._helperService.getVal(this._currentItem, 'username.value') || ''],
+            email: [this._helperService.getVal(this._currentItem, 'email.value') || ''],
+            fullName: [this._helperService.getVal(this._currentItem, 'fullName.value') || ''],
+            password: [''],
+            password_confirmed: [''],
+            group: [this._helperService.getVal(this._currentItem, 'group.name.value') || ''],
             status: [this._currentItem.status || ''],
-            special: [this._currentItem.special || ''],
-            saleOff: [this._currentItem.saleOff || ''],
             thumb: [''],
         }
         new _MainValidate().runValidate(this._currentItem, formData)

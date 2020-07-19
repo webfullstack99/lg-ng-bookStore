@@ -22,6 +22,7 @@ import { FieldButtonComponent } from './components/field-button/field-button.com
 import { FieldSelectComponent } from './components/field-select/field-select.component';
 import { FieldInputComponent } from './components/fieldInput/fieldInput.component';
 import { ShowErrorMessageComponent } from './components/show-error-message/show-error-message.component';
+import { RawDataComponent } from './components/raw-data/raw-data.component';
 
 
 
@@ -46,12 +47,14 @@ import { ShowErrorMessageComponent } from './components/show-error-message/show-
         AdminTableInputComponent,
         TheadActionBarComponent,
         TestDbComponent,
+        RawDataComponent,
         FieldButtonComponent,
         FieldSelectComponent,
         FieldInputComponent,
         ShowErrorMessageComponent,
     ],
     exports: [
+        RawDataComponent,
         LogoutModalComponent,
         SearchComponent,
         PaginationComponent,
@@ -71,6 +74,6 @@ import { ShowErrorMessageComponent } from './components/show-error-message/show-
         FieldSelectComponent,
         FieldInputComponent,
         ShowErrorMessageComponent,
-    ]
+    ],
 })
 export class AdminWidgetModule { }

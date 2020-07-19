@@ -91,6 +91,17 @@ export class Conf {
                 chooseFile: 'choose file',
             },
             button: {
+                acp: {
+                    yes: {
+                        content: 'Yes',
+                        classes: 'btn btn-success btn-sm',
+                    },
+                    no: {
+                        content: 'No',
+                        classes: 'btn btn-light btn-sm',
+                    },
+                    get all() { return new Conf().template.format.button.all; }
+                },
                 special: {
                     yes: {
                         content: 'Yes',
@@ -213,7 +224,7 @@ export class Conf {
         book: {
             action: ['edit', 'delete'],
             filter: ['status', 'special'],
-            search: ['all', 'title', 'author', 'description'],
+            search: ['all', 'title', 'author'],
             sort: ['title', 'category', 'author', 'price', 'special', 'saleOff', 'status', 'created', 'modified'],
             pagination: {
                 pageRange: 3,
@@ -246,6 +257,36 @@ export class Conf {
                     min: 1,
                     max: 100,
                     step: 5,
+                },
+            }
+        },
+
+        user: {
+            action: ['edit', 'delete'],
+            filter: ['status'],
+            search: ['all', 'username', 'email', 'fullName'],
+            sort: ['username', 'email', 'fullName', 'group', 'status', 'created', 'modified'],
+            pagination: {
+                pageRange: 3,
+                itemsPerPage: 5,
+                behaviorSubject: new BehaviorSubject(this),
+            },
+            formParams: {
+                username: {
+                    min: 5,
+                    max: 20,
+                },
+                email: {
+                    min: 5,
+                    max: 30,
+                },
+                fullName: {
+                    min: 5,
+                    max: 50,
+                },
+                password: {
+                    min: 8,
+                    max: 16,
                 },
             }
         },

@@ -1,0 +1,59 @@
+<div class="">
+    <!-- PAGE TITLE -->
+    <div class="row">
+        <div class="col-12 ">
+            <app-page-title [controller]="_controller" pageType="form"></app-page-title>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="row mt-lg-5">
+        <div class="col-lg-6 offset-lg-3">
+            <div *ngIf="_formProfile" [appAdminForm]="_formProfile" [currentItem]="_currentItem" [formData]="[
+                    {
+                        type: 'general',
+                        inputType: 'text',
+                        name: 'username',   
+                        displayName: 'username',
+                        options: {type: 'unique'}
+                    }, {
+                        type: 'general',
+                        inputType: 'text',
+                        name: 'email',   
+                        displayName: 'email',
+                        options: {type: 'unique'}
+                    }, {
+                        type: 'general',
+                        inputType: 'text',
+                        name: 'fullName',   
+                        displayName: 'full name'
+                    }, {
+                        type: 'general',
+                        inputType: 'password',
+                        name: 'password',   
+                        displayName: 'password'
+                    }, {
+                        type: 'general',
+                        inputType: 'password',
+                        name: 'password_confirmed',   
+                        displayName: 'password confirmed'
+                    }, {
+                        type: 'select',
+                        name: 'status',   
+                        displayName: 'status'
+                    }, {
+                        type: 'file',
+                        name: 'thumb',   
+                        displayName: 'thumb'
+                    }, {
+                        type: 'submit',
+                        displayName: 'submit'
+                    }
+                ]" [selectedFiles]="_selectedFiles" (_onSelectedFiles)="onSelectedFile($event)"
+                [controller]="_controller" [editor]="'description'" (onSubmit)="onSubmitForm()"
+                [formType]="_formType"></div>
+            <!-- PROGRESS BAR -->
+            <div *ngIf="_uploadProgress!=null" [appProgressBar]="_uploadProgress" title="Saving"> </div>
+        </div>
+    </div>
+</div>

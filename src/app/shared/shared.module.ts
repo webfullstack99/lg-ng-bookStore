@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { Conf } from './defines/conf';
@@ -14,10 +15,12 @@ import { StrFormatService } from './services/str-format.service';
 import { ItemModelService } from '../admin/shared/models/item-model.service';
 import { AdminModelService } from '../admin/shared/models/admin-model.service';
 import { Schema } from '../admin/shared/defines/schema';
+import { HttpService } from '../admin/shared/services/http.service';
 
 @NgModule({
     declarations: [NotFoundComponent, ShowTimeComponent, UcfirstPipe],
     imports: [
+        HttpClientModule,
         RouterModule,
         BrowserModule,
         ReactiveFormsModule,
@@ -30,6 +33,7 @@ import { Schema } from '../admin/shared/defines/schema';
         UcfirstPipe,
     ],
     providers: [
+        HttpService,
         Conf,
         UrlService,
         HighlightService,
@@ -41,7 +45,7 @@ import { Schema } from '../admin/shared/defines/schema';
         ItemModelService,
         AdminModelService,
         Schema
-    ]
+    ],
 
 })
 export class SharedModule { }
