@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { pageConfig } from '../../defines/pageConfig';
 import { Conf } from 'src/app/shared/defines/conf';
 import { FormGeneral } from '../../../form.general';
+import { CustomValidators } from 'src/app/admin/shared/defines/custom-validators';
 
 
 declare var $: any;
@@ -61,7 +62,9 @@ export class FormComponent extends FormGeneral implements OnInit {
             thumb: [''],
         }
         new _MainValidate().runValidate(this._currentItem, formData)
-        this._formProfile = this._formBuilder.group(formData);
+        this._formProfile = this._formBuilder.group(formData, {
+            validators: CustomValidators.matchPassword('password', 'password_confirmed')
+        });
     }
 
     public onSubmitForm(): void {

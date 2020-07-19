@@ -57,7 +57,7 @@ export class AdminFormComponent implements OnInit {
 
     public onSubmitForm(): void {
         this._onSubmit.emit(this._formProfile);
-        this.resetEditor();
+        if (this._formType == 'add') this.resetEditor();
     }
 
     public onFileChange($event): void {

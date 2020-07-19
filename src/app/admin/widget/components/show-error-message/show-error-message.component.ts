@@ -11,6 +11,7 @@ import { Conf } from 'src/app/shared/defines/conf';
 })
 export class ShowErrorMessageComponent implements OnInit {
 
+    @Input('field') _field: string;
     @Input('control') _control: FormControl;
     @Input('group') _group: FormGroup;
     @Input('displayName') _displayName: string;
@@ -25,23 +26,35 @@ export class ShowErrorMessageComponent implements OnInit {
 
     ngOnInit() { }
 
-    public isShow(): boolean {
-        if (!this._control.valid && this._control.dirty) return true;
+    public isShow(type: string = 'control'): boolean {
+        if (type == 'control') {
+            if (!this._control.valid && this._control.dirty) return true;
+        } else {
+            if (this._group.controls[this._field].dirty && !this._group.valid) return true;
+        }
         return false;
     }
 
-    public getMessage(): string {
-        let errorType: string = Object.keys(this._control.errors)[0];
-        let err: any = this._control.errors[errorType];
+    public getMessage(type: string = 'control'): string {
+        let errorType: string;
+        let err: any;
+        if (type == 'control') {
+            errorType = Object.keys(this._control.errors)[0];
+            err = this._control.errors[errorType];
+        } else if (type == 'group') {
+            errorType = Object.keys(this._group.errors)[0];
+            err = this._group.errors[errorType];
+        }
         let messageData = this._conf.message.form;
         let message: string;
         switch (errorType) {
             case 'lengthBetween':
-                message = this.strFormat.format(messageData.lengthBetween, err.min, err.max);
+            case 'between':
+                message = this.strFormat.format(messageData[errorType], err.min, err.max);
                 break;
 
-            case 'between':
-                message = this.strFormat.format(messageData.between, err.min, err.max);
+            case 'matchPassword':
+                message = this.strFormat.format(messageData[errorType]);
                 break;
 
             default:

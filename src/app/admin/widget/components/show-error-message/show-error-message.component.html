@@ -1,7 +1,17 @@
-<ng-template [ngIf]="!_forceMessage">
-    <p *ngIf="isShow() && getMessage()"><span class="badge badge-danger">{{getMessage() | ucfirst}}</span></p>
+<ng-template [ngIf]="_control">
+    <ng-template [ngIf]="!_forceMessage">
+        <p *ngIf="isShow() && getMessage()"><span class="badge badge-danger">{{getMessage() | ucfirst}}</span></p>
+    </ng-template>
 </ng-template>
 
+<!-- FORM GROUP -->
+<ng-template [ngIf]="_group">
+    <p *ngIf="isShow('group') && getMessage('group')"><span
+            class="badge badge-danger">{{getMessage('group') | ucfirst}}</span></p>
+</ng-template>
+
+<!-- FORM CONTROL -->
+<ng-template [ngIf]="_group">
 <ng-template [ngIf]="_forceMessage">
-    <p ><span class="badge badge-danger">{{_forceMessage | ucfirst}}</span></p>
+    <p><span class="badge badge-danger">{{_forceMessage | ucfirst}}</span></p>
 </ng-template>

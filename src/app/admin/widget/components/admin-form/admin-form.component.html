@@ -39,9 +39,16 @@
                         <!-- End input HAS option params -->
                     </ng-template>
 
-                    <app-show-error-message [displayName]="input.displayName"
-                        [control]="_formProfile.controls[input.name]">
-                    </app-show-error-message>
+                    <ng-template [ngIf]="input.isPasswordConfirmed">
+                        <app-show-error-message [field]="input.name" [displayName]="input.displayName" [group]="_formProfile">
+                        </app-show-error-message>
+                    </ng-template>
+
+                    <ng-template [ngIf]="!input.isPasswordConfirmed">
+                        <app-show-error-message [displayName]="input.displayName"
+                            [control]="_formProfile.controls[input.name]">
+                        </app-show-error-message>
+                    </ng-template>
                 </div>
             </ng-template>
 

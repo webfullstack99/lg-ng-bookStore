@@ -60,6 +60,7 @@ export class Conf {
             lengthBetween: 'Length must between {0} and {1}',
             between: 'Value must between {0} and {1}',
             unique: 'Must be unique',
+            matchPassword: 'Password does not match',
         }
     }
 
@@ -224,7 +225,7 @@ export class Conf {
         book: {
             action: ['edit', 'delete'],
             filter: ['status', 'special'],
-            search: ['all', 'title', 'author'],
+            search: ['all', 'title', 'author', 'description'],
             sort: ['title', 'category', 'author', 'price', 'special', 'saleOff', 'status', 'created', 'modified'],
             pagination: {
                 pageRange: 3,

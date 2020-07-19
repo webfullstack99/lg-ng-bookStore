@@ -1,13 +1,22 @@
-import { ValidatorFn, AbstractControl, AsyncValidatorFn } from '@angular/forms';
+import { ValidatorFn, AbstractControl, AsyncValidatorFn, FormGroup } from '@angular/forms';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { Conf } from 'src/app/shared/defines/conf';
 
-declare const $:any;
+declare const $: any;
 const _conf = new Conf();
 
 export class CustomValidators {
     constructor(
     ) { }
+
+    public static matchPassword(pwd: string, pwdConfirmed: string): ValidatorFn {
+        return (group: FormGroup) => {
+            let pwdVal: string = group.controls[pwd].value;
+            let pwdConfirmedVal: string = group.controls[pwdConfirmed].value;
+            if (pwdVal == pwdConfirmedVal) return null;
+            return { matchPassword: true };
+        };
+    }
 
     public static lengthBetween(min: number, max: number): ValidatorFn {
         return (control: AbstractControl) => {
