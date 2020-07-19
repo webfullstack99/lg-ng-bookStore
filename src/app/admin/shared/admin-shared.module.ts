@@ -3,7 +3,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { AdminFormComponent } from '../widget/components/admin-form/admin-form.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AdminWidgetModule } from '../widget/admin-widget.module';
-import { CkEditorComponent } from '../widget/components/admin-form/ck-editor/ck-editor.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 
 @NgModule({
@@ -12,11 +12,11 @@ import { CkEditorComponent } from '../widget/components/admin-form/ck-editor/ck-
         AdminWidgetModule,
         ReactiveFormsModule,
         FormsModule,
+        CKEditorModule,
     ],
-    declarations: [AdminFormComponent, CkEditorComponent],
+    declarations: [AdminFormComponent ],
     exports: [
         AdminFormComponent,
-        CkEditorComponent
     ],
     providers: [],
 })

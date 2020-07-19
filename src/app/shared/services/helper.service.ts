@@ -273,4 +273,9 @@ export class HelperService {
 
         return str;
     }
+
+    public getTextFormString(str: string): string {
+        if (str.match(/^\<[\w]+\>/)) return $(str).text();
+        return str;
+    }
 }

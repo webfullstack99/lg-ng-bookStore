@@ -2,6 +2,7 @@ import { ValidatorFn, AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { Conf } from 'src/app/shared/defines/conf';
 
+declare const $:any;
 const _conf = new Conf();
 
 export class CustomValidators {
@@ -11,6 +12,7 @@ export class CustomValidators {
     public static lengthBetween(min: number, max: number): ValidatorFn {
         return (control: AbstractControl) => {
             let value = (control.value == null) ? '' : control.value;
+            value = this.getTextFormString(value);
             if (value.length >= min && value.length <= max) return null;
             return {
                 lengthBetween: { min, max }
@@ -37,16 +39,8 @@ export class CustomValidators {
         };
     }
 
-
-    ///**
-    //* Thumbs custom validators
-    //* @param data - {ext}
-    //* @returns thumb 
-    //*/
-    //public static thumb(data: any): ValidatorFn {
-    //return (control: AbstractControl) => {
-    //let file =
-    //return {};
-    //};
-    //}
+    public static getTextFormString(str: string): string {
+        if (str.match(/^\<[\w]+\>/)) return $(str).text();
+        return str;
+    }
 }

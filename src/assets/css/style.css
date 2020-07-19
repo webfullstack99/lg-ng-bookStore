@@ -1,4 +1,10 @@
 :root {
+    /* breakpoint */
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
     /* my css */
     --highlight: #F5F207;
     --delete-warning: #ffacac;
@@ -112,7 +118,13 @@ input.ng-dirty.ng-valid, input.ng-touched.ng-valid {
 }
 
 .admin-table-input-message {
-    margin-top:3px;
+    margin-top: 3px;
 }
 
 .admin-checkbox {}
+
+.ck.ck-content {
+    background-color: #fff;
+    border: 1px solid #d1d3e2 !important;
+    border-radius: 0.35rem !important;
+}

@@ -198,9 +198,9 @@ export class AdminModelService {
             })
         } else {
             items = items.sort((a, b) => {
-                let aVal: string = a.$key;
-                let bVal: string = b.$key;
-                return -(aVal.localeCompare(bVal));
+                let aVal: number = a.created.time;
+                let bVal: number = b.created.time;
+                return -(aVal - bVal);
             })
         }
         return items;

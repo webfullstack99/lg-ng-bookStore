@@ -58,7 +58,7 @@
                         displayName: 'submit'
                     }
                 ]" [selectedFiles]="_selectedFiles" (_onSelectedFiles)="onSelectedFile($event)"
-                [controller]="_controller" [ckEditor]="'description'" (onSubmit)="onSubmitForm()"
+                [controller]="_controller" [editor]="'description'" (onSubmit)="onSubmitForm()"
                 [formType]="_formType"></div>
             <!-- PROGRESS BAR -->
             <div *ngIf="_uploadProgress!=null" [appProgressBar]="_uploadProgress" title="Saving"> </div>

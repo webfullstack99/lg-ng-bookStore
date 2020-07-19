@@ -4,9 +4,11 @@ import { HelperService } from 'src/app/shared/services/helper.service';
 import { Conf } from 'src/app/shared/defines/conf';
 import { StrFormatService } from 'src/app/shared/services/str-format.service';
 import { AdminModelService } from 'src/app/admin/shared/models/admin-model.service';
+import * as DocumentEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import { ChangeEvent } from '@ckeditor/ckeditor5-angular';
 
-declare const CKEDITOR: any;
 declare const $: any;
+declare const CKEDITOR: any;
 
 @Component({
     selector: '[appAdminForm]',
@@ -16,9 +18,9 @@ declare const $: any;
 
 export class AdminFormComponent implements OnInit {
 
-    public _ckEditorVal: string;
     public _formParams: any;
     public _timeoutObj: any;
+    public _editor = DocumentEditor
 
     @Input('formData') _formData: any[];
     @Input('formType') _formType: string;
@@ -26,7 +28,7 @@ export class AdminFormComponent implements OnInit {
     @Input('appAdminForm') _formProfile: FormGroup;
     @Input('currentItem') _currentItem: any;
     @Input('selectedFiles') _selectedFiles: any;
-    @Input('ckEditor') _ckEditor: string;
+    @Input('editor') _ckEditor: string;
     @Output('_onSelectedFiles') _onSelectedFile = new EventEmitter<any>();
     @Output('onSubmit') _onSubmit = new EventEmitter<any>();
 
@@ -40,12 +42,8 @@ export class AdminFormComponent implements OnInit {
 
     ngOnInit(): void {
         if (this._controller) {
-            if (this._ckEditor) this.setupCkEditor();
             this.setFormParams();
         }
-        //this._formProfile.valueChanges.subscribe((data) => {
-        //console.log(this._formProfile.value);
-        //})
     }
 
     private setFormParams(): void {
@@ -57,38 +55,9 @@ export class AdminFormComponent implements OnInit {
         this._formParams = formParams;
     }
 
-    protected setupCkEditor(): void {
-        if (this.hasCkEditor()) {
-            const s = document.createElement('script');
-            s.type = 'text/javascript';
-            s.src = `/assets/plugins/ckeditor/ckeditor.js`;
-            this._elementRef.nativeElement.appendChild(s);
-
-            setTimeout(() => {
-                const x = document.createElement('script');
-                x.type = 'text/javascript';
-                x.innerHTML = `CKEDITOR.replace( '_description' );`;
-                this._elementRef.nativeElement.appendChild(x);
-            }, this._conf.params.loadCkEditorTime);
-            this._ckEditorVal = this._formProfile.controls[this._ckEditor].value;
-            this.solveCkEditor();
-        }
-    }
-
-    private solveCkEditor(): void {
-        let $this: AdminFormComponent = this;
-        setTimeout(() => {
-            CKEDITOR.instances[`_${this._ckEditor}`].on('key', function (e) {
-                $this._formProfile.controls[$this._ckEditor].setValue(this.getData())
-                $this._ckEditorVal = $this._formProfile.controls[$this._ckEditor].value;
-            });
-        }, this._conf.params.loadSpecificCkEditor);
-    }
-
     public onSubmitForm(): void {
-        if (this.hasCkEditor() && this._formType == 'add') CKEDITOR.instances._description.setData('', function () { this.updateElement(); })
-        
         this._onSubmit.emit(this._formProfile);
+        this.resetEditor();
     }
 
     public onFileChange($event): void {
@@ -136,20 +105,8 @@ export class AdminFormComponent implements OnInit {
     }
 
     private showMessage(name: string, type?: string) {
-        if (type != 'off') {
-            this._formProfile.controls[name].setErrors({ type: true });
-            this._formProfile.controls[name].markAsTouched();
-            this._formProfile.controls[name].markAsDirty();
-        }
-    }
-
-    public getCkEditorMessage(): string {
-        let message = '';
-        if (this.hasCkEditor) {
-            let ckEditorVldParams = this._conf.templateConf[this._controller].formParams[this._ckEditor];
-            message = this._strFormat.format(this._conf.message.form.lengthBetween, ckEditorVldParams.min, ckEditorVldParams.max);
-        }
-        return message;
+        if (type != 'off') this.setFormControlErrors(name, type)
+        else this.setFormControlErrors(name, null);
     }
 
     public hasCkEditor(): boolean {
@@ -160,6 +117,36 @@ export class AdminFormComponent implements OnInit {
         let param: any = this._formParams[name];
         if (param) if (param) return (param[paramKey]) ? param[paramKey] : '';
         return '';
+    }
+
+    public onReady(editor) {
+        editor.ui.getEditableElement().parentElement.insertBefore(
+            editor.ui.view.toolbar.element,
+            editor.ui.getEditableElement()
+        );
+    }
+
+    public onEditorChange({ editor }: ChangeEvent): void {
+        this.setFormControlValue(this._ckEditor, editor.getData());
+    }
+
+    private setFormControlValue(name: string, value: string): void {
+        this._formProfile.controls[name].setValue(value);
+        this._formProfile.controls[name].markAsTouched();
+        this._formProfile.controls[name].markAsDirty();
+        this._formProfile.controls[name].updateValueAndValidity();
+    }
+
+    private setFormControlErrors(name: string, type: any): void {
+        type = (type) ? { [type]: true } : type;
+        this._formProfile.controls[name].setErrors(type);
+        this._formProfile.controls[name].markAsTouched();
+        this._formProfile.controls[name].markAsDirty();
+        this._formProfile.controls[name].updateValueAndValidity();
+    }
+
+    private resetEditor(): void {
+        $('.ck.ck-content > p').html('');
     }
 }
 

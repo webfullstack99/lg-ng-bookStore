@@ -19,6 +19,8 @@
         "@angular/platform-browser": "~9.1.1",
         "@angular/platform-browser-dynamic": "~9.1.1",
         "@angular/router": "~9.1.1",
+        "@ckeditor/ckeditor5-angular": "^1.2.3",
+        "@ckeditor/ckeditor5-build-decoupled-document": "^20.0.0",
         "angular-notifier": "^6.0.1",
         "angularfire2": "^5.4.2",
         "date-and-time": "^0.13.1",
