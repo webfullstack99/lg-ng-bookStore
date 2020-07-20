@@ -40,7 +40,8 @@
                     </ng-template>
 
                     <ng-template [ngIf]="input.isPasswordConfirmed">
-                        <app-show-error-message [field]="input.name" [displayName]="input.displayName" [group]="_formProfile">
+                        <app-show-error-message [field]="input.name" [displayName]="input.displayName"
+                            [group]="_formProfile">
                         </app-show-error-message>
                     </ng-template>
 
@@ -83,15 +84,44 @@
 
             <!-- FILE TYPE -->
             <ng-template [ngSwitchCase]="'file'">
-                <div class="custom-file" [class]="getClass('fileInput').containerClasses">
-                    <input type="file" [class]="getClass('fileInput').classes" [id]="'_'+input.name"
-                        [formControlName]="input.name" accept="image/*" (change)="onFileChange($event)">
-                    <label [class]="getClass('fileInput').labelClasses"
-                        [for]="input.name">{{ _helperService.getConf_text('chooseFile') | ucfirst}}</label>
-                    <app-show-error-message [displayName]="input.displayName"
-                        [control]="_formProfile.controls[input.name]">
-                    </app-show-error-message>
-                </div>
+
+                <!-- NO CROPPER -->
+                <ng-template [ngIf]="!input.hasCropper">
+                    <div class="custom-file" [class]="getClass('fileInput').containerClasses">
+                        <input type="file" [class]="getClass('fileInput').classes" [id]="'_'+input.name"
+                            [formControlName]="input.name" accept="image/*" (change)="onFileChange($event)">
+                        <label [class]="getClass('fileInput').labelClasses"
+                            [for]="input.name">{{ _helperService.getConf_text('chooseFile') | ucfirst}}</label>
+                        <app-show-error-message [displayName]="input.displayName"
+                            [control]="_formProfile.controls[input.name]">
+                        </app-show-error-message>
+                    </div>
+                </ng-template>
+
+                <!-- HAS CROPPER -->
+                <ng-template [ngIf]="input.hasCropper">
+                    <div class="custom-file" [class]="getClass('fileInput').containerClasses">
+                        <input type="file" [class]="getClass('fileInput').classes" [id]="'_'+input.name"
+                            [formControlName]="input.name" accept="image/*" (change)="fileChangeEvent($event)" />
+
+                        <label [class]="getClass('fileInput').labelClasses"
+                            [for]="input.name">{{ _helperService.getConf_text('chooseFile') | ucfirst}}</label>
+
+                        <app-show-error-message [displayName]="input.displayName"
+                            [control]="_formProfile.controls[input.name]">
+                        </app-show-error-message>
+                    </div>
+                    <div class="col-12 mt-3 cropper-container d-flex justify-content-center">
+                        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
+                            [aspectRatio]="4 / 3" format="png" (imageCropped)="imageCropped($event)"
+                            (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+                            (loadImageFailed)="loadImageFailed()"></image-cropper>
+                    </div>
+                    <button class="btn btn-primary" (click)="onSubmitCopperImage()">Submit image</button>
+
+                </ng-template>
+
+                <!-- THUMB AVAILABLE -->
                 <p *ngIf="_currentItem.thumb" class="mt-5">
                     <img [src]="_currentItem.thumb" [alt]="input.displayName+' image'" class="img-fluid rounded">
                 </p>

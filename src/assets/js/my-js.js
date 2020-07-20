@@ -2,6 +2,16 @@ $(document).ready(function () {
     setup.run();
 })
 
+let slt = {
+    adminMainTable: '.admin-main-table',
+    customFileInput: 'input.custom-file-input[type="file"]',
+    sidebarToggle: '#sidebarToggle',
+    sidebarToggleTop: '#sidebarToggleTop',
+    accordionSidebar: '#accordionSidebar',
+    onClickSwitchChevron: '.on-click-switch-chevron',
+    chevronBtn: '.chevron-btn',
+}
+
 let setup = {
     run: function () {
         this.sidebarToggle();
@@ -58,19 +68,16 @@ let setup = {
             var fileName = $(this).val();
 
             //replace the "Choose a file" label
-            $(this).next('.custom-file-label').html(fileName);
+            $(this).next('.custom-file-label').html(helper.limit(fileName, 50));
         })
     },
 
     alignMiddleColumnInTable: function () { }
 }
 
-let slt = {
-    adminMainTable: '.admin-main-table',
-    customFileInput: 'input.custom-file-input[type="file"]',
-    sidebarToggle: '#sidebarToggle',
-    sidebarToggleTop: '#sidebarToggleTop',
-    accordionSidebar: '#accordionSidebar',
-    onClickSwitchChevron: '.on-click-switch-chevron',
-    chevronBtn: '.chevron-btn',
+let helper = {
+    limit: function (str, limitNumber) {
+        if (str.length > limitNumber) return str.substr(0, limitNumber) + '...';
+        return str;
+    }
 }

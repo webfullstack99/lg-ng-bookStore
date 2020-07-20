@@ -4,6 +4,7 @@ import { AdminFormComponent } from '../widget/components/admin-form/admin-form.c
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AdminWidgetModule } from '../widget/admin-widget.module';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 
 @NgModule({
@@ -13,6 +14,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
         ReactiveFormsModule,
         FormsModule,
         CKEditorModule,
+        ImageCropperModule
     ],
     declarations: [AdminFormComponent ],
     exports: [

@@ -13,10 +13,20 @@ export class UploadService {
         firebase.initializeApp(environment.firebase);
     }
 
+
+    /**
+     * Uploads upload service
+     * @param params - {basePath, upload}
+     * @param options - {imageType: string, progressCallback?, doneCallBack}
+     */
     public upload(params: any, options: any): void {
         let filePath = `${params.basePath}/${Date.now()}`;
         let fileRef = firebase.storage().ref(filePath);
-        let task = fileRef.put(params.upload._file);
+        let task;
+        if (options.imageType == 'base64') {
+            let base64 = this.solveBase64String(params.upload._base64);
+            task = fileRef.putString(base64, 'base64', { contentType: 'image/jpg' });
+        } else task = fileRef.put(params.upload._file);
 
         task.on('state_changed', (snapshot) => {
             // In Progress 
@@ -34,7 +44,6 @@ export class UploadService {
             // Done
             task.snapshot.ref.getDownloadURL().then(function (downloadURL) {
                 params.upload._url = downloadURL;
-                params.upload._name = params.upload._file.name;
                 options.doneCallback(params.upload);
             });
         })
@@ -52,5 +61,10 @@ export class UploadService {
                 console.log('Failed to delete file');
                 if (typeof options.doneCallback == 'function') options.doneCallback(error);
             });
+    }
+
+    public solveBase64String(str: string): string {
+        if (str) return str.replace(/data:image\/(jpeg|png);base64,/, '');
+        return '';
     }
 }

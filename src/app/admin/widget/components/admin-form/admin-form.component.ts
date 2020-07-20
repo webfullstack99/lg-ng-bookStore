@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { Conf } from 'src/app/shared/defines/conf';
@@ -6,6 +6,10 @@ import { StrFormatService } from 'src/app/shared/services/str-format.service';
 import { AdminModelService } from 'src/app/admin/shared/models/admin-model.service';
 import * as DocumentEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { ChangeEvent } from '@ckeditor/ckeditor5-angular';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
+import { UploadService } from 'src/app/shared/services/upload.service';
+import { base64Upload } from 'src/app/shared/defines/base64-upload';
+
 
 declare const $: any;
 declare const CKEDITOR: any;
@@ -13,10 +17,14 @@ declare const CKEDITOR: any;
 @Component({
     selector: '[appAdminForm]',
     templateUrl: './admin-form.component.html',
-    styleUrls: ['./admin-form.component.css']
+    styleUrls: ['./admin-form.component.css'],
+
 })
 
 export class AdminFormComponent implements OnInit {
+
+    public imageChangedEvent: any = '';
+    public croppedImage: any = '';
 
     public _formParams: any;
     public _timeoutObj: any;
@@ -33,6 +41,7 @@ export class AdminFormComponent implements OnInit {
     @Output('onSubmit') _onSubmit = new EventEmitter<any>();
 
     constructor(
+        public _uploadService: UploadService,
         public _helperService: HelperService,
         public _conf: Conf,
         private _elementRef: ElementRef,
@@ -147,6 +156,31 @@ export class AdminFormComponent implements OnInit {
 
     private resetEditor(): void {
         $('.ck.ck-content > p').html('');
+    }
+
+    // image cropper
+    fileChangeEvent(event: any): void {
+        this.imageChangedEvent = event;
+    }
+
+    imageCropped(event: ImageCroppedEvent) {
+        this.croppedImage = event.base64;
+    }
+
+    loadImageFailed() {
+        console.log('Failed to load cropper image');
+    }
+
+    public onSubmitCopperImage(): void {
+        this._uploadService.upload({ basePath: this._controller, upload: new base64Upload(this.croppedImage) }, {
+            imageType: 'base64',
+            progressCallback: (upload: base64Upload) => {
+                console.log(upload._progress);
+            },
+            doneCallback: (upload: base64Upload) => {
+                console.log(upload._url);
+            },
+        });
     }
 }
 
