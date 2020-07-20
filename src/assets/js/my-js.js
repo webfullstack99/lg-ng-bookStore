@@ -17,7 +17,7 @@ let setup = {
         this.sidebarToggle();
         this.onChevronBtnClick();
         this.onSwitchChevronClick();
-        this.onCustomFileInputChange();
+        //this.onCustomFileInputChange();
         this.alignMiddleColumnInTable();
     },
 

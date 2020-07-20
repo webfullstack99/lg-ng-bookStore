@@ -45,14 +45,12 @@
                     }, {
                         type: 'file',
                         name: 'thumb',   
-                        displayName: 'thumb',
-                        hasCropper: true
+                        displayName: 'thumb'
                     }, {
                         type: 'submit',
                         displayName: 'submit'
                     }
-                ]" [selectedFiles]="_selectedFiles" (_onSelectedFiles)="onSelectedFile($event)"
-                [controller]="_controller" [editor]="'description'" (onSubmit)="onSubmitForm()"
+                ]" [controller]="_controller" [editor]="'description'" (onSubmit)="onSubmitForm()"
                 [formType]="_formType"></div>
             <!-- PROGRESS BAR -->
             <div *ngIf="_uploadProgress!=null" [appProgressBar]="_uploadProgress" title="Saving"> </div>

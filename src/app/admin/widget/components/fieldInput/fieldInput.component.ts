@@ -54,9 +54,8 @@ export class FieldInputComponent implements OnInit {
         this._inputVal = value;
         clearTimeout(this._timeoutObj);
         this._timeoutObj = setTimeout(() => {
-            console.log('timeout');
             if (this.onCheck($event)) this._onChange.emit(value);
-        }, this._conf.params.shortInputChangeTimeout);
+        }, this._conf.params.shortInputChangeTime);
     }
 
     private onCheck($event: any): boolean {

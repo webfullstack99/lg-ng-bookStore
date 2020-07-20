@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { StrFormatService } from 'src/app/shared/services/str-format.service';
 import { Conf } from 'src/app/shared/defines/conf';
+import { stringify } from 'querystring';
 
 @Component({
     selector: 'app-show-error-message',
@@ -12,11 +13,12 @@ import { Conf } from 'src/app/shared/defines/conf';
 export class ShowErrorMessageComponent implements OnInit {
 
     @Input('field') _field: string;
-    @Input('control') _control: FormControl;
-    @Input('group') _group: FormGroup;
     @Input('displayName') _displayName: string;
     @Input('forceMessage') _forceMessage: any;
+    @Input('control') _control: FormControl;
+    @Input('group') _group: FormGroup;
 
+    public _messageType: string;
 
     constructor(
         public _conf: Conf,
@@ -28,29 +30,42 @@ export class ShowErrorMessageComponent implements OnInit {
 
     public isShow(type: string = 'control'): boolean {
         if (type == 'control') {
-            if (!this._control.valid && this._control.dirty) return true;
+            if (this.getMessage() && !this._control.valid && this._control.dirty) return true;
         } else {
             if (this._group.controls[this._field].dirty && !this._group.valid) return true;
         }
         return false;
     }
 
-    public getMessage(type: string = 'control'): string {
-        let errorType: string;
-        let err: any;
+    public getMessage(type: string = 'control'): any {
         if (type == 'control') {
-            errorType = Object.keys(this._control.errors)[0];
-            err = this._control.errors[errorType];
-        } else if (type == 'group') {
-            errorType = Object.keys(this._group.errors)[0];
-            err = this._group.errors[errorType];
+            for (let key in this._control.errors) {
+                this._messageType = (key == 'password') ? 'array' : 'string';
+                return this.showError(key, type);
+            }
+        } else {
+            for (let key in this._group.errors) {
+                this._messageType = 'string';
+                return this.showError(key, type);
+            }
         }
+    }
+
+    private showError(errorType: string, type: string): any {
+        let message: string = '';
         let messageData = this._conf.message.form;
-        let message: string;
+        let err: any = (type == 'control') ? this._control.errors[errorType] : this._group.errors[errorType];
         switch (errorType) {
             case 'lengthBetween':
             case 'between':
                 message = this.strFormat.format(messageData[errorType], err.min, err.max);
+                break;
+
+            case 'password':
+                return this.solvePasswordMessage();
+
+            case 'unique':
+                message = this.strFormat.format(messageData[errorType], this._displayName);
                 break;
 
             case 'matchPassword':
@@ -61,6 +76,49 @@ export class ShowErrorMessageComponent implements OnInit {
                 message = `${this._displayName} is invalid`;
                 break;
         }
+
         return message;
+    }
+
+    private solvePasswordMessage(): any[] {
+        let messages = {
+            space: `Do not contain space`,
+            digit: 'At least one digit.',
+            special: 'At least one special symbol.',
+            uppercase: 'At least one uppercase letter.',
+            length: `Be at least 8 characters.`,
+        }
+        let result: any[] = [];
+        if (this._control.errors) {
+            for (let key in this._control.errors.password) {
+                let msg: any = {
+                    message: messages[key],
+                    status: (this._control.errors.password[key]) ? true : false,
+                }
+                result.push(msg);
+            }
+        }
+        return result;
+    }
+
+    public getMessageClassObj(status: boolean): Object {
+        return {
+            'mt-1': true,
+            'd-block': true,
+            'text-danger': status,
+            'text-success': !status,
+        }
+    }
+
+    public getStatusSymbolClassObj(status: boolean): Object {
+        return {
+            'far fa-fw': true,
+            'fa-times text-danger': status,
+            'fa-check text-success': !status,
+        }
+    }
+
+    public isType(value: any): string {
+        return typeof value;
     }
 }

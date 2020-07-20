@@ -31,23 +31,24 @@ export class UserValidate {
             ],
             password: [
                 Validators.required,
+                CustomValidators.password(this._vldParams.password.min),
             ],
-            password_confirmed: [
-                Validators.required,
-            ],
+        password_confirmed: [
+            Validators.required,
+        ],
             //group: [Validators.required,],
 
             status: [
                 Validators.required,
                 CustomValidators.fieldSelectData('status'),
             ],
-            thumb: thumbValidates,
+                thumb: thumbValidates,
         };
 
         this.applyValidate(formData, validateData);
     }
 
     private applyValidate(formData, validateData): void {
-        for (let key in formData) if (validateData[key]) formData[key].push(validateData[key]);
-    }
+    for(let key in formData) if(validateData[key]) formData[key].push(validateData[key]);
+}
 }

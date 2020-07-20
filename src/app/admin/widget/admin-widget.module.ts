@@ -23,6 +23,7 @@ import { FieldSelectComponent } from './components/field-select/field-select.com
 import { FieldInputComponent } from './components/fieldInput/fieldInput.component';
 import { ShowErrorMessageComponent } from './components/show-error-message/show-error-message.component';
 import { RawDataComponent } from './components/raw-data/raw-data.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 
 
@@ -31,6 +32,7 @@ import { RawDataComponent } from './components/raw-data/raw-data.component';
         SharedModule,
     ],
     declarations: [
+        ModalComponent,
         LogoutModalComponent,
         PaginationComponent,
         FilterComponent,
@@ -54,6 +56,7 @@ import { RawDataComponent } from './components/raw-data/raw-data.component';
         ShowErrorMessageComponent,
     ],
     exports: [
+        ModalComponent,
         RawDataComponent,
         LogoutModalComponent,
         SearchComponent,

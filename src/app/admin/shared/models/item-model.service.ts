@@ -5,6 +5,7 @@ import { UploadService } from 'src/app/shared/services/upload.service';
 import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { IItem } from 'src/app/shared/defines/item.interface';
+import { Base64Upload } from 'src/app/shared/defines/base64-upload';
 
 @Injectable({
     providedIn: 'root'
@@ -92,7 +93,7 @@ export class ItemModelService extends AdminModelService {
     }
 
     private insertOne(params: any, options: any): void {
-        this._uploadService.upload({ upload: new Upload(params.item.thumb), basePath: this._controller }, {
+        this._uploadService.base64Upload({ upload: new Base64Upload(params.item.thumb), basePath: this._controller }, {
             doneCallback: (upload: Upload) => {
                 try {
                     // upload done

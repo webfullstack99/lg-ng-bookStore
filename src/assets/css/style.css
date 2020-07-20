@@ -128,3 +128,7 @@ input.ng-dirty.ng-valid, input.ng-touched.ng-valid {
     border: 1px solid #d1d3e2 !important;
     border-radius: 0.35rem !important;
 }
+
+.image-cropped-result{
+    width: 200px;
+}

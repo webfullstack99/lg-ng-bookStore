@@ -1,4 +1,4 @@
-import { ValidatorFn, AbstractControl, AsyncValidatorFn, FormGroup } from '@angular/forms';
+import { ValidatorFn, AbstractControl, AsyncValidatorFn, FormGroup, ValidationErrors } from '@angular/forms';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { Conf } from 'src/app/shared/defines/conf';
 
@@ -51,5 +51,75 @@ export class CustomValidators {
     public static getTextFormString(str: string): string {
         if (str.match(/^\<[\w]+\>/)) return $(str).text();
         return str;
+    }
+
+    // password
+    static password(minLength: number = 8): ValidatorFn {
+        return (control: AbstractControl) => {
+            let value = control.value;
+            let errCount: number = 0;
+            let result: any = {};
+            let paterns: any[] = [
+                { name: 'digit', pattern: /(?=.*\d)/, },
+                { name: 'uppercase', pattern: /(?=.*[A-Z])/, },
+                { name: 'special', pattern: /(?=.*\W)/, },
+            ]
+
+            // validate
+            for (let item of paterns) {
+                if (!value.match(item.pattern)) {
+                    result[item.name] = true;
+                    errCount++;
+                } else result[item.name] = false;
+            }
+
+            // space
+            if (this.noSpace(control)) {
+                result.space = true;
+                errCount++;
+            } else result.space = false;
+
+            // length
+            result.length = this.checkPasswordLength(value, minLength);
+            if (result.length) errCount++;
+
+            // return
+            if (errCount > 0) return { password: result };
+            return null;
+        }
+    }
+
+    static lowercase(control: AbstractControl): ValidationErrors | null {
+        let value = control.value;
+        let pattern: any = /[A-Z]/g;
+        if (value.match(pattern)) return { lowercase: true }
+        return null;
+    }
+
+    static email(control: AbstractControl): ValidationErrors | null {
+        let value = control.value;
+        let pattern: any = /^[A-Za-z0-9\_]{8,16}\@[a-z]{2,6}(\.[a-z]{2,6}){1,5}$/;
+        if (!value.match(pattern)) return { email: true }
+        return null;
+    }
+
+    static checkPasswordLength(value, minLength): any {
+        if (value.length >= minLength) return false;
+        else return {
+            actualLength: value.length,
+            minLength
+        }
+    }
+
+    static noSpace(control: AbstractControl): ValidationErrors | null {
+        let value = control.value;
+        if (value.match(/\s/g)) return { noSpace: true }
+        return null;
+    }
+
+    static noSpecialSymbol(control: AbstractControl): ValidationErrors | null {
+        let value = control.value;
+        if (value.match(/\W/g)) return { noSpecialSymbol: true }
+        return null;
     }
 }

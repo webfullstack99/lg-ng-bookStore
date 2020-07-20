@@ -13,20 +13,16 @@ export class UploadService {
         firebase.initializeApp(environment.firebase);
     }
 
-
     /**
      * Uploads upload service
      * @param params - {basePath, upload}
-     * @param options - {imageType: string, progressCallback?, doneCallBack}
+     * @param options - { progressCallback?, doneCallBack}
      */
-    public upload(params: any, options: any): void {
+    public base64Upload(params: any, options: any): void {
         let filePath = `${params.basePath}/${Date.now()}`;
         let fileRef = firebase.storage().ref(filePath);
-        let task;
-        if (options.imageType == 'base64') {
-            let base64 = this.solveBase64String(params.upload._base64);
-            task = fileRef.putString(base64, 'base64', { contentType: 'image/jpg' });
-        } else task = fileRef.put(params.upload._file);
+        let base64 = this.solveBase64String(params.upload._base64);
+        let task = fileRef.putString(base64, 'base64', { contentType: 'image/jpg' });
 
         task.on('state_changed', (snapshot) => {
             // In Progress 

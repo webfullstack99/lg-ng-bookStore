@@ -1,0 +1,44 @@
+<div>
+    <!-- FILE INPUT -->
+    <input (click)="onClick()" type="file" [class]="_classes.classes" [id]="_name" accept="image/*"
+        (change)="fileChangeEvent($event)" />
+    <label [class]="_classes.labelClasses"
+        [for]="_name">{{ _helperService.getConf_text('chooseFile') | ucfirst}}</label>
+
+    <!-- SHOW ERROR -->
+    <app-show-error-message [displayName]="_displayName" [control]="_control">
+    </app-show-error-message>
+
+    <div *ngIf="croppedImage" class="mt-3">
+        <img [title]="imageTitle" class="image-cropped-result rounded" [alt]="imageTitle" [src]="croppedImage">
+        <div><span class="badge badge-secondary">{{ imageTitle }}</span></div>
+    </div>
+
+    <!-- CROPPER MODAL -->
+    <div class="modal" id="image-cropper-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Image cropper</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <!-- IMAGE CROPPER -->
+                    <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
+                        [aspectRatio]="aspectRatio" format="png" (imageCropped)="imageCropped($event)"
+                        (loadImageFailed)="loadImageFailed()"></image-cropper>
+                    <!-- END IMAGE CROPPER -->
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button (click)="onCropped()" type="button" class="btn btn-primary">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

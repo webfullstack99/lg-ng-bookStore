@@ -6,9 +6,8 @@ import { StrFormatService } from 'src/app/shared/services/str-format.service';
 import { AdminModelService } from 'src/app/admin/shared/models/admin-model.service';
 import * as DocumentEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { ChangeEvent } from '@ckeditor/ckeditor5-angular';
-import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { UploadService } from 'src/app/shared/services/upload.service';
-import { base64Upload } from 'src/app/shared/defines/base64-upload';
+import { BehaviorSubject } from 'rxjs';
 
 
 declare const $: any;
@@ -23,21 +22,18 @@ declare const CKEDITOR: any;
 
 export class AdminFormComponent implements OnInit {
 
-    public imageChangedEvent: any = '';
-    public croppedImage: any = '';
 
     public _formParams: any;
     public _timeoutObj: any;
     public _editor = DocumentEditor
+    public _croppedImageBehaviorSubject = new BehaviorSubject<any>('');
 
     @Input('formData') _formData: any[];
     @Input('formType') _formType: string;
     @Input('controller') _controller: string;
     @Input('appAdminForm') _formProfile: FormGroup;
     @Input('currentItem') _currentItem: any;
-    @Input('selectedFiles') _selectedFiles: any;
     @Input('editor') _ckEditor: string;
-    @Output('_onSelectedFiles') _onSelectedFile = new EventEmitter<any>();
     @Output('onSubmit') _onSubmit = new EventEmitter<any>();
 
     constructor(
@@ -67,10 +63,7 @@ export class AdminFormComponent implements OnInit {
     public onSubmitForm(): void {
         this._onSubmit.emit(this._formProfile);
         if (this._formType == 'add') this.resetEditor();
-    }
-
-    public onFileChange($event): void {
-        this._onSelectedFile.emit($event);
+        this._croppedImageBehaviorSubject.next('');
     }
 
     public isFormValid(): boolean {
@@ -92,28 +85,29 @@ export class AdminFormComponent implements OnInit {
                 case 'create-slug':
                     let slug = this._helperService.slug(value);
                     this._formProfile.controls[options.field].setValue(slug);
-                    if (options.isPartnerUnique) this.checkUnique(options.field, options.field, slug);
+                    if (options.isPartnerUnique) this.checkUnique(options.field, slug);
                     break;
+
                 case 'unique':
-                    this.checkUnique(name, name, value);
+                    this.checkUnique(name, value);
                     break;
             }
         }
     }
 
-    private checkUnique(name, fieldPath: string, value: string) {
+    private checkUnique(name: string, value: string) {
         clearTimeout(this._timeoutObj);
         this._timeoutObj = setTimeout(() => {
-            this._adminModel.checkExist({ key: this._currentItem.$key, fieldPath, value, controller: this._controller }, {
+            this._adminModel.checkExist({ key: this._currentItem.$key, field: name, value, controller: this._controller }, {
                 doneCallback: (exist: boolean) => {
-                    if (exist) this.showMessage(name, 'unique');
-                    else this.showMessage(name, 'off');
+                    if (exist) this.showError(name, 'unique');
+                    else this.showError(name, 'off');
                 }
             })
         }, this._conf.params.delayForSearchTime);
     }
 
-    private showMessage(name: string, type?: string) {
+    private showError(name: string, type?: string) {
         if (type != 'off') this.setFormControlErrors(name, type)
         else this.setFormControlErrors(name, null);
     }
@@ -147,40 +141,17 @@ export class AdminFormComponent implements OnInit {
     }
 
     private setFormControlErrors(name: string, type: any): void {
-        type = (type) ? { [type]: true } : type;
-        this._formProfile.controls[name].setErrors(type);
+        let err = (type) ? { [type]: true } : type;
+        this._formProfile.controls[name].setErrors(err);
         this._formProfile.controls[name].markAsTouched();
         this._formProfile.controls[name].markAsDirty();
-        this._formProfile.controls[name].updateValueAndValidity();
-    }
-
-    private resetEditor(): void {
-        $('.ck.ck-content > p').html('');
     }
 
     // image cropper
-    fileChangeEvent(event: any): void {
-        this.imageChangedEvent = event;
-    }
 
-    imageCropped(event: ImageCroppedEvent) {
-        this.croppedImage = event.base64;
-    }
-
-    loadImageFailed() {
-        console.log('Failed to load cropper image');
-    }
-
-    public onSubmitCopperImage(): void {
-        this._uploadService.upload({ basePath: this._controller, upload: new base64Upload(this.croppedImage) }, {
-            imageType: 'base64',
-            progressCallback: (upload: base64Upload) => {
-                console.log(upload._progress);
-            },
-            doneCallback: (upload: base64Upload) => {
-                console.log(upload._url);
-            },
-        });
+    // ckeditor
+    private resetEditor(): void {
+        $('.ck.ck-content > p').html('');
     }
 }
 

@@ -1,4 +1,4 @@
-export class base64Upload {
+export class Base64Upload {
     public _base64: any;
     public _url: any;
     public _progress: number;

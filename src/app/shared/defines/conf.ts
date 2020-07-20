@@ -59,19 +59,20 @@ export class Conf {
         form: {
             lengthBetween: 'Length must between {0} and {1}',
             between: 'Value must between {0} and {1}',
-            unique: 'Must be unique',
+            unique: '{0} already exists',
             matchPassword: 'Password does not match',
         }
     }
 
     params = {
-        defaultTimeout: 400,
+        defaultTime: 400,
         loadCkEditorTime: 1000,
         loadSpecificCkEditor: 1500,
-        shortInputChangeTimeout: 1000,
-        longInputChangeTimeout: 2000,
+        shortInputChangeTime: 1000,
+        longInputChangeTime: 2000,
         delayForSearchTime: 400,
         delayForAvoidAsyncTime: 100,
+        fileInputShowErrorTime: 2000,
     }
 
     format = {
@@ -287,7 +288,6 @@ export class Conf {
                 },
                 password: {
                     min: 8,
-                    max: 16,
                 },
             }
         },

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
-import { FirebaseDatabase } from 'angularfire2';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { Schema } from '../defines/schema';
 import { UploadService } from 'src/app/shared/services/upload.service';
 import { Upload } from 'src/app/shared/defines/upload';
+import { Base64Upload } from 'src/app/shared/defines/base64-upload';
 
 @Injectable({
     providedIn: 'root'
@@ -30,8 +30,11 @@ export class AdminModelService {
     }
 
     public getItemByFieldPathAndValue(params: any, options: any) {
+        let searchFields: string[] = this._helperService.getConf_searchFields(params.controller);
+        let fieldPath: string = (searchFields.includes(params.field)) ? `${params.field}/value` : params.field;
+
         this._db.list(`${this.toCollection(params.controller)}`, ref => ref
-            .orderByChild(params.fieldPath)
+            .orderByChild(fieldPath)
             .equalTo(params.value)
         ).snapshotChanges().forEach((itemsSnapshot) => {
             let items: any = [];
@@ -72,7 +75,7 @@ export class AdminModelService {
         params.item = this.syncForSearch(params.item);
         params.item = this.setModified(params.item);
         params.item = this.standardizeBeforeSaving(params.item);
-        this._uploadService.upload({ upload: new Upload(params.item.thumb), basePath: this._controller }, {
+        this._uploadService.base64Upload({ upload: new Base64Upload(params.item.thumb), basePath: this._controller }, {
             doneCallback: (upload: Upload) => {
                 // upload done
                 params.item.thumb = upload._url;

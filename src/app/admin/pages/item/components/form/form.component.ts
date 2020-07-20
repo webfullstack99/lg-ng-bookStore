@@ -23,7 +23,6 @@ export class FormComponent extends FormGeneral implements OnInit {
 
     public _controller: string;
     public _formType: string;
-    public _selectedFiles: File;
     public _submittedForm: any;
     public _currentItem: any = {};
     public _uploadProgress: number;

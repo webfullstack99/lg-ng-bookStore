@@ -13,7 +13,6 @@ export abstract class FormGeneral {
 
     public _controller: string;
     public _formType: string;
-    public _selectedFiles: File;
     public _submittedForm: any;
     public _currentItem: any = {};
     public _uploadProgress: number;
@@ -65,20 +64,13 @@ export abstract class FormGeneral {
     protected resetForm(): void {
         this._formProfile.reset();
         this._helperService.setDefaultTextForCustomFileInput();
-        this._selectedFiles = null;
-    }
-
-    public onSelectedFile($event): void {
-        this._selectedFiles = $event.target.files[0];
-        this._helperService.displayFileUploadName($event);
     }
 
     // SOLVE SUBMIT
     // HAS THUMB
     protected solveEditSubmitHasThumb(callbacks: any): void {
-        if (this._selectedFiles != null) {
+        if (this._submittedForm.thumb) {
             // edit and change thumb
-            this._submittedForm.thumb = this._selectedFiles;
             this._modelService.saveItem({
                 item: this._submittedForm,
                 key: this._currentItem.$key,
@@ -97,7 +89,6 @@ export abstract class FormGeneral {
 
     protected solveAddSubmitHasThumb(callbacks: any): void {
         // add 
-        this._submittedForm.thumb = this._selectedFiles;
         (this._submittedForm);
         this._modelService.saveItem({ item: this._submittedForm }, {
             task: 'insert-one', ...callbacks

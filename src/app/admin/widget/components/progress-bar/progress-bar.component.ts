@@ -19,4 +19,8 @@ export class ProgressBarComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    get progressTitle(): string {
+        return `${this._title} ${Math.round(this._progress)}%`
+    }
+
 }
