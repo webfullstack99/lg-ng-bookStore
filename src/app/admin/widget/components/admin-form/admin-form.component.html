@@ -28,7 +28,8 @@
                     <!-- OTHER INPUT -->
                     <ng-template [ngIf]="input.inputType !='number'">
                         <!-- Input NO option params -->
-                        <input *ngIf="!input.options" [type]="input.inputType" [class]="getClass('input').classes"
+                        <input *ngIf="!input.options" [type]="input.inputType"
+                            [class]="getSpecialClass(input.name) + ' ' + getClass('input').classes"
                             [id]="'_'+input.name" [formControlName]="input.name">
                         <!-- End input NO option params -->
 
@@ -41,6 +42,9 @@
 
                     <!-- SHOW ERROR MESSAGE -->
                     <ng-template [ngIf]="!input.isPasswordConfirmed">
+                        <!-- 
+                        {{_formProfile.controls[input.name].errors|json}}
+                         -->
                         <app-show-error-message [displayName]="input.displayName" [field]="input.name"
                             [control]=" _formProfile.controls[input.name]">
                         </app-show-error-message>
@@ -48,6 +52,9 @@
 
                     <!-- SHOW ERROR MESSAGE FOR PASSWORD CONFIRMED -->
                     <ng-template [ngIf]="input.isPasswordConfirmed">
+                        <!-- 
+                        {{_formProfile.errors |json}}
+                         -->
                         <app-show-error-message [field]="input.name" [displayName]="input.displayName"
                             [group]="_formProfile">
                         </app-show-error-message>

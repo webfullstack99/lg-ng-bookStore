@@ -12,7 +12,7 @@ export interface IUser {
         value: string
         forSearch: string,
     };
-    password: string;
+    password?: string;
     status: string;
     group: any;
     thumb: string;

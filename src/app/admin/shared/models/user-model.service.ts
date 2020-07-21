@@ -6,6 +6,7 @@ import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { IUser } from 'src/app/shared/defines/user.interface';
 import { Base64Upload } from 'src/app/shared/defines/base64-upload';
+import { Md5 } from 'ts-md5/dist/md5';
 
 @Injectable({
     providedIn: 'root'
@@ -113,7 +114,7 @@ export class UserModelService extends AdminModelService {
                             value: params.item.fullName,
                             forSearch: params.item.fullName.toLowerCase(),
                         },
-                        password: params.item.password,
+                        password: `${this._helperService.md5(params.item.password)}`,
                         status: params.item.status,
                         thumb: upload._url,
                         group: {},

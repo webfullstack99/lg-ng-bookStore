@@ -27,6 +27,7 @@
         "firebase": "^7.15.5",
         "ngx-image-cropper": "^3.2.0",
         "rxjs": "^6.5.5",
+        "ts-md5": "^1.2.7",
         "tslib": "^1.10.0",
         "zone.js": "~0.10.2"
     },

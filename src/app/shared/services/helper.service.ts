@@ -4,6 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { formatDate } from '@angular/common';
 import { NotifierService } from 'angular-notifier';
 import { StrFormatService } from './str-format.service';
+import { Md5 } from 'ts-md5';
 
 declare let $: any;
 
@@ -277,5 +278,11 @@ export class HelperService {
     public getTextFormString(str: string): string {
         if (str.match(/^\<[\w]+\>/)) return $(str).text();
         return str;
+    }
+
+    public md5(str: string): string {
+        let md5: Md5 = new Md5();
+        if (str) return `${md5.appendStr(str).end()}`;
+        return '';
     }
 }

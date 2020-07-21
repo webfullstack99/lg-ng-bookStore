@@ -123,12 +123,18 @@ input.ng-dirty.ng-valid, input.ng-touched.ng-valid {
 
 .admin-checkbox {}
 
+/* form */
+
+.password-confirmed-input {
+    border-left: 5px solid var(--secondary) !important;
+}
+
 .ck.ck-content {
     background-color: #fff;
     border: 1px solid #d1d3e2 !important;
     border-radius: 0.35rem !important;
 }
 
-.image-cropped-result{
+.image-cropped-result {
     width: 200px;
 }

@@ -34,7 +34,7 @@ export class BookModelService extends AdminModelService {
     public getItem(params: any, options: any) {
         switch (options.task) {
             case 'by-field-path-and-value':
-                this.getItemByFieldPathAndValue({...params, controller: this._controller}, options);
+                this.getItemByFieldPathAndValue({ ...params, controller: this._controller }, options);
                 break;
             case 'by-key':
                 this.getItemByKey(params, options);

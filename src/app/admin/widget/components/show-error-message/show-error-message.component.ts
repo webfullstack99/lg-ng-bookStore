@@ -32,7 +32,7 @@ export class ShowErrorMessageComponent implements OnInit {
         if (type == 'control') {
             if (this.getMessage() && !this._control.valid && this._control.dirty) return true;
         } else {
-            if (this._group.controls[this._field].dirty && !this._group.valid) return true;
+            if (!this._group.valid) return true;
         }
         return false;
     }

@@ -68,11 +68,12 @@ export abstract class FormGeneral {
 
     // SOLVE SUBMIT
     // HAS THUMB
-    protected solveEditSubmitHasThumb(callbacks: any): void {
-        if (this._submittedForm.thumb) {
+    protected solveEditSubmitHasThumb(callbacks: any, item?: any): void {
+        let saveItem: any = item || this._submittedForm;
+        if (saveItem.thumb) {
             // edit and change thumb
             this._modelService.saveItem({
-                item: this._submittedForm,
+                item: saveItem,
                 key: this._currentItem.$key,
                 oldThumb: this._currentItem.thumb,
             }, {
@@ -80,17 +81,17 @@ export abstract class FormGeneral {
             });
         } else {
             // edit not change thumb
-            this._submittedForm.thumb = this._currentItem.thumb;
-            this._modelService.saveItem({ item: this._submittedForm, key: this._currentItem.$key }, {
+            saveItem.thumb = this._currentItem.thumb;
+            this._modelService.saveItem({ item: saveItem, key: this._currentItem.$key }, {
                 task: 'edit-not-change-thumb', ...callbacks
             });
         }
     }
 
-    protected solveAddSubmitHasThumb(callbacks: any): void {
+    protected solveAddSubmitHasThumb(callbacks: any, item?: any): void {
         // add 
-        (this._submittedForm);
-        this._modelService.saveItem({ item: this._submittedForm }, {
+        let saveItem: any = item || this._submittedForm;
+        this._modelService.saveItem({ item: saveItem }, {
             task: 'insert-one', ...callbacks
         });
     }

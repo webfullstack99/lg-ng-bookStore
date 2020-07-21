@@ -14,7 +14,13 @@ export class UserValidate {
     public runValidate(item: any, formData: any): any {
         // thumb
         let thumbValidates: any[] = [];
-        if (!item.thumb) thumbValidates.push(Validators.required);
+        let passwordConfirmedValidates: any[] = [];
+        let passwordValidates: any[] = [CustomValidators.password(this._vldParams.password.min)];
+        if (!item.thumb) {
+            thumbValidates.push(Validators.required);
+            passwordValidates.push(Validators.required);
+            passwordConfirmedValidates.push(Validators.required);
+        }
 
         let validateData: any = {
             username: [
@@ -29,26 +35,21 @@ export class UserValidate {
                 Validators.required,
                 CustomValidators.lengthBetween(this._vldParams.fullName.min, this._vldParams.fullName.max),
             ],
-            password: [
-                Validators.required,
-                CustomValidators.password(this._vldParams.password.min),
-            ],
-        password_confirmed: [
-            Validators.required,
-        ],
+            password: passwordValidates,
+            password_confirmed: passwordConfirmedValidates,
             //group: [Validators.required,],
 
             status: [
                 Validators.required,
                 CustomValidators.fieldSelectData('status'),
             ],
-                thumb: thumbValidates,
+            thumb: thumbValidates,
         };
 
         this.applyValidate(formData, validateData);
     }
 
     private applyValidate(formData, validateData): void {
-    for(let key in formData) if(validateData[key]) formData[key].push(validateData[key]);
-}
+        for (let key in formData) if (validateData[key]) formData[key].push(validateData[key]);
+    }
 }

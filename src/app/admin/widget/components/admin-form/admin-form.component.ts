@@ -63,6 +63,8 @@ export class AdminFormComponent implements OnInit {
     public onSubmitForm(): void {
         this._onSubmit.emit(this._formProfile);
         if (this._formType == 'add') this.resetEditor();
+        console.log(this._formProfile.value);
+
         this._croppedImageBehaviorSubject.next('');
     }
 
@@ -147,11 +149,17 @@ export class AdminFormComponent implements OnInit {
         this._formProfile.controls[name].markAsDirty();
     }
 
-    // image cropper
+    public getSpecialClass(name: string): string {
+        let classes: string = ''
+        if (name == 'password_confirmed') return 'password-confirmed-input';
+        return classes;
+
+    }
 
     // ckeditor
     private resetEditor(): void {
         $('.ck.ck-content > p').html('');
     }
+
 }
 
