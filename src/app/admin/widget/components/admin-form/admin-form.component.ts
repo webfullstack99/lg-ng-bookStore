@@ -70,9 +70,11 @@ export class AdminFormComponent implements OnInit {
     public onSubmitForm(): void {
         this._onSubmit.emit(this._formProfile);
         if (this._formType == 'add') this.resetEditor();
-        console.log(this._formProfile.value);
-
         this._croppedImageBehaviorSubject.next('');
+        this.resetForm();
+    }
+
+    private resetForm(): void {
     }
 
     public onInputHasOptionsKeyup($event: any, name: string, options: any): void {
@@ -83,6 +85,7 @@ export class AdminFormComponent implements OnInit {
                     let slug = this._helperService.slug(value);
                     this._formProfile.controls[options.field].setValue(slug);
                     if (options.isPartnerUnique) this.checkUnique(options.field, slug);
+                    if (options.isUnique) this.checkUnique(name, value);
                     break;
 
                 case 'unique':
@@ -122,8 +125,6 @@ export class AdminFormComponent implements OnInit {
                 doneCallback: (exist: boolean) => {
                     if (exist) this.showError(name, 'unique');
                     else this.showError(name, 'off');
-                    console.log(this._formProfile.value);
-
                 }
             })
         }, this._conf.params.delayForSearchTime);

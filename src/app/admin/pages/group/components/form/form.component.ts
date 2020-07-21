@@ -1,8 +1,8 @@
 const _pageConfig = new pageConfig();
 
-import { Component, OnInit, ElementRef } from '@angular/core';
-import { BookModelService as _ModelService } from 'src/app/admin/shared/models/book-model.service';
-import { BookValidate as _MainValidate } from 'src/app/admin/shared/validates/book.validate';
+import { Component, OnInit } from '@angular/core';
+import { GroupModelService as _ModelService } from 'src/app/admin/shared/models/group-model.service';
+import { GroupValidate as _MainValidate } from 'src/app/admin/shared/validates/group.validate';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
@@ -34,8 +34,6 @@ export class FormComponent extends FormGeneral implements OnInit {
         protected _helperService: HelperService,
         protected _formBuilder: FormBuilder,
         protected _activatedRoute: ActivatedRoute,
-
-        private _elementRef: ElementRef,
     ) {
         super(_conf, _helperService, _formBuilder, _activatedRoute);
     }
@@ -48,18 +46,12 @@ export class FormComponent extends FormGeneral implements OnInit {
     }
 
     // HAS THUMB
+    // OVERRIDE
     protected initiateFormProfile(): void {
         let formData = {
-            title: [this._helperService.getVal(this._currentItem, 'title.value') || ''],
-            author: [this._helperService.getVal(this._currentItem, 'author.value') || ''],
-            description: [this._helperService.getVal(this._currentItem, 'description.value') || ''],
-            slug: [this._currentItem.slug || ''],
-            price: [this._currentItem.price || ''],
-            category: [this._helperService.getVal(this._currentItem, 'category.name.value') || ''],
+            name: [this._helperService.getVal(this._currentItem, 'name.value') || ''],
+            acp: [this._currentItem.acp || ''],
             status: [this._currentItem.status || ''],
-            special: [this._currentItem.special || ''],
-            saleOff: [this._currentItem.saleOff || ''],
-            thumb: [''],
         }
         new _MainValidate().runValidate(this._currentItem, formData)
         this._formProfile = this._formBuilder.group(formData);
@@ -68,17 +60,17 @@ export class FormComponent extends FormGeneral implements OnInit {
     public onSubmitForm(): void {
         if (this._formProfile.dirty && this._formProfile.valid) {
             this._submittedForm = this._formProfile.value;
+
             let callbacks: any = {
                 // upload in progress call back
                 progressCallback: (upload: Upload) => {
                     this._uploadProgress = upload._progress;
                 },
-
-                doneCallback: this.getSavingDoneCallback()
+                doneCallback: this.getSavingDoneCallback(),
             }
 
             // solve submit
-            if (this._formType == 'edit') this.solveEditSubmitHasThumb(callbacks);
+            if (this._formType == 'edit') this.solveEditSubmitNoThumb(callbacks);
             else this.solveAddSubmit(callbacks);
 
             // reset add form

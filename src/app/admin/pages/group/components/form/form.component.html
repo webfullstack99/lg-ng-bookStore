@@ -1,0 +1,37 @@
+<div class="">
+    <!-- PAGE TITLE -->
+    <div class="row">
+        <div class="col-12 ">
+            <app-page-title [controller]="_controller" pageType="form"></app-page-title>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="row mt-lg-5">
+        <div class="col-lg-6 offset-lg-3">
+            <div *ngIf="_formProfile" [appAdminForm]="_formProfile" [currentItem]="_currentItem" [formData]="[
+                    {
+                        type: 'general',
+                        inputType: 'text',
+                        name: 'name',   
+                        displayName: 'name',
+                        options: {type: 'unique'}
+                    }, {
+                        type: 'select',
+                        name: 'acp',   
+                        displayName: 'acp'
+                    }, {
+                        type: 'select',
+                        name: 'status',   
+                        displayName: 'status'
+                    }, {
+                        type: 'submit',
+                        displayName: 'submit'
+                    }
+                ]" [controller]="_controller" (onSubmit)="onSubmitForm()"></div>
+            <!-- PROGRESS BAR -->
+            <div *ngIf="_uploadProgress!=null" [appProgressBar]="_uploadProgress" title="Saving"> </div>
+        </div>
+    </div>
+
+</div>

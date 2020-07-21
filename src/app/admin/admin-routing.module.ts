@@ -5,8 +5,12 @@ import { IndexComponent as itemIndex } from './pages/item/components/index/index
 import { FormComponent as itemForm } from './pages/item/components/form/form.component';
 import { IndexComponent as bookIndex } from './pages/book/components/index/index.component';
 import { FormComponent as bookForm } from './pages/book/components/form/form.component';
+import { IndexComponent as CategoryIndex } from './pages/category/components/index/index.component';
+import { FormComponent as CategoryForm } from './pages/category/components/form/form.component';
 import { IndexComponent as userIndex } from './pages/user/components/index/index.component';
 import { FormComponent as userForm } from './pages/user/components/form/form.component';
+import { IndexComponent as groupIndex } from './pages/group/components/index/index.component';
+import { FormComponent as groupForm } from './pages/group/components/form/form.component';
 import { Conf } from '../shared/defines/conf';
 import { TestDbComponent } from './widget/components/test-db/test-db.component';
 import { HelperService } from '../shared/services/helper.service';
@@ -34,6 +38,14 @@ const routes: Routes = [
                 ]
 
             }, {
+                path: 'category',
+                children: [
+                    { path: 'form', component: CategoryForm, },
+                    { path: 'form/:key', component: CategoryForm, },
+                    { path: '', component: CategoryIndex, },
+                ]
+
+            }, {
                 path: 'user',
                 children: [
                     { path: 'form', component: userForm, },
@@ -41,6 +53,13 @@ const routes: Routes = [
                     { path: '', component: userIndex, },
                 ]
 
+            }, {
+                path: 'group',
+                children: [
+                    { path: 'form', component: groupForm, },
+                    { path: 'form/:key', component: groupForm, },
+                    { path: '', component: groupIndex, },
+                ]
             },
             { path: 'test-database', component: TestDbComponent },
             { path: 'raw-data', component: RawDataComponent },

@@ -88,7 +88,15 @@ export abstract class FormGeneral {
         }
     }
 
-    protected solveAddSubmitHasThumb(callbacks: any, item?: any): void {
+    // NO THUMB
+    protected solveEditSubmitNoThumb(callbacks: any, item?: any): void {
+        let saveItem: any = item || this._submittedForm;
+        this._modelService.saveItem({ item: saveItem, key: this._currentItem.$key }, {
+            task: 'edit-not-change-thumb', ...callbacks
+        });
+    }
+
+    protected solveAddSubmit(callbacks: any, item?: any): void {
         // add 
         let saveItem: any = item || this._submittedForm;
         this._modelService.saveItem({ item: saveItem }, {
@@ -96,7 +104,4 @@ export abstract class FormGeneral {
         });
     }
 
-    // NO THUMB
-    protected solveEditSubmitNoThumb(callbacks: any): void { }
-    protected solveAddSubmitNoThumb(callbacks: any): void { }
 }

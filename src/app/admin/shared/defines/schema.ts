@@ -1,7 +1,6 @@
 export class Schema {
     item = [
-        'name.value',
-        'name.forSearch',
+        'name.value', 'name.forSearch',
         'status',
         'thumb',
 
@@ -30,13 +29,21 @@ export class Schema {
         'modified.time',
     ]
 
+    category = [
+        'name.value', 'name.forSearch',
+        'slug',
+
+        'status',
+        'created.user',
+        'created.time',
+        'modified.user',
+        'modified.time',
+    ]
+
     user = [
-        'username.value',
-        'username.forSearch',
-        'email.value',
-        'email.forSearch',
-        'fullName.value',
-        'fullName.forSearch',
+        'username.value', 'username.forSearch',
+        'email.value', 'email.forSearch',
+        'fullName.value', 'fullName.forSearch',
         'password',
         'status',
         'thumb',
@@ -47,4 +54,16 @@ export class Schema {
         'modified.user',
         'modified.time',
     ]
+
+    group = [
+        'name.value', 'name.forSearch',
+        'acp',
+
+        'status',
+        'created.user',
+        'created.time',
+        'modified.user',
+        'modified.time',
+    ]
+
 }

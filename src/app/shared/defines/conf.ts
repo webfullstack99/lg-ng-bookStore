@@ -180,6 +180,7 @@ export class Conf {
             status: ['active', 'inactive'],
             special: ['yes', 'no'],
             display: ['yes', 'no'],
+            acp: ['yes', 'no'],
         },
         form: {
             admin: {
@@ -259,6 +260,46 @@ export class Conf {
                     min: 1,
                     max: 100,
                     step: 5,
+                },
+            }
+        },
+
+        category: {
+            action: ['edit', 'delete'],
+            filter: ['status'],
+            search: ['name', 'all'],
+            sort: ['name', 'status', 'created', 'modified'],
+            pagination: {
+                pageRange: 3,
+                itemsPerPage: 5,
+                behaviorSubject: new BehaviorSubject(this),
+            },
+            formParams: {
+                name: {
+                    min: 3,
+                    max: 50,
+                },
+                slug: {
+                    min: 3,
+                    max: 50,
+                },
+            }
+        },
+
+        group: {
+            action: ['edit', 'delete'],
+            filter: ['status', 'acp'],
+            search: ['name', 'all'],
+            sort: ['name', 'acp', 'status', 'created', 'modified'],
+            pagination: {
+                pageRange: 3,
+                itemsPerPage: 5,
+                behaviorSubject: new BehaviorSubject(this),
+            },
+            formParams: {
+                name: {
+                    min: 3,
+                    max: 50,
                 },
             }
         },

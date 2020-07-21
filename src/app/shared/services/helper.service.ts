@@ -54,6 +54,7 @@ export class HelperService {
         switch (field) {
             case 'status':
                 return (currentValue === 'active') ? 'inactive' : 'active';
+            case 'acp':
             case 'special':
             case 'display':
                 return (currentValue === 'yes') ? 'no' : 'yes';

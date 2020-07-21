@@ -84,7 +84,7 @@ export class FormComponent extends FormGeneral implements OnInit {
                 ? this._helperService.md5(this._submittedForm.password)
                 : this._currentItem.password;
             if (this._formType == 'edit') this.solveEditSubmitHasThumb(callbacks, item);
-            else this.solveAddSubmitHasThumb(callbacks, item);
+            else this.solveAddSubmit(callbacks, item);
 
             // reset add form
             if (this._formType == 'add') this.resetForm();
