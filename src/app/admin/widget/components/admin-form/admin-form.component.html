@@ -1,5 +1,5 @@
 <!-- 
-    with each input name will has prefix '_', because ck editor not access id as description, but 
+    For each input name will has prefix '_', because ck editor not access id as description, but 
     in our project has description field
  -->
 
@@ -7,6 +7,7 @@
     <ng-template ngFor let-input [ngForOf]="_formData">
         <div [ngSwitch]="input.type" class="form-group row">
 
+            <!-- LABEL -->
             <label *ngIf="input.type!='submit'" [for]="'_'+input.name"
                 [class]="getClass('label').classes">{{ input.displayName | titlecase }}</label>
 
@@ -16,28 +17,24 @@
 
                     <!-- NUMBER INPUT -->
                     <ng-template [ngIf]="input.inputType =='number'">
-                        <!-- Input NO option params -->
                         <input *ngIf="!input.options" [type]="input.inputType" [class]="getClass('input').classes"
                             [id]="'_'+input.name" [formControlName]="input.name"
                             [attr.min]="getFormParam(input.name, 'min')" [attr.step]="getFormParam(input.name, 'step')"
                             [attr.max]="getFormParam(input.name, 'max')">
-                        <!-- End input NO option params -->
-
                     </ng-template>
 
                     <!-- OTHER INPUT -->
                     <ng-template [ngIf]="input.inputType !='number'">
-                        <!-- Input NO option params -->
+
+                        <!-- INPUT NO OPTION PARAMS -->
                         <input *ngIf="!input.options" [type]="input.inputType"
                             [class]="getSpecialClass(input.name) + ' ' + getClass('input').classes"
                             [id]="'_'+input.name" [formControlName]="input.name">
-                        <!-- End input NO option params -->
 
-                        <!-- Input HAS option params -->
-                        <input *ngIf="input.options" (keyup)="onKeyup($event, input.name, input.options)"
+                        <!-- INPUT HAS OPTION PARAMS -->
+                        <input *ngIf="input.options" (keyup)="onInputHasOptionsKeyup($event, input.name, input.options)"
                             [type]="input.inputType" [class]="getClass('input').classes" [id]="'_'+input.name"
                             [formControlName]="input.name">
-                        <!-- End input HAS option params -->
                     </ng-template>
 
                     <!-- SHOW ERROR MESSAGE -->
@@ -59,18 +56,14 @@
                             [group]="_formProfile">
                         </app-show-error-message>
                     </ng-template>
-
                 </div>
             </ng-template>
 
             <!-- TEXTAREA TYPE-->
             <ng-template [ngSwitchCase]="'textarea'">
-
                 <div [class]="getClass('textarea').containerClasses">
-
                     <ckeditor [editor]="_editor" [data]="_formProfile.controls[input.name].value" [id]="'_'+input.name"
                         (ready)="onReady($event)" (change)="onEditorChange($event)"> </ckeditor>
-
                     <app-show-error-message [displayName]="input.displayName"
                         [control]="_formProfile.controls[input.name]">
                     </app-show-error-message>
@@ -98,6 +91,7 @@
                     <div app-image-cropper-file-input [name]="input.name" [displayName]="input.displayName"
                         [controller]="_controller" [control]="_formProfile.controls[input.name]"
                         [croppedImageBehaviorSubject]="_croppedImageBehaviorSubject"> </div>
+
                     <!-- THUMB AVAILABLE -->
                     <p *ngIf="_currentItem.thumb" class="mt-5">
                         <img [src]="_currentItem.thumb" [alt]="input.displayName+' image'" class="img-fluid rounded">

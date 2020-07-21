@@ -10,6 +10,7 @@ import { stringify } from 'querystring';
     templateUrl: './show-error-message.component.html',
     styleUrls: ['./show-error-message.component.css']
 })
+
 export class ShowErrorMessageComponent implements OnInit {
 
     @Input('field') _field: string;
@@ -32,7 +33,7 @@ export class ShowErrorMessageComponent implements OnInit {
         if (type == 'control') {
             if (this.getMessage() && !this._control.valid && this._control.dirty) return true;
         } else {
-            if (!this._group.valid) return true;
+            if (this._group.controls[this._field].touched && !this._group.valid) return true;
         }
         return false;
     }
@@ -80,6 +81,7 @@ export class ShowErrorMessageComponent implements OnInit {
         return message;
     }
 
+    // for password solving
     private solvePasswordMessage(): any[] {
         let messages = {
             space: `Do not contain space`,
@@ -116,9 +118,5 @@ export class ShowErrorMessageComponent implements OnInit {
             'fa-times text-danger': status,
             'fa-check text-success': !status,
         }
-    }
-
-    public isType(value: any): string {
-        return typeof value;
     }
 }

@@ -22,7 +22,6 @@ declare const CKEDITOR: any;
 
 export class AdminFormComponent implements OnInit {
 
-
     public _formParams: any;
     public _timeoutObj: any;
     public _editor = DocumentEditor
@@ -46,11 +45,10 @@ export class AdminFormComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        if (this._controller) {
-            this.setFormParams();
-        }
+        if (this._controller) this.setFormParams();
     }
 
+    // setup
     private setFormParams(): void {
         let formParams = {};
         for (let key in this._formProfile.controls) {
@@ -60,6 +58,15 @@ export class AdminFormComponent implements OnInit {
         this._formParams = formParams;
     }
 
+    public isFormValid(): boolean {
+        return this._formProfile.valid && this._formProfile.dirty;
+    }
+
+    public getDefaultSelectContent(name: string): string {
+        return `select ${name}`;
+    }
+
+    // $event
     public onSubmitForm(): void {
         this._onSubmit.emit(this._formProfile);
         if (this._formType == 'add') this.resetEditor();
@@ -68,19 +75,7 @@ export class AdminFormComponent implements OnInit {
         this._croppedImageBehaviorSubject.next('');
     }
 
-    public isFormValid(): boolean {
-        return this._formProfile.valid && this._formProfile.dirty;
-    }
-
-    public getClass(type: string): any {
-        return this._conf.template.form.admin[type];
-    }
-
-    public getDefaultSelectContent(name: string): string {
-        return `select ${name}`;
-    }
-
-    public onKeyup($event: any, name: string, options: any): void {
+    public onInputHasOptionsKeyup($event: any, name: string, options: any): void {
         let value: string = $event.target.value;
         if (options) {
             switch (options.type) {
@@ -97,16 +92,22 @@ export class AdminFormComponent implements OnInit {
         }
     }
 
-    private checkUnique(name: string, value: string) {
-        clearTimeout(this._timeoutObj);
-        this._timeoutObj = setTimeout(() => {
-            this._adminModel.checkExist({ key: this._currentItem.$key, field: name, value, controller: this._controller }, {
-                doneCallback: (exist: boolean) => {
-                    if (exist) this.showError(name, 'unique');
-                    else this.showError(name, 'off');
-                }
-            })
-        }, this._conf.params.delayForSearchTime);
+    // classes
+    public getSpecialClass(name: string): string {
+        let classes: string = ''
+        if (name == 'password_confirmed') return 'password-confirmed-input';
+        return classes;
+    }
+
+    public getClass(type: string): any {
+        return this._conf.template.form.admin[type];
+    }
+
+    // manipulate form controls
+    public getFormParam(name: string, paramKey: string): string {
+        let param: any = this._formParams[name];
+        if (param) if (param) return (param[paramKey]) ? param[paramKey] : '';
+        return '';
     }
 
     private showError(name: string, type?: string) {
@@ -114,25 +115,18 @@ export class AdminFormComponent implements OnInit {
         else this.setFormControlErrors(name, null);
     }
 
-    public hasCkEditor(): boolean {
-        return (this._ckEditor) ? true : false;
-    }
+    private checkUnique(name: string, value: string) {
+        clearTimeout(this._timeoutObj);
+        this._timeoutObj = setTimeout(() => {
+            this._adminModel.checkExist({ key: this._currentItem.$key, field: name, value, controller: this._controller }, {
+                doneCallback: (exist: boolean) => {
+                    if (exist) this.showError(name, 'unique');
+                    else this.showError(name, 'off');
+                    console.log(this._formProfile.value);
 
-    public getFormParam(name: string, paramKey: string): string {
-        let param: any = this._formParams[name];
-        if (param) if (param) return (param[paramKey]) ? param[paramKey] : '';
-        return '';
-    }
-
-    public onReady(editor) {
-        editor.ui.getEditableElement().parentElement.insertBefore(
-            editor.ui.view.toolbar.element,
-            editor.ui.getEditableElement()
-        );
-    }
-
-    public onEditorChange({ editor }: ChangeEvent): void {
-        this.setFormControlValue(this._ckEditor, editor.getData());
+                }
+            })
+        }, this._conf.params.delayForSearchTime);
     }
 
     private setFormControlValue(name: string, value: string): void {
@@ -149,17 +143,24 @@ export class AdminFormComponent implements OnInit {
         this._formProfile.controls[name].markAsDirty();
     }
 
-    public getSpecialClass(name: string): string {
-        let classes: string = ''
-        if (name == 'password_confirmed') return 'password-confirmed-input';
-        return classes;
-
-    }
-
     // ckeditor
     private resetEditor(): void {
         $('.ck.ck-content > p').html('');
     }
 
+    public hasCkEditor(): boolean {
+        return (this._ckEditor) ? true : false;
+    }
+
+    public onReady(editor) {
+        editor.ui.getEditableElement().parentElement.insertBefore(
+            editor.ui.view.toolbar.element,
+            editor.ui.getEditableElement()
+        );
+    }
+
+    public onEditorChange({ editor }: ChangeEvent): void {
+        this.setFormControlValue(this._ckEditor, editor.getData());
+    }
 }
 
