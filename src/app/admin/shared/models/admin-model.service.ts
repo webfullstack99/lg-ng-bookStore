@@ -21,7 +21,105 @@ export class AdminModelService {
         protected _uploadService: UploadService,
     ) { }
 
-    // GENERAL ===========
+    // GENERAL METHODS
+    public listItemsDynamically(params: any, options: any): void {
+        let refFn;
+        switch (options.task) {
+            case 'active':
+                refFn = (ref: any) => {
+                    return ref
+                        .orderByChild('status')
+                        .equalTo('active')
+                }
+                break;
+        }
+
+        this._db.list(this.toCollection(params.controller), refFn).snapshotChanges().forEach((itemsSnapshot) => {
+            let items: any = [];
+
+            // add $key into each item
+            itemsSnapshot.forEach((itemSnapshot) => {
+                let item = itemSnapshot.payload.toJSON();
+                item['$key'] = itemSnapshot.key;
+                items.push(item);
+            })
+            if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
+        })
+
+    }
+
+    public getSelectData(controller: string, doneCallback?: (data: any[]) => void): void {
+        let selectData: any[] = [];
+        if (['category', 'group'].includes(controller)) {
+            this.listItemsDynamically({ controller: controller }, {
+                task: 'active',
+                doneCallback: (items: any[]) => {
+                    for (let item of items) {
+                        if (controller == 'category')
+                            selectData.push({ value: item.slug, name: item.name.value });
+                        else
+                            selectData.push({ value: item.$key, name: item.name.value });
+                    }
+                    if (this._helperService.isFn(doneCallback)) doneCallback(selectData);
+                }
+            });
+        }
+        if (this._helperService.isFn(doneCallback)) doneCallback(selectData);
+    }
+
+    public countFilter(items: any[]) {
+        let filterCount: any = {};
+        let filterArr = this._helperService.getConf_filterArr(this._controller);
+        for (let filter of filterArr) {
+            filterCount[filter] = {};
+            for (let item of items)
+                if (filterCount[filter][item[filter]]) filterCount[filter][item[filter]]++;
+                else filterCount[filter][item[filter]] = 1;
+
+            let total: number = 0;
+            for (let key in filterCount[filter]) total += filterCount[filter][key];
+            filterCount[filter].all = total;
+        }
+        return filterCount;
+    }
+
+    /**
+     * Determines whether multi task on
+     * @param data - {task, value}
+     */
+    public changeMulti(data: any, items: any[], doneCallback?: (affectedRows: number) => void): void {
+        let promises: Promise<boolean>[] = [];
+        if (data.task == 'delete') {
+            for (let item of items) {
+                promises.push(
+                    new Promise((resolve) => {
+                        this.saveItem({ item }, {
+                            task: 'delete-by-key', doneCallback: () => { resolve(true); }
+                        })
+                    })
+                )
+            }
+        } else if (data.task == 'change') {
+            for (let item of items) {
+                if (item[data.field] != data.value)
+                    promises.push(
+                        new Promise((resolve) => {
+                            this.saveItem({ updateData: { [data.field]: data.value }, key: item.$key }, {
+                                task: 'update-by-key', doneCallback: () => {
+                                    resolve(true);
+                                }
+                            });
+                        })
+                    )
+            }
+        }
+        Promise.all(promises)
+            .then((result: any[]) => {
+                if (this._helperService.isFn(doneCallback)) doneCallback(result.length);
+            })
+    }
+
+    // GET ITEM
     protected getItemByKey(params: any, options: any) {
         this._db.object(`${this.collection()}/${params.key}`).valueChanges().subscribe((data: any) => {
             if (data) data.$key = params.key;
@@ -50,16 +148,7 @@ export class AdminModelService {
         })
     }
 
-    public checkExist(params: any, options: any) {
-        this.getItemByFieldPathAndValue(params, {
-            doneCallback: (item: any) => {
-                let isExist: boolean = (item) ? true : false;
-                if (isExist) isExist = (params.key == item.$key) ? false : isExist;
-                if (this._helperService.isFn(options.doneCallback)) options.doneCallback(isExist);
-            }
-        });
-    }
-
+    // UPDATE - EDIT -DELETE
     protected updateByKey(params: any, options: any): void {
         params.updateData = this.setModified(params.updateData);
         this._db.object(`${this.collection()}/${params.key}`).update(params.updateData)
@@ -125,6 +214,31 @@ export class AdminModelService {
         else fn();
     }
 
+    // FILTER & SEARCH & SORT & PAGINATION
+    protected runPropertyFilter(params: any, options: any): void {
+        console.log(params);
+        
+        let items = params.items;
+        items = items.filter((item) => {
+            for (let key in params.clientFilter.filter) {
+                if (params.clientFilter.filter[key] != 'all') {
+                    if (item[key] != params.clientFilter.filter[key]) {
+                        return false;
+                    } else {
+                    }
+                }
+            }
+            return true;
+        })
+        return items;
+    }
+
+    protected runLocalFilter(params: any, options: any): any {
+        params.items = this.runPropertyFilter(params, options);
+        params.items = this.runLocalSearch(params, options);
+        return params.items;
+    }
+
     protected getSearchRef(params: any, options: any): any {
         let field = params.clientFilter.search.search_field;
         let value = params.clientFilter.search.search_value.toLowerCase();
@@ -139,12 +253,6 @@ export class AdminModelService {
             }
         }
         return params.ref;
-    }
-
-    protected runLocalFilter(params: any, options: any): any {
-        params.items = this.runPropertyFilter(params, options);
-        params.items = this.runLocalSearch(params, options);
-        return params.items;
     }
 
     protected runLocalSearch(params: any, options: any): any {
@@ -165,18 +273,6 @@ export class AdminModelService {
             }
         }
         return items;
-    }
-
-    protected runLocalPagination(params: any, options: any): any {
-        let items: any[] = params.items;
-        let page: number = this._helperService.getValidPageNumber({
-            totalItems: items.length,
-            page: params.clientFilter.other.page,
-            ...params.pagination,
-        });
-        let start: number = ((page - 1) * params.pagination.itemsPerPage);
-        let end: number = params.pagination.itemsPerPage + start;
-        return items.slice(start, end);
     }
 
     protected runLocalSort(params: any, options: any): any {
@@ -209,25 +305,30 @@ export class AdminModelService {
         return items;
     }
 
-    protected runPropertyFilter(params: any, options: any): void {
-        let items = params.items;
-        items = items.filter((item) => {
-            for (let key in params.clientFilter.filter) {
-                if (params.clientFilter.filter[key] != 'all') {
-                    if (item[key] != params.clientFilter.filter[key]) {
-                        return false;
-                    } else {
-                    }
-                }
-            }
-            return true;
-        })
-        return items;
+    protected runLocalPagination(params: any, options: any): any {
+        let items: any[] = params.items;
+        let page: number = this._helperService.getValidPageNumber({
+            totalItems: items.length,
+            page: params.clientFilter.other.page,
+            ...params.pagination,
+        });
+        let start: number = ((page - 1) * params.pagination.itemsPerPage);
+        let end: number = params.pagination.itemsPerPage + start;
+        return items.slice(start, end);
     }
 
+    // CHECK METHODS
+    public checkExist(params: any, options: any) {
+        this.getItemByFieldPathAndValue(params, {
+            doneCallback: (item: any) => {
+                let isExist: boolean = (item) ? true : false;
+                if (isExist) isExist = (params.key == item.$key) ? false : isExist;
+                if (this._helperService.isFn(options.doneCallback)) options.doneCallback(isExist);
+            }
+        });
+    }
 
-    // END GENERAL ========
-
+    // OTHER METHODS
     protected collection(): string {
         return this.toCollection(this._controller);
     }
@@ -237,45 +338,10 @@ export class AdminModelService {
         return `${temp}s`;
     }
 
-    protected setCreated(item: any) {
-        item.created = {
-            time: Date.now(),
-            user: {
-                time: 1594370898380,
-                status: 'active',
-                username: 'admin',
-            }
-        }
-        return item;
-    }
-
-    protected setModified(item: any) {
-        item.modified = {
-            time: Date.now(),
-            user: {
-                time: 1594370898380,
-                status: 'active',
-                username: 'admin',
-            }
-        }
-        return item;
-    }
-
-    set controller(controller: string) {
-        this._controller = controller;
-        this._searchFields = this._helperService.getConf_searchFields(this._controller);
-        this._sortFields = this._helperService.getConf_sortArr(this._controller);
-        this.setSchema();
-    }
-
     protected setSchema(schema?: string[]): void {
         if (!schema) this._schema = new Schema()[this._controller];
         else this._schema = schema;
 
-    }
-
-    get db(): AngularFireDatabase {
-        return this._db;
     }
 
     public pushData(jsonStr: string) {
@@ -304,6 +370,7 @@ export class AdminModelService {
         return item;
     }
 
+    // LOOKUP
     /**
      * Syncs items ref
      * @param params - { items: any[], from: string, localFields:string[], localPath: string - ref to localFields, newPath?: string}
@@ -372,6 +439,7 @@ export class AdminModelService {
         }
         return ids;
     }
+    // END LOOKUP
 
     protected standardizeBeforeSaving(item: any) {
         let itemTemp = { ...item };
@@ -391,56 +459,41 @@ export class AdminModelService {
         return itemTemp;
     }
 
-    public countFilter(items: any[]) {
-        let filterCount: any = {};
-        let filterArr = this._helperService.getConf_filterArr(this._controller);
-        for (let filter of filterArr) {
-            filterCount[filter] = {};
-            for (let item of items)
-                if (filterCount[filter][item[filter]]) filterCount[filter][item[filter]]++;
-                else filterCount[filter][item[filter]] = 1;
-
-            let total: number = 0;
-            for (let key in filterCount[filter]) total += filterCount[filter][key];
-            filterCount[filter].all = total;
+    // SET METHODS
+    protected setCreated(item: any) {
+        item.created = {
+            time: Date.now(),
+            user: {
+                time: 1594370898380,
+                status: 'active',
+                username: 'admin',
+            }
         }
-        return filterCount;
+        return item;
     }
 
-    /**
-     * Determines whether multi task on
-     * @param data - {task, value}
-     */
-    public changeMulti(data: any, items: any[], doneCallback?: (affectedRows: number) => void): void {
-        let promises: Promise<boolean>[] = [];
-        if (data.task == 'delete') {
-            for (let item of items) {
-                promises.push(
-                    new Promise((resolve) => {
-                        this.saveItem({ item }, {
-                            task: 'delete-by-key', doneCallback: () => { resolve(true); }
-                        })
-                    })
-                )
-            }
-        } else if (data.task == 'change') {
-            for (let item of items) {
-                if (item[data.field] != data.value)
-                    promises.push(
-                        new Promise((resolve) => {
-                            this.saveItem({ updateData: { [data.field]: data.value }, key: item.$key }, {
-                                task: 'update-by-key', doneCallback: () => {
-                                    resolve(true);
-                                }
-                            });
-                        })
-                    )
+    protected setModified(item: any) {
+        item.modified = {
+            time: Date.now(),
+            user: {
+                time: 1594370898380,
+                status: 'active',
+                username: 'admin',
             }
         }
-        Promise.all(promises)
-            .then((result: any[]) => {
-                if (this._helperService.isFn(doneCallback)) doneCallback(result.length);
-            })
+        return item;
+    }
+
+    // GETTER AND SETTER
+    set controller(controller: string) {
+        this._controller = controller;
+        this._searchFields = this._helperService.getConf_searchFields(this._controller);
+        this._sortFields = this._helperService.getConf_sortArr(this._controller);
+        this.setSchema();
+    }
+
+    get db(): AngularFireDatabase {
+        return this._db;
     }
 
     // ABSTRACTION METHODS

@@ -1,0 +1,13 @@
+<ng-template ngFor let-item [ngForOf]="_dbSelectData">
+    <div class="row mb-1">
+        <div class="col-3">{{ item.field | titlecase}}</div>
+        <div class="col-9">
+            <select class="custom-select" name="" id="" (change)="onChange($event, item.field)">
+                <option selected value="all">All {{item.field}}</option>
+                <option *ngFor="let option of item.data" [selected]="isSelected(item.field, option.value)"
+                    [value]="option.value">
+                    {{option.name}}</option>
+            </select>
+        </div>
+    </div>
+</ng-template>

@@ -24,6 +24,7 @@ import { FieldInputComponent } from './components/fieldInput/fieldInput.componen
 import { ShowErrorMessageComponent } from './components/show-error-message/show-error-message.component';
 import { RawDataComponent } from './components/raw-data/raw-data.component';
 import { ModalComponent } from './components/modal/modal.component';
+import { FilterSelectsComponent } from './components/filter-selects/filter-selects.component';
 
 
 
@@ -54,6 +55,7 @@ import { ModalComponent } from './components/modal/modal.component';
         FieldSelectComponent,
         FieldInputComponent,
         ShowErrorMessageComponent,
+        FilterSelectsComponent,
     ],
     exports: [
         ModalComponent,
@@ -77,6 +79,7 @@ import { ModalComponent } from './components/modal/modal.component';
         FieldSelectComponent,
         FieldInputComponent,
         ShowErrorMessageComponent,
+        FilterSelectsComponent,
     ],
 })
 export class AdminWidgetModule { }

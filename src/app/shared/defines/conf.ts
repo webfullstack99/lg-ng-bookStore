@@ -227,6 +227,7 @@ export class Conf {
         book: {
             action: ['edit', 'delete'],
             filter: ['status', 'special'],
+            selectFilter: ['category'],
             search: ['all', 'title', 'author', 'description'],
             sort: ['title', 'category', 'author', 'price', 'special', 'saleOff', 'status', 'created', 'modified'],
             pagination: {

@@ -31,7 +31,10 @@ export class UrlService {
     public getClientFilter(controller: string, doneCallback: (clientFilter: any) => void): any {
         this.subscribeQueryParams((data) => {
             // btn filter
-            let filters: string[] = this._helperService.getTemplateConf(controller).filter;
+            let filters: string[] = [
+                ...this._helperService.getTemplateConf(controller).filter,
+                ...this._helperService.getTemplateConf(controller).selectFilter
+            ];
             let searchArr: string[] = this._helperService.getTemplateConf(controller).search;
             let sortArr: string[] = this._helperService.getTemplateConf(controller).sort;
             let clientFilter: any = { filter: {}, sort: {}, search: {}, other: {} };

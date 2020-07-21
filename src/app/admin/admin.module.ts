@@ -12,7 +12,7 @@ import { GroupModule } from './pages/group/group.module';
     declarations: [AdminMainComponent, DashboardComponent],
     imports: [
         // pages
-        ItemModule,
+        //ItemModule,
         BookModule,
         CategoryModule,
         UserModule,
