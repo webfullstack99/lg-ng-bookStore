@@ -26,6 +26,7 @@ export class AdminFormComponent implements OnInit {
     public _timeoutObj: any;
     public _editor = DocumentEditor
     public _croppedImageBehaviorSubject = new BehaviorSubject<any>('');
+    public _dbSelectData: any[] = [];
 
     @Input('formData') _formData: any[];
     @Input('formType') _formType: string;
@@ -45,7 +46,11 @@ export class AdminFormComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this._adminModel.controller = this._controller;
         if (this._controller) this.setFormParams();
+        this._adminModel.getAllDbSelectData((data: any[]) => {
+            this._dbSelectData = data;
+        })
     }
 
     // setup
@@ -121,7 +126,14 @@ export class AdminFormComponent implements OnInit {
     private checkUnique(name: string, value: string) {
         clearTimeout(this._timeoutObj);
         this._timeoutObj = setTimeout(() => {
-            this._adminModel.checkExist({ key: this._currentItem.$key, field: name, value, controller: this._controller }, {
+            let searchFields: string[] = this._helperService.getConf_searchFields(this._controller);
+            let fieldPath: string = (searchFields.includes(name)) ? `${name}/value` : name;
+            this._adminModel.checkExist({
+                key: this._currentItem.$key,
+                fieldPath,
+                value,
+                controller: this._controller
+            }, {
                 doneCallback: (exist: boolean) => {
                     if (exist) this.showError(name, 'unique');
                     else this.showError(name, 'off');
@@ -162,6 +174,12 @@ export class AdminFormComponent implements OnInit {
 
     public onEditorChange({ editor }: ChangeEvent): void {
         this.setFormControlValue(this._ckEditor, editor.getData());
+    }
+
+    public getDbSelectData(name: string): any[] {
+        for (let item of this._dbSelectData) {
+            if (name == item.field) return item.data;
+        }
     }
 }
 

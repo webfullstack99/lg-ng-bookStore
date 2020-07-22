@@ -21,7 +21,6 @@ export class FieldSelectComponent implements OnInit {
 
     ngOnInit() {
         this._selectData = this._helperService.getConf_selectData()[this._field];
-
     }
 
     public onChange(value: string): void {

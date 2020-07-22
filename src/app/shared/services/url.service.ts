@@ -33,8 +33,11 @@ export class UrlService {
             // btn filter
             let filters: string[] = [
                 ...this._helperService.getTemplateConf(controller).filter,
-                ...this._helperService.getTemplateConf(controller).selectFilter
             ];
+            for (let item of this._helperService.getConf_selectFilter(controller)) {
+                filters.push(item['field']);
+            }
+
             let searchArr: string[] = this._helperService.getTemplateConf(controller).search;
             let sortArr: string[] = this._helperService.getTemplateConf(controller).sort;
             let clientFilter: any = { filter: {}, sort: {}, search: {}, other: {} };

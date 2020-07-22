@@ -55,7 +55,7 @@ export class FormComponent extends FormGeneral implements OnInit {
             description: [this._helperService.getVal(this._currentItem, 'description.value') || ''],
             slug: [this._currentItem.slug || ''],
             price: [this._currentItem.price || ''],
-            category: [this._helperService.getVal(this._currentItem, 'category.name.value') || ''],
+            category: [this._helperService.getVal(this._currentItem, 'category.slug') || ''],
             status: [this._currentItem.status || ''],
             special: [this._currentItem.special || ''],
             saleOff: [this._currentItem.saleOff || ''],
@@ -78,7 +78,10 @@ export class FormComponent extends FormGeneral implements OnInit {
             }
 
             // solve submit
-            if (this._formType == 'edit') this.solveEditSubmitHasThumb(callbacks);
+            if (this._formType == 'edit')
+                this.updateRelationFieldIfChanges({ field: 'category', foreignField: 'slug' }, {
+                    doneCallback: () => this.solveEditSubmitHasThumb(callbacks)
+                })
             else this.solveAddSubmit(callbacks);
 
             // reset add form

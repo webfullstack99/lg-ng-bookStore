@@ -6,7 +6,7 @@
                 <option selected value="all">All {{item.field}}</option>
                 <option *ngFor="let option of item.data" [selected]="isSelected(item.field, option.value)"
                     [value]="option.value">
-                    {{option.name}}</option>
+                    {{option.name}} ({{option.count}})</option>
             </select>
         </div>
     </div>

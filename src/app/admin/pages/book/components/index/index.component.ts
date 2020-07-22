@@ -29,7 +29,6 @@ export class IndexComponent extends AdminController implements OnInit {
     public _pagination: any = {};
     public _hasData: boolean;
     public _changeActionField: string;
-    public _dbSelectData: any[];
 
     constructor(
         public _helperService: HelperService,
@@ -54,15 +53,8 @@ export class IndexComponent extends AdminController implements OnInit {
             this._selectedItems = [];
             this.listData();
         })
-        this.setSelectData();
     }
 
-    protected setSelectData(): void {
-        this._modelService.getSelectData('category', (data: any[]) => {
-            this._dbSelectData = [];
-            this._dbSelectData.push({ field: 'category', data });
-        })
-    }
 
     // List item
     protected listData(): void {

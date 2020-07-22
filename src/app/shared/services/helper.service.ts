@@ -71,9 +71,12 @@ export class HelperService {
         return str
     }
 
-
     public getConf_text(val: string): string {
         return this._conf.template.format.text[val];
+    }
+
+    public getConf_selectFilter(controller: string): any[]{
+        return this._conf.templateConf[controller].selectFilter;
     }
 
     public getConf_pagination(controller: string): any {

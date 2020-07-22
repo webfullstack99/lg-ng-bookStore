@@ -75,9 +75,20 @@
                 <div [class]="getClass('select').containerClasses">
                     <select [class]="getClass('select').classes" [id]="'_'+input.name" [formControlName]="input.name">
                         <option value="" disabled selected>{{getDefaultSelectContent(input.name) | ucfirst }}</option>
-                        <option *ngFor="let value of _helperService.getConf_selectData()[input.name]" [value]="value">
-                            {{_helperService.getConf_btnTemplate()[input.name][value].content}}
-                        </option>
+
+                        <!-- NORMAL -->
+                        <ng-template [ngIf]="!input.isDbSelect">
+                            <option *ngFor="let value of _helperService.getConf_selectData()[input.name]"
+                                [value]="value">
+                                {{_helperService.getConf_btnTemplate()[input.name][value].content}}
+                            </option>
+                        </ng-template>
+
+                        <!-- DB SELECT -->
+                        <ng-template [ngIf]="input.isDbSelect">
+                            <option *ngFor="let item of getDbSelectData(input.name)" [value]="item.value">{{item.name}}
+                            </option>
+                        </ng-template>
                     </select>
                     <app-show-error-message [displayName]="input.displayName"
                         [control]="_formProfile.controls[input.name]">

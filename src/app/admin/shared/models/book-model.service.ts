@@ -99,32 +99,40 @@ export class BookModelService extends AdminModelService {
         this._uploadService.base64Upload({ upload: new Base64Upload(params.item.thumb), basePath: this._controller }, {
             doneCallback: (upload: Upload) => {
                 try {
+                    this.getItemByFieldPathAndValue({
+                        controller: 'category',
+                        fieldPath: 'slug',
+                        value: params.item.category
+                    }, {
+                        doneCallback: (data: any) => {
+                            let item: IBook = {
+                                title: {
+                                    value: params.item.title,
+                                    forSearch: params.item.title.toLowerCase(),
+                                },
+                                author: {
+                                    value: params.item.author,
+                                    forSearch: params.item.author.toLowerCase(),
+                                },
+                                description: {
+                                    value: params.item.description,
+                                    forSearch: params.item.description.toLowerCase(),
+                                },
+                                slug: params.item.slug,
+                                category: data,
+                                price: params.item.price,
+                                status: params.item.status,
+                                special: params.item.special,
+                                saleOff: params.item.saleOff,
+                                thumb: upload._url,
+                            }
+                            item = this.setCreated(item);
+                            this._db.list(this.collection()).push(item)
+                                .then(() => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback() })
+                                .catch((e) => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e) });
+                        }
+                    })
                     // upload done
-                    let item: IBook = {
-                        title: {
-                            value: params.item.title,
-                            forSearch: params.item.title.toLowerCase(),
-                        },
-                        author: {
-                            value: params.item.author,
-                            forSearch: params.item.author.toLowerCase(),
-                        },
-                        description: {
-                            value: params.item.description,
-                            forSearch: params.item.description.toLowerCase(),
-                        },
-                        slug: params.item.slug,
-                        category: {},
-                        price: params.item.price,
-                        status: params.item.status,
-                        special: params.item.special,
-                        saleOff: params.item.saleOff,
-                        thumb: upload._url,
-                    }
-                    item = this.setCreated(item);
-                    this._db.list(this.collection()).push(item)
-                        .then(() => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback() })
-                        .catch((e) => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e) });
                 } catch (e) { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e) }
             },
             progressCallback: (upload: Upload) => {

@@ -29,7 +29,6 @@ export abstract class FormGeneral {
     // ABSTRACT METHODS
     protected initiateFormProfile(): void { }
 
-
     protected initForm() {
         let key = this._activatedRoute.snapshot.paramMap.get('key');
         if (key) {
@@ -37,6 +36,7 @@ export abstract class FormGeneral {
             this._formType = 'edit';
             this._modelService.getItem({ key }, {
                 task: 'by-key', doneCallback: (data: any) => {
+                    console.log(data);
                     this._currentItem = data || {};
                     this.initiateFormProfile();
                 }
@@ -104,4 +104,33 @@ export abstract class FormGeneral {
         });
     }
 
+
+
+    /**
+     * Updates relation field
+     * @param params - { field, foreignField}
+     * @param options - { doneCallback: () => void }
+     */
+    protected updateRelationFieldIfChanges(params: any, options: any): void {
+        let $this: FormGeneral = this;
+        let oldVal: string = this._currentItem[params.field][params.foreignField];
+        let currentVal: string = this._submittedForm[params.field];
+        if (oldVal != currentVal) {
+            // update relation field
+            this._modelService.getItemByFieldPathAndValue({
+                controller: params.field,
+                fieldPath: params.foreignField,
+                value: this._submittedForm[params.field],
+            }, {
+                doneCallback: (item: any) => {
+                    $this._submittedForm[params.field] = item;
+                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                }
+            })
+        } else {
+            // no change => assign old data for current data
+            this._submittedForm[params.field] = this._currentItem[params.field];
+            if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+        }
+    }
 }

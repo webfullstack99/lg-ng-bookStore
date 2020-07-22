@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UrlService } from 'src/app/shared/services/url.service';
 import { Router } from '@angular/router';
+import { HelperService } from 'src/app/shared/services/helper.service';
 
 @Component({
     selector: 'app-filter-selects',
@@ -16,12 +17,12 @@ export class FilterSelectsComponent implements OnInit {
     @Input('dbSelectData') _dbSelectData: any[];
 
     constructor(
+        private _helperService: HelperService,
         private _urlService: UrlService,
         private _router: Router,
     ) { }
 
     ngOnInit() {
-        console.log(this._dbSelectData);
         this._urlService.getClientFilter(this._controller, (clientFilter: any) => {
             this._clientFilter = clientFilter.filter;
             this.setSelected();
@@ -29,9 +30,10 @@ export class FilterSelectsComponent implements OnInit {
     }
 
     public setSelected(): void {
-        for (let item of this._dbSelectData) {
-            this._selected[item.field] = this._clientFilter[item.field] || '';
-        }
+        let selectFilters: any = this._helperService.getConf_selectFilter(this._controller);
+        for (let selectFilter of selectFilters)
+            this._selected[selectFilter.field] = this._clientFilter[selectFilter.field] || '';
+
     }
 
     public isSelected(field: string, value: string): boolean {

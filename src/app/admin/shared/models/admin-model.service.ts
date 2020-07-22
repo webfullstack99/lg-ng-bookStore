@@ -10,6 +10,8 @@ import { Base64Upload } from 'src/app/shared/defines/base64-upload';
     providedIn: 'root'
 })
 export class AdminModelService {
+    protected _filterFields: string[];
+    protected _selectFilter: any[];
     protected _searchFields: string[];
     protected _sortFields: string[];
     protected _controller: string;
@@ -48,25 +50,88 @@ export class AdminModelService {
 
     }
 
-    public getSelectData(controller: string, doneCallback?: (data: any[]) => void): void {
-        let selectData: any[] = [];
-        if (['category', 'group'].includes(controller)) {
-            this.listItemsDynamically({ controller: controller }, {
-                task: 'active',
-                doneCallback: (items: any[]) => {
-                    for (let item of items) {
-                        if (controller == 'category')
-                            selectData.push({ value: item.slug, name: item.name.value });
-                        else
-                            selectData.push({ value: item.$key, name: item.name.value });
-                    }
-                    if (this._helperService.isFn(doneCallback)) doneCallback(selectData);
-                }
-            });
+    // GET ALL SELECT FILTER DATA (LOCAL)
+    public getAllSelectFilterData(items: any[]): any[] {
+        let result: any[] = [];
+        if (items.length > 0) {
+            let analyzedResult: any = this.analyzeSelectFilterData(items);
+            result = this.standardizeSelectedFilterData(analyzedResult);
         }
-        if (this._helperService.isFn(doneCallback)) doneCallback(selectData);
+        return result;
     }
 
+    public analyzeSelectFilterData(items: any[]): any {
+        let result: any = {};
+        for (let selectFilter of this._selectFilter) {
+            let field: string = selectFilter.field;
+            result[selectFilter.field] = {};
+            for (let item of items) {
+                let value: string = item[field][selectFilter.foreignField];
+                if (result[field][value])
+                    result[field][value].count += 1
+                else
+                    result[field][value] = {
+                        name: item[field].name.value,
+                        count: 1,
+                    }
+            }
+        }
+        return result;
+    }
+
+    public standardizeSelectedFilterData(analyzedResult: any): any[] {
+        let result: Set<any> = new Set();
+        for (let field in analyzedResult) {
+            let data: any[] = [];
+            for (let value in analyzedResult[field])
+                data.push({ value, name: analyzedResult[field][value].name, count: analyzedResult[field][value].count });
+            result.add({ field, data });
+        }
+        return [...result];
+    }
+
+    // GET ALL SELECT FILTER DATA (DATABASE)
+    public getAllDbSelectData(doneCallback?: (data: any[]) => void): void {
+        let promises: Promise<any>[] = [];
+        if (this._selectFilter.length > 0) {
+            for (let selectFilter of this._selectFilter) {
+                promises.push(
+                    new Promise((resolve) => {
+                        this.getSelectData(selectFilter, {
+                            doneCallback: (data: any[]) => {
+                                resolve({ field: selectFilter.field, data: data });
+                            }
+                        })
+                    })
+                )
+            }
+            Promise.all(promises)
+                .then((result: any[]) => {
+                    if (this._helperService.isFn(doneCallback)) doneCallback(result);
+                })
+        } else {
+            if (this._helperService.isFn(doneCallback)) doneCallback([]);
+        }
+    }
+
+    /**
+     * Gets select data
+     * @param data - {field, foreignField}
+     * @param [doneCallback] 
+     */
+    public getSelectData(selectFilter, options: any): void {
+        let selectData: any = new Set();
+        this.listItemsDynamically({ controller: selectFilter.field }, {
+            task: options.task,
+            doneCallback: (items: any[]) => {
+                for (let item of items)
+                    selectData.add({ value: item[selectFilter.foreignField], name: item.name.value });
+                if (this._helperService.isFn(options.doneCallback)) options.doneCallback([...selectData]);
+            }
+        });
+    }
+
+    // COUNT FILTER (LOCAL)
     public countFilter(items: any[]) {
         let filterCount: any = {};
         let filterArr = this._helperService.getConf_filterArr(this._controller);
@@ -127,20 +192,23 @@ export class AdminModelService {
         })
     }
 
-    public getItemByFieldPathAndValue(params: any, options: any) {
-        let searchFields: string[] = this._helperService.getConf_searchFields(params.controller);
-        let fieldPath: string = (searchFields.includes(params.field)) ? `${params.field}/value` : params.field;
 
+    /**
+     * Gets item by field path and value
+     * @param params - { controller, fieldPath, value }
+     * @param options - { doneCallback }
+     */
+    public getItemByFieldPathAndValue(params: any, options: any) {
         this._db.list(`${this.toCollection(params.controller)}`, ref => ref
-            .orderByChild(fieldPath)
+            .orderByChild(params.fieldPath)
             .equalTo(params.value)
         ).snapshotChanges().forEach((itemsSnapshot) => {
             let items: any = [];
-
             // add $key into each item
             itemsSnapshot.forEach((itemSnapshot) => {
                 let item = itemSnapshot.payload.toJSON();
-                item['$key'] = itemSnapshot.key;
+                if (options.hasKey)
+                    item['$key'] = itemSnapshot.key;
                 items.push(item);
             })
             let item = (items[0]) ? items[0] : null;
@@ -216,21 +284,23 @@ export class AdminModelService {
 
     // FILTER & SEARCH & SORT & PAGINATION
     protected runPropertyFilter(params: any, options: any): void {
-        console.log(params);
-        
         let items = params.items;
         items = items.filter((item) => {
             for (let key in params.clientFilter.filter) {
-                if (params.clientFilter.filter[key] != 'all') {
-                    if (item[key] != params.clientFilter.filter[key]) {
-                        return false;
-                    } else {
-                    }
-                }
+                let value = params.clientFilter.filter[key];
+                if (value != 'all' && item[key] != value)
+                    return this.filterSelect(item, key, value);
             }
             return true;
         })
         return items;
+    }
+
+    private filterSelect(item: any, field: string, value): boolean {
+        for (let selectFilter of this._selectFilter)
+            if (field == selectFilter.field)
+                if (item[field][selectFilter.foreignField] == value) return true;
+        return false;
     }
 
     protected runLocalFilter(params: any, options: any): any {
@@ -320,6 +390,7 @@ export class AdminModelService {
     // CHECK METHODS
     public checkExist(params: any, options: any) {
         this.getItemByFieldPathAndValue(params, {
+            hasKey: true,
             doneCallback: (item: any) => {
                 let isExist: boolean = (item) ? true : false;
                 if (isExist) isExist = (params.key == item.$key) ? false : isExist;
@@ -489,6 +560,8 @@ export class AdminModelService {
         this._controller = controller;
         this._searchFields = this._helperService.getConf_searchFields(this._controller);
         this._sortFields = this._helperService.getConf_sortArr(this._controller);
+        this._filterFields = this._helperService.getConf_filterArr(this._controller);
+        this._selectFilter = this._helperService.getConf_selectFilter(this._controller);
         this.setSchema();
     }
 

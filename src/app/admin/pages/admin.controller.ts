@@ -21,6 +21,7 @@ export abstract class AdminController {
     public _selectedItems;
     public _hasData;
     public _changeActionField;
+    public _dbSelectData: any[] = [];
     protected _modelService: AdminModelService;
 
     constructor(
@@ -113,7 +114,6 @@ export abstract class AdminController {
             freshDataCallback: (items: any[]) => {
                 if (items) if (items.length > 0) {
                     this._hasData = true;
-                    this._filterCount = this._modelService.countFilter(items);
                 }
             },
             beforePaginationCallback: (length: number) => {
@@ -122,9 +122,16 @@ export abstract class AdminController {
             },
             doneCallback: (data: any[]) => {
                 this._items = this._highlightService.highlightSearchDataForAdminMainTable(this._clientFilter, data, this._controller);
+                this._filterCount = this._modelService.countFilter(this._items);
+                this.setSelectData();
             }
         });
 
+    }
+
+    protected setSelectData(): void {
+        if (this._helperService.getConf_selectFilter(this._controller).length > 0)
+            this._dbSelectData = this._modelService.getAllSelectFilterData(this._items);
     }
 
     protected onEdit(item: any): void {

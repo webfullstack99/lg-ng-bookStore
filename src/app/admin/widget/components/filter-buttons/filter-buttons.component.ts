@@ -31,8 +31,6 @@ export class FilterButtonsComponent implements OnInit {
 
         this._urlService.getClientFilter(this._controller, (clientFilter: any) => {
             this._clientFilter = clientFilter.filter;
-            console.log(this._clientFilter);
-            
         })
     }
 

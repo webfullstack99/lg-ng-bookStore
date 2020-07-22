@@ -215,6 +215,7 @@ export class Conf {
         item: {
             action: ['edit', 'delete'],
             filter: ['status'],
+            selectFilter: [],
             search: ['name', 'all'],
             sort: ['name', 'status', 'created', 'modified'],
             pagination: {
@@ -227,7 +228,7 @@ export class Conf {
         book: {
             action: ['edit', 'delete'],
             filter: ['status', 'special'],
-            selectFilter: ['category'],
+            selectFilter: [{ field: 'category', foreignField: 'slug' }],
             search: ['all', 'title', 'author', 'description'],
             sort: ['title', 'category', 'author', 'price', 'special', 'saleOff', 'status', 'created', 'modified'],
             pagination: {
@@ -268,6 +269,7 @@ export class Conf {
         category: {
             action: ['edit', 'delete'],
             filter: ['status'],
+            selectFilter: [],
             search: ['name', 'all'],
             sort: ['name', 'status', 'created', 'modified'],
             pagination: {
@@ -290,6 +292,7 @@ export class Conf {
         group: {
             action: ['edit', 'delete'],
             filter: ['status', 'acp'],
+            selectFilter: [],
             search: ['name', 'all'],
             sort: ['name', 'acp', 'status', 'created', 'modified'],
             pagination: {
@@ -308,6 +311,7 @@ export class Conf {
         user: {
             action: ['edit', 'delete'],
             filter: ['status'],
+            selectFilter: [],
             search: ['all', 'username', 'email', 'fullName'],
             sort: ['username', 'email', 'fullName', 'group', 'status', 'created', 'modified'],
             pagination: {
