@@ -30,7 +30,7 @@
                         type: 'submit',
                         displayName: 'submit'
                     }
-                ]" [controller]="_controller" (onSubmit)="onSubmitForm()"></div>
+                ]" [controller]="_controller" (onSubmit)="onSubmitForm()" [formType]="_formType"></div>
             <!-- PROGRESS BAR -->
             <div *ngIf="_uploadProgress!=null" [appProgressBar]="_uploadProgress" title="Saving"> </div>
         </div>

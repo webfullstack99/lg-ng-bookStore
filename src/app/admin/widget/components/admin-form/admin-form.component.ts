@@ -80,6 +80,11 @@ export class AdminFormComponent implements OnInit {
     }
 
     private resetForm(): void {
+        console.log(this._formType);
+        
+        if (this._formType == 'add') this._formProfile.reset();
+        else this._formProfile.markAsPristine();
+        this._helperService.setDefaultTextForCustomFileInput()
     }
 
     public onInputHasOptionsKeyup($event: any, name: string, options: any): void {

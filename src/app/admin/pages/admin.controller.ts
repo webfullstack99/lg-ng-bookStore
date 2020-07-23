@@ -171,7 +171,11 @@ export abstract class AdminController {
         let key = item.$key;
         delete tempItem.$key;
         tempItem[field] = this._helperService.getNewFieldButtonValue(field, item[field]);
-        this._modelService.saveItem({ updateData: { [field]: tempItem[field], }, key }, {
+        this._modelService.saveItem({
+            oldItem: item,
+            updateData: { [field]: tempItem[field], },
+            key
+        }, {
             task: 'update-by-key',
             doneCallback: (error) => {
                 let resultStatus = (error) ? 'fail' : 'success';
@@ -187,7 +191,13 @@ export abstract class AdminController {
     }
 
     public onFieldChange(item: any, field: string, value: string): void {
-        this._modelService.saveItem({ updateData: { [field]: value }, key: item.$key }, {
+        let tempItem: any = { ...item };
+        tempItem[field] = value;
+        this._modelService.saveItem({
+            oldItem: { ...item },
+            updateData: { [field]: value },
+            key: item.$key
+        }, {
             task: 'update-by-key',
             doneCallback: (error) => {
                 let resultStatus = (error) ? 'fail' : 'success';

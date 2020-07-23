@@ -71,7 +71,7 @@ export class UserModelService extends AdminModelService {
     // SUPPORTED METHODS ============
     private listForMainTable(params: any, options: any): void {
         this._db.list(this.collection(), ref => this.getSearchRef({ ...params, ref }, options)
-        ).snapshotChanges().forEach((itemsSnapshot) => {
+        ).snapshotChanges().subscribe((itemsSnapshot) => {
             let items: any = [];
 
             // add $key into each item

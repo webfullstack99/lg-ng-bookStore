@@ -80,12 +80,11 @@ export class FormComponent extends FormGeneral implements OnInit {
             // solve submit
             if (this._formType == 'edit')
                 this.updateRelationFieldIfChanges({ field: 'category', foreignField: 'slug' }, {
-                    doneCallback: () => this.solveEditSubmitHasThumb(callbacks)
+                    doneCallback: (isUpdated: boolean) => {
+                        this.solveEditSubmitHasThumb(callbacks)
+                    }
                 })
             else this.solveAddSubmit(callbacks);
-
-            // reset add form
-            if (this._formType == 'add') this.resetForm();
         }
     }
 }

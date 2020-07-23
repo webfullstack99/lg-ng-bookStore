@@ -85,9 +85,6 @@ export class FormComponent extends FormGeneral implements OnInit {
                 : this._currentItem.password;
             if (this._formType == 'edit') this.solveEditSubmitHasThumb(callbacks, item);
             else this.solveAddSubmit(callbacks, item);
-
-            // reset add form
-            if (this._formType == 'add') this.resetForm();
         }
     }
 }

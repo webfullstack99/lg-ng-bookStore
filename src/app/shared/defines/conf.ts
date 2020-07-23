@@ -238,7 +238,7 @@ export class Conf {
             },
             formParams: {
                 title: {
-                    min: 10,
+                    min: 2,
                     max: 200,
                 },
                 author: {
@@ -250,7 +250,7 @@ export class Conf {
                     max: 5000,
                 },
                 slug: {
-                    min: 10,
+                    min: 2,
                     max: 200,
                 },
                 price: {
@@ -338,6 +338,41 @@ export class Conf {
             }
         },
     }
+
+    duplicationDataConf = {
+        category: [
+            {
+                controller: 'book',
+                fieldPath: 'slug',
+                positions: ['category'],
+            },
+        ],
+
+        user: [
+            {
+                controller: 'item',
+                fieldPath: 'username/value',
+                position: ['created/user', 'modified/user'],
+            }, {
+                controller: 'book',
+                fieldPath: 'username/value',
+                position: ['created/user', 'modified/user'],
+            }, {
+                controller: 'category',
+                fieldPath: 'username/value',
+                position: ['created/user', 'modified/user'],
+            }, {
+                controller: 'user',
+                fieldPath: 'username/value',
+                position: ['created/user', 'modified/user'],
+            }, {
+                controller: 'group',
+                fieldPath: 'username/value',
+                position: ['created/user', 'modified/user'],
+            },
+        ],
+    }
+
 
     notifier: NotifierOptions = {
         position: {

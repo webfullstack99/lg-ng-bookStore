@@ -6,11 +6,14 @@ import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { IBook } from 'src/app/shared/defines/book.interface';
 import { Base64Upload } from 'src/app/shared/defines/base64-upload';
+import { Subscription } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class BookModelService extends AdminModelService {
+
+    public _listSubscription: Subscription;
 
     constructor(
         protected _db: AngularFireDatabase,
@@ -70,7 +73,7 @@ export class BookModelService extends AdminModelService {
     // SUPPORTED METHODS ============
     private listForMainTable(params: any, options: any): void {
         this._db.list(this.collection(), ref => this.getSearchRef({ ...params, ref }, options)
-        ).snapshotChanges().forEach((itemsSnapshot) => {
+        ).snapshotChanges().subscribe((itemsSnapshot) => {
             let items: any = [];
 
             // add $key into each item

@@ -75,7 +75,11 @@ export class HelperService {
         return this._conf.template.format.text[val];
     }
 
-    public getConf_selectFilter(controller: string): any[]{
+    public getConf_duplicationDataConf(controller: string): any[] {
+        return this._conf.duplicationDataConf[controller];
+    }
+
+    public getConf_selectFilter(controller: string): any[] {
         return this._conf.templateConf[controller].selectFilter;
     }
 
@@ -150,7 +154,7 @@ export class HelperService {
         let result: any;
         let temp: any = item;
         let pathArr: string[];
-        if (path.indexOf('.') > -1) pathArr = path.split('.');
+        if (path.match(/\.|\//)) pathArr = path.split(/\.|\//);
         else pathArr = [path];
         try {
             for (let value of pathArr) {

@@ -36,7 +36,6 @@ export abstract class FormGeneral {
             this._formType = 'edit';
             this._modelService.getItem({ key }, {
                 task: 'by-key', doneCallback: (data: any) => {
-                    console.log(data);
                     this._currentItem = data || {};
                     this.initiateFormProfile();
                 }
@@ -61,11 +60,6 @@ export abstract class FormGeneral {
         }
     }
 
-    protected resetForm(): void {
-        this._formProfile.reset();
-        this._helperService.setDefaultTextForCustomFileInput();
-    }
-
     // SOLVE SUBMIT
     // HAS THUMB
     protected solveEditSubmitHasThumb(callbacks: any, item?: any): void {
@@ -74,6 +68,7 @@ export abstract class FormGeneral {
             // edit and change thumb
             this._modelService.saveItem({
                 item: saveItem,
+                oldItem: this._currentItem,
                 key: this._currentItem.$key,
                 oldThumb: this._currentItem.thumb,
             }, {
@@ -82,7 +77,11 @@ export abstract class FormGeneral {
         } else {
             // edit not change thumb
             saveItem.thumb = this._currentItem.thumb;
-            this._modelService.saveItem({ item: saveItem, key: this._currentItem.$key }, {
+            this._modelService.saveItem({
+                item: saveItem,
+                oldItem: this._currentItem,
+                key: this._currentItem.$key,
+            }, {
                 task: 'edit-not-change-thumb', ...callbacks
             });
         }
@@ -91,7 +90,11 @@ export abstract class FormGeneral {
     // NO THUMB
     protected solveEditSubmitNoThumb(callbacks: any, item?: any): void {
         let saveItem: any = item || this._submittedForm;
-        this._modelService.saveItem({ item: saveItem, key: this._currentItem.$key }, {
+        this._modelService.saveItem({
+            item: saveItem,
+            oldItem: this._currentItem,
+            key: this._currentItem.$key
+        }, {
             task: 'edit-not-change-thumb', ...callbacks
         });
     }
@@ -104,8 +107,6 @@ export abstract class FormGeneral {
         });
     }
 
-
-
     /**
      * Updates relation field
      * @param params - { field, foreignField}
@@ -113,7 +114,7 @@ export abstract class FormGeneral {
      */
     protected updateRelationFieldIfChanges(params: any, options: any): void {
         let $this: FormGeneral = this;
-        let oldVal: string = this._currentItem[params.field][params.foreignField];
+        let oldVal: string = this._helperService.getVal(this._currentItem, `${params.field}/${params.foreignField}`);
         let currentVal: string = this._submittedForm[params.field];
         if (oldVal != currentVal) {
             // update relation field
@@ -124,13 +125,13 @@ export abstract class FormGeneral {
             }, {
                 doneCallback: (item: any) => {
                     $this._submittedForm[params.field] = item;
-                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback(true);
                 }
             })
         } else {
             // no change => assign old data for current data
             this._submittedForm[params.field] = this._currentItem[params.field];
-            if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+            if (this._helperService.isFn(options.doneCallback)) options.doneCallback(false);
         }
     }
 }

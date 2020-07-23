@@ -5,11 +5,13 @@ import { Schema } from '../defines/schema';
 import { UploadService } from 'src/app/shared/services/upload.service';
 import { Upload } from 'src/app/shared/defines/upload';
 import { Base64Upload } from 'src/app/shared/defines/base64-upload';
+import { Subscription } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AdminModelService {
+    protected _synDuplicationSubscriptions: any = {};
     protected _filterFields: string[];
     protected _selectFilter: any[];
     protected _searchFields: string[];
@@ -36,18 +38,94 @@ export class AdminModelService {
                 break;
         }
 
-        this._db.list(this.toCollection(params.controller), refFn).snapshotChanges().forEach((itemsSnapshot) => {
-            let items: any = [];
+        let subscription: Subscription = this._db.list(this.toCollection(params.controller), refFn)
+            .snapshotChanges().subscribe((itemsSnapshot) => {
+                let items: any = [];
 
-            // add $key into each item
-            itemsSnapshot.forEach((itemSnapshot) => {
-                let item = itemSnapshot.payload.toJSON();
-                item['$key'] = itemSnapshot.key;
-                items.push(item);
+                // add $key into each item
+                itemsSnapshot.forEach((itemSnapshot) => {
+                    let item = itemSnapshot.payload.toJSON();
+                    item['$key'] = itemSnapshot.key;
+                    items.push(item);
+                })
+                if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
+                subscription.unsubscribe();
             })
-            if (this._helperService.isFn(options.doneCallback)) options.doneCallback(items);
-        })
 
+    }
+
+    /**
+     * Syncs duplication data
+     * @param params - { oldItem, item }
+     * @param options 
+     */
+    public syncDuplicationData(params: any, options: any): void {
+        let subId: number = Date.now();
+        this._synDuplicationSubscriptions[subId] = [];
+        console.log('sync called', params);
+
+        let duplicationDataConf: any[] = this._helperService.getConf_duplicationDataConf(this._controller);
+        let promises: Promise<any>[] = [];
+        if (duplicationDataConf) {
+            for (let item of duplicationDataConf)
+                for (let pos of item.positions)
+                    promises.push(this.getUpdateDuplicationPromise({
+                        subId,
+                        item: params.item,
+                        oldItem: params.oldItem,
+                        position: pos,
+                        duplicationInfo: item,
+                    }))
+
+            Promise.all(promises)
+                .then((result: any[]) => {
+                    console.log(`sync duplication result: `, result, subId);
+                    if (this._helperService.isFn(options.doneCallback())) options.doneCallback();;
+
+                    // unsubscribe
+                    for (let item of this._synDuplicationSubscriptions[subId]) item.unsubscribe();
+                    this._synDuplicationSubscriptions[subId] = {};
+                })
+        } else if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+    }
+
+    /**
+     * Gets update promise
+     * @param data - {item, oldItem, position, duplicationInfo: {controller, fieldPath, positions: string[]}, }
+     */
+    public getUpdateDuplicationPromise(data: any): Promise<any> {
+        return new Promise((resolve) => {
+            let subscription = this._db.list(this.toCollection(data.duplicationInfo.controller), ref => ref
+                .orderByChild(`${data.position}/${data.duplicationInfo.fieldPath}`)
+                .equalTo(this._helperService.getVal(data.oldItem, data.duplicationInfo.fieldPath))
+            ).snapshotChanges().subscribe((itemsSnapshot) => {
+                if (itemsSnapshot.length > 0) {
+                    let subPromises: Promise<any>[] = [];
+                    itemsSnapshot.forEach((itemSnapshot) => {
+
+                        subPromises.push(
+                            new Promise((subResolve) => {
+                                if (data.item.$key) delete data.item.$key;
+                                this._db.object(`${this.toCollection(data.duplicationInfo.controller)}/${itemSnapshot.key}`).update({
+                                    [data.position]: data.item,
+                                })
+                                    .then(() => {
+                                        subResolve(true);
+                                    })
+                                    .catch((error) => {
+                                        subResolve(false);
+                                    })
+                            })
+                        )
+                    })
+                    Promise.all(subPromises)
+                        .then((result: any[]) => {
+                            resolve(result)
+                        })
+                } else resolve(null);
+            })
+            this._synDuplicationSubscriptions[data.subId].push(subscription);
+        })
     }
 
     // GET ALL SELECT FILTER DATA (LOCAL)
@@ -66,12 +144,12 @@ export class AdminModelService {
             let field: string = selectFilter.field;
             result[selectFilter.field] = {};
             for (let item of items) {
-                let value: string = item[field][selectFilter.foreignField];
+                let value: string = this._helperService.getVal(item, `${field}/${selectFilter.foreignField}`);
                 if (result[field][value])
                     result[field][value].count += 1
                 else
                     result[field][value] = {
-                        name: item[field].name.value,
+                        name: this._helperService.getVal(item, `${field}/name/value`),
                         count: 1,
                     }
             }
@@ -158,8 +236,12 @@ export class AdminModelService {
             for (let item of items) {
                 promises.push(
                     new Promise((resolve) => {
-                        this.saveItem({ item }, {
-                            task: 'delete-by-key', doneCallback: () => { resolve(true); }
+                        this.saveItem({
+                            item
+                        }, {
+                            task: 'delete-by-key', doneCallback: () => {
+                                resolve(true)
+                            }
                         })
                     })
                 )
@@ -169,7 +251,7 @@ export class AdminModelService {
                 if (item[data.field] != data.value)
                     promises.push(
                         new Promise((resolve) => {
-                            this.saveItem({ updateData: { [data.field]: data.value }, key: item.$key }, {
+                            this.saveItem({ oldItem: item, updateData: { [data.field]: data.value }, key: item.$key }, {
                                 task: 'update-by-key', doneCallback: () => {
                                     resolve(true);
                                 }
@@ -186,12 +268,12 @@ export class AdminModelService {
 
     // GET ITEM
     protected getItemByKey(params: any, options: any) {
-        this._db.object(`${this.collection()}/${params.key}`).valueChanges().subscribe((data: any) => {
+        let subscription: Subscription = this._db.object(`${this.collection()}/${params.key}`).valueChanges().subscribe((data: any) => {
             if (data) data.$key = params.key;
             options.doneCallback(data);
+            subscription.unsubscribe();
         })
     }
-
 
     /**
      * Gets item by field path and value
@@ -199,10 +281,10 @@ export class AdminModelService {
      * @param options - { doneCallback }
      */
     public getItemByFieldPathAndValue(params: any, options: any) {
-        this._db.list(`${this.toCollection(params.controller)}`, ref => ref
+        let subscription: Subscription = this._db.list(`${this.toCollection(params.controller)}`, ref => ref
             .orderByChild(params.fieldPath)
             .equalTo(params.value)
-        ).snapshotChanges().forEach((itemsSnapshot) => {
+        ).snapshotChanges().subscribe((itemsSnapshot) => {
             let items: any = [];
             // add $key into each item
             itemsSnapshot.forEach((itemSnapshot) => {
@@ -213,15 +295,24 @@ export class AdminModelService {
             })
             let item = (items[0]) ? items[0] : null;
             if (this._helperService.isFn(options.doneCallback)) options.doneCallback(item);
+            subscription.unsubscribe();
         })
     }
 
     // UPDATE - EDIT -DELETE
     protected updateByKey(params: any, options: any): void {
         params.updateData = this.setModified(params.updateData);
+        let item = { ...params.oldItem, ...params.updateData };
+
         this._db.object(`${this.collection()}/${params.key}`).update(params.updateData)
             .then(() => {
-                if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                this.syncDuplicationData({
+                    oldItem: params.oldItem, item
+                }, {
+                    doneCallback: () => {
+                        if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                    }
+                })
             })
             .catch((error) => {
                 if (this._helperService.isFn(options.doneCallback)) options.doneCallback(error);
@@ -242,7 +333,15 @@ export class AdminModelService {
 
                 // update to db
                 this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
-                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                    // sync duplication data
+                    this.syncDuplicationData({
+                        oldItem: params.oldItem,
+                        item: params.item,
+                    }, {
+                        doneCallback: () => {
+                            if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                        }
+                    })
                 })
             },
             progressCallback: (upload: Upload) => {
@@ -256,11 +355,20 @@ export class AdminModelService {
         params.item = this.syncForSearch(params.item);
         params.item = this.setModified(params.item);
         params.item = this.standardizeBeforeSaving(params.item);
+
+        // update to db
         this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
-            if (this._helperService.isFn(options.doneCallback)) {
-                options.doneCallback();
-            }
+            // sync duplication data
+            this.syncDuplicationData({
+                oldItem: params.oldItem,
+                item: params.item,
+            }, {
+                doneCallback: () => {
+                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                }
+            });
         })
+
     }
 
     protected deleteByKey(params, options): void {
@@ -276,10 +384,18 @@ export class AdminModelService {
             } else if (this._helperService.isFn(options.doneCallback)) options.doneCallback(error);
         }
 
-        // delete thumb if exists
-        if (params.item.thumb)
-            this._uploadService.deleteOneByUrl({ downloadUrl: params.item.thumb }, { doneCallback: (error) => fn(error) })
-        else fn();
+
+        this.syncDuplicationData({
+            oldItem: params.item,
+            item: {},
+        }, {
+            doneCallback: () => {
+                // delete thumb if exists
+                if (params.item.thumb)
+                    this._uploadService.deleteOneByUrl({ downloadUrl: params.item.thumb }, { doneCallback: (error) => fn(error) })
+                else fn();
+            }
+        })
     }
 
     // FILTER & SEARCH & SORT & PAGINATION
