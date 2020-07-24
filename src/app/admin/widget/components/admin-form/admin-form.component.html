@@ -39,9 +39,6 @@
 
                     <!-- SHOW ERROR MESSAGE -->
                     <ng-template [ngIf]="!input.isPasswordConfirmed">
-                        <!-- 
-                        {{_formProfile.controls[input.name].errors|json}}
-                         -->
                         <app-show-error-message [displayName]="input.displayName" [field]="input.name"
                             [control]=" _formProfile.controls[input.name]">
                         </app-show-error-message>
@@ -49,13 +46,13 @@
 
                     <!-- SHOW ERROR MESSAGE FOR PASSWORD CONFIRMED -->
                     <ng-template [ngIf]="input.isPasswordConfirmed">
-                        <!-- 
-                        {{_formProfile.errors |json}}
-                         -->
                         <app-show-error-message [field]="input.name" [displayName]="input.displayName"
                             [group]="_formProfile">
                         </app-show-error-message>
                     </ng-template>
+                    <!-- 
+                    {{_formProfile.controls[input.name].errors |json}}
+                     -->
                 </div>
             </ng-template>
 

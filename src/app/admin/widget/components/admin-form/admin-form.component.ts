@@ -23,7 +23,7 @@ declare const CKEDITOR: any;
 export class AdminFormComponent implements OnInit {
 
     public _formParams: any;
-    public _timeoutObj: any;
+    public _timeoutObj: any = {};
     public _editor = DocumentEditor
     public _croppedImageBehaviorSubject = new BehaviorSubject<any>('');
     public _dbSelectData: any[] = [];
@@ -80,8 +80,6 @@ export class AdminFormComponent implements OnInit {
     }
 
     private resetForm(): void {
-        console.log(this._formType);
-        
         if (this._formType == 'add') this._formProfile.reset();
         else this._formProfile.markAsPristine();
         this._helperService.setDefaultTextForCustomFileInput()
@@ -93,7 +91,7 @@ export class AdminFormComponent implements OnInit {
             switch (options.type) {
                 case 'create-slug':
                     let slug = this._helperService.slug(value);
-                    this._formProfile.controls[options.field].setValue(slug);
+                    this.setFormControlValue(options.field, slug);
                     if (options.isPartnerUnique) this.checkUnique(options.field, slug);
                     if (options.isUnique) this.checkUnique(name, value);
                     break;
@@ -124,13 +122,12 @@ export class AdminFormComponent implements OnInit {
     }
 
     private showError(name: string, type?: string) {
-        if (type != 'off') this.setFormControlErrors(name, type)
-        else this.setFormControlErrors(name, null);
+        this.setFormControlErrors(name, type)
     }
 
     private checkUnique(name: string, value: string) {
-        clearTimeout(this._timeoutObj);
-        this._timeoutObj = setTimeout(() => {
+        clearTimeout(this._timeoutObj[name]);
+        this._timeoutObj[name] = setTimeout(() => {
             let searchFields: string[] = this._helperService.getConf_searchFields(this._controller);
             let fieldPath: string = (searchFields.includes(name)) ? `${name}/value` : name;
             this._adminModel.checkExist({
@@ -141,7 +138,6 @@ export class AdminFormComponent implements OnInit {
             }, {
                 doneCallback: (exist: boolean) => {
                     if (exist) this.showError(name, 'unique');
-                    else this.showError(name, 'off');
                 }
             })
         }, this._conf.params.delayForSearchTime);

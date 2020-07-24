@@ -116,22 +116,22 @@ export abstract class AdminController {
                     this._hasData = true;
                 }
             },
-            beforePaginationCallback: (length: number) => {
-                this._pagination.totalItems = length;
+            beforePaginationCallback: (items: any[]) => {
+                this._pagination.totalItems = items.length;
                 this._pagination.behaviorSubject.next(this._pagination);
+                this._filterCount = this._modelService.countFilter(items);
+                this.setSelectData(items);
             },
             doneCallback: (data: any[]) => {
                 this._items = this._highlightService.highlightSearchDataForAdminMainTable(this._clientFilter, data, this._controller);
-                this._filterCount = this._modelService.countFilter(this._items);
-                this.setSelectData();
             }
         });
 
     }
 
-    protected setSelectData(): void {
+    protected setSelectData(items: any[]): void {
         if (this._helperService.getConf_selectFilter(this._controller).length > 0)
-            this._dbSelectData = this._modelService.getAllSelectFilterData(this._items);
+            this._dbSelectData = this._modelService.getAllSelectFilterData(items);
     }
 
     protected onEdit(item: any): void {

@@ -82,7 +82,7 @@ export class GroupModelService extends AdminModelService {
             items = this.runLocalSort({ ...params, ...{ items } }, {});
 
             // before pagination callback
-            if (this._helperService.isFn(options.beforePaginationCallback)) options.beforePaginationCallback(items.length);
+            if (this._helperService.isFn(options.beforePaginationCallback)) options.beforePaginationCallback(items);
 
             // paginate
             items = this.runLocalPagination({ ...params, ...{ items } }, {});

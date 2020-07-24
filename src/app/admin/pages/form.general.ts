@@ -48,7 +48,7 @@ export abstract class FormGeneral {
     }
 
     protected getSavingDoneCallback(): Function {
-        return (error) => {
+        return (error, item: any) => {
             let crudType = (this._formType == 'add') ? 'create' : 'update';
             let resultStatus = (error) ? 'fail' : 'success';
             this._helperService.notifier({
@@ -57,6 +57,7 @@ export abstract class FormGeneral {
                     message: this._conf.message.crud[`${crudType}_${resultStatus}`].content,
                 }
             }, 'show');
+            if (!error && item) this._currentItem = { ... this._currentItem, ...item };
         }
     }
 

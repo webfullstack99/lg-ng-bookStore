@@ -76,7 +76,7 @@ export class HelperService {
     }
 
     public getConf_duplicationDataConf(controller: string): any[] {
-        return this._conf.duplicationDataConf[controller];
+        return this._conf.duplicationDataConf[controller] || [];
     }
 
     public getConf_selectFilter(controller: string): any[] {

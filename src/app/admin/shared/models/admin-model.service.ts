@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
     providedIn: 'root'
 })
 export class AdminModelService {
-    protected _synDuplicationSubscriptions: any = {};
+    protected _syncDuplicationSubscriptions: any = {};
     protected _filterFields: string[];
     protected _selectFilter: any[];
     protected _searchFields: string[];
@@ -61,12 +61,12 @@ export class AdminModelService {
      */
     public syncDuplicationData(params: any, options: any): void {
         let subId: number = Date.now();
-        this._synDuplicationSubscriptions[subId] = [];
-        console.log('sync called', params);
-
+        this._syncDuplicationSubscriptions[subId] = [];
+        console.log('\n');
+        console.log('sync called', subId, params);
         let duplicationDataConf: any[] = this._helperService.getConf_duplicationDataConf(this._controller);
         let promises: Promise<any>[] = [];
-        if (duplicationDataConf) {
+        if (duplicationDataConf.length > 0) {
             for (let item of duplicationDataConf)
                 for (let pos of item.positions)
                     promises.push(this.getUpdateDuplicationPromise({
@@ -79,12 +79,15 @@ export class AdminModelService {
 
             Promise.all(promises)
                 .then((result: any[]) => {
-                    console.log(`sync duplication result: `, result, subId);
+                    console.log(`result: `, result, subId);
+                    console.log('\n');
                     if (this._helperService.isFn(options.doneCallback())) options.doneCallback();;
 
                     // unsubscribe
-                    for (let item of this._synDuplicationSubscriptions[subId]) item.unsubscribe();
-                    this._synDuplicationSubscriptions[subId] = {};
+                    for (let item of this._syncDuplicationSubscriptions[subId]) item.unsubscribe();
+                    this._syncDuplicationSubscriptions[subId] = [];
+
+
                 })
         } else if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
     }
@@ -120,11 +123,14 @@ export class AdminModelService {
                     })
                     Promise.all(subPromises)
                         .then((result: any[]) => {
-                            resolve(result)
+                            let count: number = 0;
+                            for (let i = 0; i < result.length; i++) if (result[i] == true) count++;
+                            let temp: string = `${data.duplicationInfo.controller} (${count})`
+                            resolve(temp)
                         })
                 } else resolve(null);
             })
-            this._synDuplicationSubscriptions[data.subId].push(subscription);
+            this._syncDuplicationSubscriptions[data.subId].push(subscription);
         })
     }
 
@@ -339,7 +345,7 @@ export class AdminModelService {
                         item: params.item,
                     }, {
                         doneCallback: () => {
-                            if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                            if (this._helperService.isFn(options.doneCallback)) options.doneCallback(null, params.item);
                         }
                     })
                 })
@@ -364,7 +370,7 @@ export class AdminModelService {
                 item: params.item,
             }, {
                 doneCallback: () => {
-                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
+                    if (this._helperService.isFn(options.doneCallback)) options.doneCallback(null, params.item);
                 }
             });
         })

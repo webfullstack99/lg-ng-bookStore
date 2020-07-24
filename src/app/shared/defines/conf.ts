@@ -348,27 +348,35 @@ export class Conf {
             },
         ],
 
+        group: [
+            {
+                controller: 'user',
+                fieldPath: 'name/value',
+                positions: ['group'],
+            },
+        ],
+
         user: [
             {
                 controller: 'item',
                 fieldPath: 'username/value',
-                position: ['created/user', 'modified/user'],
+                positions: ['created/user', 'modified/user'],
             }, {
                 controller: 'book',
                 fieldPath: 'username/value',
-                position: ['created/user', 'modified/user'],
+                positions: ['created/user', 'modified/user'],
             }, {
                 controller: 'category',
                 fieldPath: 'username/value',
-                position: ['created/user', 'modified/user'],
+                positions: ['created/user', 'modified/user'],
             }, {
                 controller: 'user',
                 fieldPath: 'username/value',
-                position: ['created/user', 'modified/user'],
+                positions: ['created/user', 'modified/user'],
             }, {
                 controller: 'group',
                 fieldPath: 'username/value',
-                position: ['created/user', 'modified/user'],
+                positions: ['created/user', 'modified/user'],
             },
         ],
     }
