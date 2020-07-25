@@ -138,3 +138,11 @@ input.ng-dirty.ng-valid, input.ng-touched.ng-valid {
 .image-cropped-result {
     width: 200px;
 }
+
+/* page title */
+.copy-btn{
+    width: 20px;
+    height:20px;
+    padding:0px;
+    margin:0px;
+}

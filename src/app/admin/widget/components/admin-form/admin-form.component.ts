@@ -129,7 +129,7 @@ export class AdminFormComponent implements OnInit {
         clearTimeout(this._timeoutObj[name]);
         this._timeoutObj[name] = setTimeout(() => {
             let searchFields: string[] = this._helperService.getConf_searchFields(this._controller);
-            let fieldPath: string = (searchFields.includes(name)) ? `${name}/value` : name;
+            let fieldPath: string = (searchFields.includes(name)) ? `${name}/forSearch` : name;
             this._adminModel.checkExist({
                 key: this._currentItem.$key,
                 fieldPath,

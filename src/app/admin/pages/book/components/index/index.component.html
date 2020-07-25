@@ -17,7 +17,7 @@
     <!-- LIST OF ITEMS -->
     <div class="row mt-3">
         <div class="col-12">
-            <table class="admin-main-table table table-striped table-responsive-sm">
+            <table class="admin-main-table table table-striped table-responsive-md">
                 <thead *ngIf="this.getTotalItemSelected() > 0" app-thead-action-bar [controller]="_controller"
                     [totalItemsSelected]="getTotalItemSelected()" (submittedAction)="onSubmittedAction($event)"
                     (onCancel)="onCheckAll(false)"> </thead>

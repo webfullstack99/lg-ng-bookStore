@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Conf } from 'src/app/shared/defines/conf';
 import { Router } from '@angular/router';
 import { UrlService } from 'src/app/shared/services/url.service';
+import { AdminModelService } from 'src/app/admin/shared/models/admin-model.service';
+import { HelperService } from 'src/app/shared/services/helper.service';
 
 @Component({
     selector: 'app-page-title',
@@ -10,6 +12,7 @@ import { UrlService } from 'src/app/shared/services/url.service';
 })
 export class PageTitleComponent implements OnInit {
     public _pageData: any;
+    public _isCopied: boolean = false;
 
     @Input('controller') _controller: string = 'title';
     @Input('pageType') _pageType: string;
@@ -18,6 +21,8 @@ export class PageTitleComponent implements OnInit {
         public _conf: Conf,
         public _router: Router,
         public _urlService: UrlService,
+        public _helperService: HelperService,
+        private _adminModel: AdminModelService,
     ) { }
 
     ngOnInit(): void {
@@ -67,6 +72,18 @@ export class PageTitleComponent implements OnInit {
     private getStandardNavigateArr(navigateArr: string[]): string[] {
         return navigateArr.filter((value) => {
             if (value.trim() != '') return true;
+        })
+    }
+
+    public onCopyCollectionData(): void {
+        this._adminModel.listItemsDynamically({ controller: this._controller }, {
+            doneCallback: (items: any[]) => {
+                this._helperService.copy(JSON.stringify(items));
+                this._isCopied = true;
+                setTimeout(() => {
+                    this._isCopied = false;
+                }, 1000);
+            }
         })
     }
 }

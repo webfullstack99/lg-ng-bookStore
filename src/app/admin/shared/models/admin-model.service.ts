@@ -36,6 +36,10 @@ export class AdminModelService {
                         .equalTo('active')
                 }
                 break;
+
+            default:
+                refFn = (ref: any) => ref
+                break;
         }
 
         let subscription: Subscription = this._db.list(this.toCollection(params.controller), refFn)
@@ -287,9 +291,10 @@ export class AdminModelService {
      * @param options - { doneCallback }
      */
     public getItemByFieldPathAndValue(params: any, options: any) {
+        let value = (options.isSearch) ? params.value.toLowerCase() : params.value;
         let subscription: Subscription = this._db.list(`${this.toCollection(params.controller)}`, ref => ref
             .orderByChild(params.fieldPath)
-            .equalTo(params.value)
+            .equalTo(value)
         ).snapshotChanges().subscribe((itemsSnapshot) => {
             let items: any = [];
             // add $key into each item
@@ -512,6 +517,7 @@ export class AdminModelService {
     // CHECK METHODS
     public checkExist(params: any, options: any) {
         this.getItemByFieldPathAndValue(params, {
+            isSearch: true,
             hasKey: true,
             doneCallback: (item: any) => {
                 let isExist: boolean = (item) ? true : false;
@@ -652,6 +658,11 @@ export class AdminModelService {
         return itemTemp;
     }
 
+    // GET METHODS
+    protected getFieldPathForSearch(field: string): string {
+        return (this._searchFields.includes(field)) ? `${field}/forSearch` : field;
+    }
+
     // SET METHODS
     protected setCreated(item: any) {
         item.created = {
@@ -697,4 +708,5 @@ export class AdminModelService {
     public getItem(params: any, options: any) { }
 
     public saveItem(params: any, options: any) { }
+
 }
