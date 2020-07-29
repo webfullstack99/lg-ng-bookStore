@@ -47,16 +47,21 @@ export class UploadService {
 
     public deleteOneByUrl(params: any, options: any) {
         // Create a reference to the file to delete
-        let fileRef = firebase.storage().refFromURL(params.downloadUrl);
+        try {
+            let fileRef = firebase.storage().refFromURL(params.downloadUrl);
 
-        // Delete the file
-        fileRef.delete()
-            .then(function () {
-                if (typeof options.doneCallback == 'function') options.doneCallback();
-            }).catch((error) => {
-                console.log('Failed to delete file');
-                if (typeof options.doneCallback == 'function') options.doneCallback(error);
-            });
+            // Delete the file
+            fileRef.delete()
+                .then(function () {
+                    if (typeof options.doneCallback == 'function') options.doneCallback();
+                }).catch((error) => {
+                    console.log('Failed to delete file');
+                    if (typeof options.doneCallback == 'function') options.doneCallback(error);
+                });
+        } catch (e) {
+            console.log('Failed to delete file');
+            if (typeof options.doneCallback == 'function') options.doneCallback(e);
+        }
     }
 
     public solveBase64String(str: string): string {

@@ -79,18 +79,27 @@ export class FormComponent extends FormGeneral implements OnInit {
             }
 
             // solve submit
-            let item = { ... this._submittedForm };
-            item.password = (this._submittedForm.password.trim() != '')
-                ? this._helperService.md5(this._submittedForm.password)
-                : this._currentItem.password;
             if (this._formType == 'edit')
                 this.updateRelationFieldIfChanges({ field: 'group', foreignField: 'name/value' }, {
                     doneCallback: (isUpdated: boolean) => {
-                        if (this._submittedForm.password.trim() == '') delete this._submittedForm.password;
-                        this.solveEditSubmitHasThumb(callbacks)
+                        let item: any = this.getEditedItem();
+                        this.solveEditSubmitHasThumb(callbacks, item)
                     }
                 })
-            else this.solveAddSubmit(callbacks, item);
+            else this.solveAddSubmit(callbacks);
         }
+    }
+
+    private getEditedItem(): any {
+        let item = { ... this._submittedForm };
+        let pwd: string = item.password;
+
+        // solve password
+        if (pwd.trim() != '') item.password = this._helperService.md5(pwd);
+        else delete item.password;
+
+        // solve thumb
+        if (this._submittedForm.thumb.trim() == '') delete this._submittedForm.thumb;
+        return item;
     }
 }

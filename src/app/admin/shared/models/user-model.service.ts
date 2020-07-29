@@ -6,7 +6,6 @@ import { Upload } from 'src/app/shared/defines/upload';
 import { HelperService } from 'src/app/shared/services/helper.service';
 import { IUser } from 'src/app/shared/defines/user.interface';
 import { Base64Upload } from 'src/app/shared/defines/base64-upload';
-import { Md5 } from 'ts-md5/dist/md5';
 
 @Injectable({
     providedIn: 'root'
@@ -104,7 +103,7 @@ export class UserModelService extends AdminModelService {
                     this.getItemByFieldPathAndValue({
                         controller: 'group',
                         fieldPath: 'name/value',
-                        value: params.item.category
+                        value: params.item.group
                     }, {
                         doneCallback: (data: any) => {
                             let item: IUser = {
@@ -123,7 +122,7 @@ export class UserModelService extends AdminModelService {
                                 password: `${this._helperService.md5(params.item.password)}`,
                                 status: params.item.status,
                                 thumb: upload._url,
-                                group: data,
+                                group: this.getDupDataByDataAndField(data, 'group'),
                             }
                             item = this.setCreated(item);
                             this._db.list(this.collection()).push(item)

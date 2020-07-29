@@ -86,6 +86,7 @@ export abstract class FormGeneral {
     protected solveEditSubmitNoThumb(callbacks: any, item?: any): void {
         this.setEditedFields();
         let saveItem: any = item || this._submittedForm;
+        delete saveItem.thumb;
         this._modelService.saveItem({
             item: saveItem,
             oldItem: this._currentItem,
@@ -133,7 +134,7 @@ export abstract class FormGeneral {
                 value: this._submittedForm[params.field],
             }, {
                 doneCallback: (item: any) => {
-                    $this._submittedForm[params.field] = item;
+                    $this._submittedForm[params.field] = this._modelService.getDupDataByDataAndField(item, params.field);
                     if (this._helperService.isFn(options.doneCallback)) options.doneCallback(true);
                 }
             })

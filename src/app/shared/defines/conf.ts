@@ -353,7 +353,7 @@ export class Conf {
             {
                 controller: 'user',
                 fieldPath: 'name/value',
-                dupFields: ['name'],
+                dupFields: ['name', 'acp', 'status'],
                 positions: ['group'],
             },
         ],
@@ -367,6 +367,7 @@ export class Conf {
             }, {
                 controller: 'book',
                 fieldPath: 'username/value',
+                dupFields: ['username'],
                 positions: ['created/user', 'modified/user'],
             }, {
                 controller: 'category',

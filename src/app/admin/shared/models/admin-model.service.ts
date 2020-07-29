@@ -25,6 +25,13 @@ export class AdminModelService {
         protected _uploadService: UploadService,
     ) { }
 
+    // ABSTRACTION METHODS
+    public listItems(params: any, options: any) { }
+
+    public getItem(params: any, options: any) { }
+
+    public saveItem(params: any, options: any) { }
+
     // GENERAL METHODS
     public listItemsDynamically(params: any, options: any): void {
         let refFn;
@@ -67,27 +74,34 @@ export class AdminModelService {
         let subId: number = Date.now();
         this._syncDuplicationSubscriptions[subId] = [];
         let duplicationDataConf: any[] = this._helperService.getConf_duplicationDataConf(this._controller);
+        this.print('duplication conf', duplicationDataConf)
         let promises: Promise<any>[] = [];
         if (duplicationDataConf.length > 0) {
             for (let item of duplicationDataConf) {
-                let dataDupFields: string[] = this._helperService.intersect(params.editedFields, item.dupFields);
-                if (dataDupFields.length > 0) {
-                    for (let pos of item.positions)
+                let dataDupFields: string[] = [];
+                let syncType: string = (Object.keys(params.item).length == 0) ? 'delete' : 'update';
+                this.print('sync type', syncType)
+                if (syncType == 'update') dataDupFields = this._helperService.intersect(params.editedFields, item.dupFields);
+                if (dataDupFields.length > 0 || syncType == 'delete') {
+                    // dup data
+                    let dupData: any = this.getDupData(params.item, item.dupFields);
+
+                    // update
+                    for (let pos of item.positions) {
                         promises.push(this.getUpdateDuplicationPromise({
                             subId,
-                            dataDupFields,
-                            item: params.item,
+                            dupData,
                             oldItem: params.oldItem,
                             position: pos,
                             duplicationInfo: item,
                         }))
+                    }
                 }
             }
 
             Promise.all(promises)
                 .then((result: any[]) => {
-                    console.log(`result: `, result, subId);
-                    console.log('\n');
+                    this.print(`result: `, result, subId, '\n');
                     if (this._helperService.isFn(options.doneCallback())) options.doneCallback();;
 
                     // unsubscribe
@@ -101,26 +115,26 @@ export class AdminModelService {
 
     /**
      * Gets update promise
-     * @param data - {item, oldItem, position, duplicationInfo: {controller, fieldPath, positions: string[]}, }
+     * @param data - {dupData, oldItem, position, duplicationInfo: {controller, fieldPath, positions: string[]}, }
      */
     public getUpdateDuplicationPromise(data: any): Promise<any> {
         return new Promise((resolve) => {
             let subscription = this._db.list(this.toCollection(data.duplicationInfo.controller), ref => ref
                 .orderByChild(`${data.position}/${data.duplicationInfo.fieldPath}`)
+
+                // search
                 .equalTo(this._helperService.getVal(data.oldItem, data.duplicationInfo.fieldPath))
             ).snapshotChanges().subscribe((itemsSnapshot) => {
+                this.print('items found', itemsSnapshot.length);
                 if (itemsSnapshot.length > 0) {
                     let subPromises: Promise<any>[] = [];
-                    itemsSnapshot.forEach((itemSnapshot) => {
 
+                    // loop
+                    itemsSnapshot.forEach((itemSnapshot) => {
                         subPromises.push(
                             new Promise((subResolve) => {
-                                if (data.item.$key) delete data.item.$key;
-                                let dupData: any = {};
-                                for (let field of data.dataDupFields)
-                                    dupData[field] = data.item[field];
                                 this._db.object(`${this.toCollection(data.duplicationInfo.controller)}/${itemSnapshot.key}`).update({
-                                    [data.position]: dupData,
+                                    [data.position]: data.dupData,
                                 })
                                     .then(() => {
                                         subResolve(true);
@@ -267,7 +281,12 @@ export class AdminModelService {
                 if (item[data.field] != data.value)
                     promises.push(
                         new Promise((resolve) => {
-                            this.saveItem({ oldItem: item, updateData: { [data.field]: data.value }, key: item.$key }, {
+                            this.saveItem({
+                                oldItem: item,
+                                updateData: { [data.field]: data.value },
+                                key: item.$key,
+                                editedFields: [data.field],
+                            }, {
                                 task: 'update-by-key', doneCallback: () => {
                                     resolve(true);
                                 }
@@ -324,7 +343,8 @@ export class AdminModelService {
         this._db.object(`${this.collection()}/${params.key}`).update(params.updateData)
             .then(() => {
                 this.syncDuplicationData({
-                    oldItem: params.oldItem, item
+                    ...params,
+                    item
                 }, {
                     doneCallback: () => {
                         if (this._helperService.isFn(options.doneCallback)) options.doneCallback();
@@ -346,7 +366,7 @@ export class AdminModelService {
                 params.item.thumb = upload._url;
 
                 // delete old thumb
-                this._uploadService.deleteOneByUrl({ downloadUrl: params.oldThumb }, {});
+                if (params.oldThumb) this._uploadService.deleteOneByUrl({ downloadUrl: params.oldThumb }, {});
 
                 // update to db
                 this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
@@ -428,7 +448,6 @@ export class AdminModelService {
     }
 
     private filterSelect(item: any, field: string, value): boolean {
-        console.log('filter select', item, field, value);
         for (let selectFilter of this._selectFilter)
             if (field == selectFilter.field)
                 if (this._helperService.getVal(item, `${field}/${selectFilter.foreignField}`) == value) return true;
@@ -673,8 +692,6 @@ export class AdminModelService {
         item.created = {
             time: Date.now(),
             user: {
-                time: 1594370898380,
-                status: 'active',
                 username: 'admin',
             }
         }
@@ -685,8 +702,6 @@ export class AdminModelService {
         item.modified = {
             time: Date.now(),
             user: {
-                time: 1594370898380,
-                status: 'active',
                 username: 'admin',
             }
         }
@@ -707,11 +722,25 @@ export class AdminModelService {
         return this._db;
     }
 
-    // ABSTRACTION METHODS
-    public listItems(params: any, options: any) { }
+    public getDupDataByDataAndField(item: any, field: string): any {
+        let dupData: any = {};
+        let dupFields: string[] = this._helperService.getDupFields(field, this._controller);
+        dupData = this.getDupData(item, dupFields);
+        return dupData;
 
-    public getItem(params: any, options: any) { }
+    }
 
-    public saveItem(params: any, options: any) { }
+    public getDupData(item: any, dupFields: string[]): any {
+        let dupData: any = {};
+        if (dupFields)
+            for (let field of dupFields) {
+                dupData[field] = item[field];
+            }
+        this.print('dup data', dupData);
+        return dupData;
+    }
 
+    public print(...args): void {
+        //console.log(...args);
+    }
 }

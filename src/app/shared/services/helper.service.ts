@@ -319,4 +319,12 @@ export class HelperService {
         }
         return [];
     }
+
+    public getDupFields(hostController: string, forController: string): string[]{
+        let dupConf: any[] = this.getConf_duplicationDataConf(hostController);
+        for (let item of dupConf){
+            if (item.controller == forController) return item.dupFields;
+        }
+        return null;
+    }
 }

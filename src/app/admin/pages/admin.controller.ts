@@ -173,13 +173,13 @@ export abstract class AdminController {
         delete tempItem.$key;
         tempItem[field] = this._helperService.getNewFieldButtonValue(field, item[field]);
         this._modelService.saveItem({
+            editedFields: [field],
             oldItem: item,
             updateData: { [field]: tempItem[field], },
             key
         }, {
             task: 'update-by-key',
             doneCallback: (error) => {
-                console.log(error);
                 let resultStatus = (error) ? 'fail' : 'success';
                 this._helperService.notifier({
                     notifierData: {
@@ -196,6 +196,7 @@ export abstract class AdminController {
         let tempItem: any = { ...item };
         tempItem[field] = value;
         this._modelService.saveItem({
+            editedFields: [field],
             oldItem: { ...item },
             updateData: { [field]: value },
             key: item.$key

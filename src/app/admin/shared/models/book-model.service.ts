@@ -122,7 +122,7 @@ export class BookModelService extends AdminModelService {
                                     forSearch: params.item.description.toLowerCase(),
                                 },
                                 slug: params.item.slug,
-                                category: data,
+                                category: this.getDupDataByDataAndField(data, 'category'),
                                 price: params.item.price,
                                 status: params.item.status,
                                 special: params.item.special,

@@ -182,5 +182,9 @@ export class AdminFormComponent implements OnInit {
             if (name == item.field) return item.data;
         }
     }
+
+    public print(value): void {
+        return value;
+    }
 }
 
