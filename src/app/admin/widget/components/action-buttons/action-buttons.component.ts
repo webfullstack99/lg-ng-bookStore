@@ -33,8 +33,10 @@ export class ActionButtonsComponent implements OnInit {
         this._btnCLick.emit({action, item: this._item});
     }
 
-    public getBtnClass(action: string): string {
-        return this._template[action].classes;
+    public getBtnClass(action: string, index: number): string {
+        let classes: string = this._template[action].classes;
+        if (index > 0) return classes+' ml-1'
+        return classes;
     }
 
     public getIconClass(action: string): string {

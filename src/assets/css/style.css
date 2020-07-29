@@ -106,7 +106,7 @@ input.ng-dirty.ng-valid, input.ng-touched.ng-valid {
 }
 
 .admin-main-table-img {
-    max-width: 100px;
+    max-height: 75px;
 }
 
 .no-wrap {

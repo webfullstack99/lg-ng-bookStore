@@ -1,7 +1,7 @@
 <ng-template [ngIf]="_item">
-    <div class="one-row-buttons action-button-container">
-        <ng-template ngFor let-action [ngForOf]=" _actions">
-            <button (click)="onBtnClick(action)" [class]="getBtnClass(action)"><i
+    <div class="no-wrap action-button-container">
+        <ng-template ngFor let-action [ngForOf]=" _actions" let-i="index">
+            <button (click)="onBtnClick(action)" [class]="getBtnClass(action, i)"><i
                     [class]="getIconClass(action)"></i></button>
         </ng-template>
     </div>
