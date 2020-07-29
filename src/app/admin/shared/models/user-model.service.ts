@@ -101,28 +101,36 @@ export class UserModelService extends AdminModelService {
             doneCallback: (upload: Upload) => {
                 try {
                     // upload done
-                    let item: IUser = {
-                        username: {
-                            value: params.item.username,
-                            forSearch: params.item.username.toLowerCase(),
-                        },
-                        email: {
-                            value: params.item.email,
-                            forSearch: params.item.email.toLowerCase(),
-                        },
-                        fullName: {
-                            value: params.item.fullName,
-                            forSearch: params.item.fullName.toLowerCase(),
-                        },
-                        password: `${this._helperService.md5(params.item.password)}`,
-                        status: params.item.status,
-                        thumb: upload._url,
-                        group: {},
-                    }
-                    item = this.setCreated(item);
-                    this._db.list(this.collection()).push(item)
-                        .then(() => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback() })
-                        .catch((e) => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e) });
+                    this.getItemByFieldPathAndValue({
+                        controller: 'group',
+                        fieldPath: 'name/value',
+                        value: params.item.category
+                    }, {
+                        doneCallback: (data: any) => {
+                            let item: IUser = {
+                                username: {
+                                    value: params.item.username,
+                                    forSearch: params.item.username.toLowerCase(),
+                                },
+                                email: {
+                                    value: params.item.email,
+                                    forSearch: params.item.email.toLowerCase(),
+                                },
+                                fullName: {
+                                    value: params.item.fullName,
+                                    forSearch: params.item.fullName.toLowerCase(),
+                                },
+                                password: `${this._helperService.md5(params.item.password)}`,
+                                status: params.item.status,
+                                thumb: upload._url,
+                                group: data,
+                            }
+                            item = this.setCreated(item);
+                            this._db.list(this.collection()).push(item)
+                                .then(() => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback() })
+                                .catch((e) => { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e) });
+                        }
+                    })
                 } catch (e) { if (this._helperService.isFn(options.doneCallback)) options.doneCallback(e) }
             },
             progressCallback: (upload: Upload) => {

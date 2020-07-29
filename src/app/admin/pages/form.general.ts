@@ -11,6 +11,7 @@ import { AdminModelService } from '../shared/models/admin-model.service';
 
 export abstract class FormGeneral {
 
+    private _editedFields: string[] = [];
     public _controller: string;
     public _formType: string;
     public _submittedForm: any;
@@ -58,46 +59,53 @@ export abstract class FormGeneral {
                 }
             }, 'show');
             if (!error && item) this._currentItem = { ... this._currentItem, ...item };
+            this._editedFields = [];
         }
     }
 
     // SOLVE SUBMIT
     // HAS THUMB
     protected solveEditSubmitHasThumb(callbacks: any, item?: any): void {
-        let saveItem: any = item || this._submittedForm;
-        if (saveItem.thumb) {
+        if (this._submittedForm.thumb) {
+            this.setEditedFields();
+            let saveItem: any = item || this._submittedForm;
             // edit and change thumb
             this._modelService.saveItem({
                 item: saveItem,
                 oldItem: this._currentItem,
                 key: this._currentItem.$key,
                 oldThumb: this._currentItem.thumb,
+                editedFields: this._editedFields,
             }, {
                 task: 'edit-change-thumb', ...callbacks
             });
-        } else {
-            // edit not change thumb
-            saveItem.thumb = this._currentItem.thumb;
-            this._modelService.saveItem({
-                item: saveItem,
-                oldItem: this._currentItem,
-                key: this._currentItem.$key,
-            }, {
-                task: 'edit-not-change-thumb', ...callbacks
-            });
-        }
+        } else this.solveEditSubmitNoThumb(callbacks, item);
     }
 
     // NO THUMB
     protected solveEditSubmitNoThumb(callbacks: any, item?: any): void {
+        this.setEditedFields();
         let saveItem: any = item || this._submittedForm;
         this._modelService.saveItem({
             item: saveItem,
             oldItem: this._currentItem,
-            key: this._currentItem.$key
+            key: this._currentItem.$key,
+            editedFields: this._editedFields,
         }, {
             task: 'edit-not-change-thumb', ...callbacks
         });
+    }
+
+    private setEditedFields(): void {
+        for (let key in this._submittedForm) {
+            let submittedVal: any = this._submittedForm[key];
+            let itemVal: any = this._helperService.getVal(this._currentItem, this._helperService.getFieldPath(this._controller, key));
+            if (submittedVal != itemVal) {
+                if (key == 'thumb') {
+                    if (this._submittedForm[key].trim() != '') this._editedFields.push(key);
+                } else if (key != 'password_confirmed') this._editedFields.push(key);
+            }
+        }
     }
 
     protected solveAddSubmit(callbacks: any, item?: any): void {

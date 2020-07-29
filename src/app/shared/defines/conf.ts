@@ -311,7 +311,7 @@ export class Conf {
         user: {
             action: ['edit', 'delete'],
             filter: ['status'],
-            selectFilter: [],
+            selectFilter: [{ field: 'group', foreignField: 'name/value' }],
             search: ['all', 'username', 'email', 'fullName'],
             sort: ['username', 'email', 'fullName', 'group', 'status', 'created', 'modified'],
             pagination: {
@@ -344,6 +344,7 @@ export class Conf {
             {
                 controller: 'book',
                 fieldPath: 'slug',
+                dupFields: ['name', 'slug'],
                 positions: ['category'],
             },
         ],
@@ -352,6 +353,7 @@ export class Conf {
             {
                 controller: 'user',
                 fieldPath: 'name/value',
+                dupFields: ['name'],
                 positions: ['group'],
             },
         ],
@@ -360,6 +362,7 @@ export class Conf {
             {
                 controller: 'item',
                 fieldPath: 'username/value',
+                dupFields: ['username'],
                 positions: ['created/user', 'modified/user'],
             }, {
                 controller: 'book',
@@ -368,19 +371,21 @@ export class Conf {
             }, {
                 controller: 'category',
                 fieldPath: 'username/value',
+                dupFields: ['username'],
                 positions: ['created/user', 'modified/user'],
             }, {
                 controller: 'user',
                 fieldPath: 'username/value',
+                dupFields: ['username'],
                 positions: ['created/user', 'modified/user'],
             }, {
                 controller: 'group',
                 fieldPath: 'username/value',
+                dupFields: ['username'],
                 positions: ['created/user', 'modified/user'],
             },
         ],
     }
-
 
     notifier: NotifierOptions = {
         position: {

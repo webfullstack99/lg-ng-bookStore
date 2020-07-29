@@ -66,20 +66,23 @@ export class AdminModelService {
     public syncDuplicationData(params: any, options: any): void {
         let subId: number = Date.now();
         this._syncDuplicationSubscriptions[subId] = [];
-        console.log('\n');
-        console.log('sync called', subId, params);
         let duplicationDataConf: any[] = this._helperService.getConf_duplicationDataConf(this._controller);
         let promises: Promise<any>[] = [];
         if (duplicationDataConf.length > 0) {
-            for (let item of duplicationDataConf)
-                for (let pos of item.positions)
-                    promises.push(this.getUpdateDuplicationPromise({
-                        subId,
-                        item: params.item,
-                        oldItem: params.oldItem,
-                        position: pos,
-                        duplicationInfo: item,
-                    }))
+            for (let item of duplicationDataConf) {
+                let dataDupFields: string[] = this._helperService.intersect(params.editedFields, item.dupFields);
+                if (dataDupFields.length > 0) {
+                    for (let pos of item.positions)
+                        promises.push(this.getUpdateDuplicationPromise({
+                            subId,
+                            dataDupFields,
+                            item: params.item,
+                            oldItem: params.oldItem,
+                            position: pos,
+                            duplicationInfo: item,
+                        }))
+                }
+            }
 
             Promise.all(promises)
                 .then((result: any[]) => {
@@ -113,8 +116,11 @@ export class AdminModelService {
                         subPromises.push(
                             new Promise((subResolve) => {
                                 if (data.item.$key) delete data.item.$key;
+                                let dupData: any = {};
+                                for (let field of data.dataDupFields)
+                                    dupData[field] = data.item[field];
                                 this._db.object(`${this.toCollection(data.duplicationInfo.controller)}/${itemSnapshot.key}`).update({
-                                    [data.position]: data.item,
+                                    [data.position]: dupData,
                                 })
                                     .then(() => {
                                         subResolve(true);
@@ -213,7 +219,7 @@ export class AdminModelService {
             task: options.task,
             doneCallback: (items: any[]) => {
                 for (let item of items)
-                    selectData.add({ value: item[selectFilter.foreignField], name: item.name.value });
+                    selectData.add({ value: this._helperService.getVal(item, selectFilter.foreignField), name: item.name.value });
                 if (this._helperService.isFn(options.doneCallback)) options.doneCallback([...selectData]);
             }
         });
@@ -346,8 +352,7 @@ export class AdminModelService {
                 this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
                     // sync duplication data
                     this.syncDuplicationData({
-                        oldItem: params.oldItem,
-                        item: params.item,
+                        ...params,
                     }, {
                         doneCallback: () => {
                             if (this._helperService.isFn(options.doneCallback)) options.doneCallback(null, params.item);
@@ -371,8 +376,7 @@ export class AdminModelService {
         this._db.object(`${this.collection()}/${params.key}`).update(params.item).then(() => {
             // sync duplication data
             this.syncDuplicationData({
-                oldItem: params.oldItem,
-                item: params.item,
+                ...params,
             }, {
                 doneCallback: () => {
                     if (this._helperService.isFn(options.doneCallback)) options.doneCallback(null, params.item);
@@ -424,9 +428,10 @@ export class AdminModelService {
     }
 
     private filterSelect(item: any, field: string, value): boolean {
+        console.log('filter select', item, field, value);
         for (let selectFilter of this._selectFilter)
             if (field == selectFilter.field)
-                if (item[field][selectFilter.foreignField] == value) return true;
+                if (this._helperService.getVal(item, `${field}/${selectFilter.foreignField}`) == value) return true;
         return false;
     }
 

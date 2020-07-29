@@ -9,7 +9,7 @@
     <!-- FILTER -->
     <div *ngIf="_hasData == true" class="row mt-3">
         <div class="col-12">
-            <app-filter [filterCount]="_filterCount" [controller]="_controller"></app-filter>
+            <app-filter [dbSelectData]="_dbSelectData" [filterCount]="_filterCount" [controller]="_controller"></app-filter>
         </div>
     </div>
 
@@ -64,7 +64,7 @@
                             </p>
                         </td>
 
-                        <td class="align-middle">{{item.group}}</td>
+                        <td class="align-middle">{{_helperService.getVal(item, 'group.name.value')}}</td>
                         <td class="align-middle">
                             <app-field-button [field]="'status'" [item]="item" (onClick)="onStatusClick($event)">
                             </app-field-button>

@@ -130,8 +130,9 @@ export abstract class AdminController {
     }
 
     protected setSelectData(items: any[]): void {
-        if (this._helperService.getConf_selectFilter(this._controller).length > 0)
+        if (this._helperService.getConf_selectFilter(this._controller).length > 0) {
             this._dbSelectData = this._modelService.getAllSelectFilterData(items);
+        }
     }
 
     protected onEdit(item: any): void {
@@ -178,6 +179,7 @@ export abstract class AdminController {
         }, {
             task: 'update-by-key',
             doneCallback: (error) => {
+                console.log(error);
                 let resultStatus = (error) ? 'fail' : 'success';
                 this._helperService.notifier({
                     notifierData: {

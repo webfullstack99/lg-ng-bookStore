@@ -305,4 +305,18 @@ export class HelperService {
         document.execCommand('copy');
         document.body.removeChild(el);
     }
+
+    public getFieldPath(controller: string, field: string): string {
+        let searchArray: string[] = this.getConf_searchArr(controller);
+        return (searchArray.includes(field)) ? `${field}/value` : field;
+    }
+
+    public intersect(arr1: string[], arr2: string[]): string[] {
+        if (arr1.length > 0 && arr2.length > 0) {
+            return arr1.filter((str: string) => {
+                return (arr2.indexOf(str) > -1);
+            })
+        }
+        return [];
+    }
 }
