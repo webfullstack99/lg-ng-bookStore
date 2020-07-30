@@ -1,3 +1,4 @@
-<select class="custom-select" (change)="onChange($event.target.value)">
-    <option *ngFor="let option of _selectData" [value]="option">{{ option | ucfirst}}</option>
+<select class="custom-select custom-select-sm" [style.min-width]="_minWidth" (change)="onChange($event.target.value)">
+    <option *ngFor="let option of _selectData" [value]="option.value" [selected]="isSelected(option.value)">
+        {{ option.name | ucfirst}}</option>
 </select>

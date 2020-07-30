@@ -172,6 +172,12 @@ export class HelperService {
         return [];
     }
 
+    public getItemInArrayByProperty(array: any[], property: string, value: string): any {
+        for (let item of array)
+            if (item[property] == value) return item
+        return null;
+    }
+
     // SOLVE OBJECT
     public cloneObj(item: object): any {
         return { ...item };
@@ -190,12 +196,6 @@ export class HelperService {
             }
         } catch{ return '' }
         return result;
-    }
-
-    // CHECK
-    public isFn(fn: any): boolean {
-        if (typeof fn == 'function') return true;
-        return false;
     }
 
     // SOLVE CHECKBOX
@@ -251,12 +251,18 @@ export class HelperService {
         return (searchArray.includes(field)) ? `${field}/value` : field;
     }
 
-    public getDupFields(hostController: string, forController: string): string[]{
+    public getDupFields(hostController: string, forController: string): string[] {
         let dupConf: any[] = this.getConf_duplicationDataConf(hostController);
-        for (let item of dupConf){
+        for (let item of dupConf) {
             if (item.controller == forController) return item.dupFields;
         }
         return null;
+    }
+
+    // CHECK
+    public isFn(fn: any): boolean {
+        if (typeof fn == 'function') return true;
+        return false;
     }
 
     // NOTIFIER
@@ -336,4 +342,8 @@ export class HelperService {
         return this._conf.templateConf[controller];
     }
 
+    public getRelationFieldParams(controller: string, field: string): any {
+        let selectFilters: any[] = this.getConf_selectFilter(controller);
+        return this.getItemInArrayByProperty(selectFilters, 'field', field);
+    }
 }

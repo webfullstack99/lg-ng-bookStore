@@ -222,6 +222,10 @@ export class AdminModelService {
         }
     }
 
+    public getSingleSelectDataByField(controller: string, field: string, doneCallback: (selectData: any) => void): void {
+        this.getSelectData(this._helperService.getRelationFieldParams(controller, field), { doneCallback, })
+    }
+
     /**
      * Gets select data
      * @param data - {field, foreignField}
@@ -339,6 +343,7 @@ export class AdminModelService {
     protected updateByKey(params: any, options: any): void {
         params.updateData = this.setModified(params.updateData);
         let item = { ...params.oldItem, ...params.updateData };
+        this.print('update by key - params', params);
 
         this._db.object(`${this.collection()}/${params.key}`).update(params.updateData)
             .then(() => {

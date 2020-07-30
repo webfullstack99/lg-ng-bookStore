@@ -81,4 +81,9 @@ export class IndexComponent extends AdminController implements OnInit {
     public onStatusClick(item: any): void {
         this.onFieldButton('status', item);
     }
+
+    public onGroupChange(item: any, value: string): void {
+        let relationalParams: any = this._helperService.getRelationFieldParams(this._controller, 'group');
+        this.onFieldChange(item, 'group', { fieldPath: relationalParams.foreignField, value }, 'relational-field');
+    }
 }

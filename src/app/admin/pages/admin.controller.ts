@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Conf } from 'src/app/shared/defines/conf';
 import { StrFormatService } from 'src/app/shared/services/str-format.service';
 import { AdminModelService } from '../shared/models/admin-model.service';
+import { BehaviorSubject } from 'rxjs';
 
 declare const $: any;
 
@@ -21,7 +22,8 @@ export abstract class AdminController {
     public _selectedItems;
     public _hasData;
     public _changeActionField;
-    public _dbSelectData: any[] = [];
+    public _dbSelectFilterData: any[] = [];
+    public _dbSelectDataBehavior = new BehaviorSubject<any[]>([]);
     protected _modelService: AdminModelService;
 
     constructor(
@@ -106,6 +108,7 @@ export abstract class AdminController {
 
     // main methods
     protected onList(): void {
+        this.setAllDbSelectData();
         this._modelService.listItems({
             clientFilter: this._clientFilter,
             pagination: this._pagination,
@@ -120,18 +123,23 @@ export abstract class AdminController {
                 this._pagination.totalItems = items.length;
                 this._pagination.behaviorSubject.next(this._pagination);
                 this._filterCount = this._modelService.countFilter(items);
-                this.setSelectData(items);
+                this.setSelectFilterData(items);
             },
             doneCallback: (data: any[]) => {
                 this._items = this._highlightService.highlightSearchDataForAdminMainTable(this._clientFilter, data, this._controller);
             }
         });
-
     }
 
-    protected setSelectData(items: any[]): void {
+    protected setAllDbSelectData(): void {
+        this._modelService.getAllDbSelectData((data: any[]) => {
+            this._dbSelectDataBehavior.next(data);
+        })
+    }
+
+    protected setSelectFilterData(items: any[]): void {
         if (this._helperService.getConf_selectFilter(this._controller).length > 0) {
-            this._dbSelectData = this._modelService.getAllSelectFilterData(items);
+            this._dbSelectFilterData = this._modelService.getAllSelectFilterData(items);
         }
     }
 
@@ -192,26 +200,41 @@ export abstract class AdminController {
         this.onCheckAll(false);
     }
 
-    public onFieldChange(item: any, field: string, value: string): void {
+    public onFieldChange(item: any, field: string, value: any, option: string = 'default'): void {
         let tempItem: any = { ...item };
         tempItem[field] = value;
-        this._modelService.saveItem({
-            editedFields: [field],
-            oldItem: { ...item },
-            updateData: { [field]: value },
-            key: item.$key
-        }, {
-            task: 'update-by-key',
-            doneCallback: (error) => {
-                let resultStatus = (error) ? 'fail' : 'success';
-                this._helperService.notifier({
-                    notifierData: {
-                        type: this._conf.message.crud[`update_${resultStatus}`].type,
-                        message: this._conf.message.crud[`update_${resultStatus}`].content,
-                    }
-                }, 'show')
-            }
-        });
-        this.onCheckAll(false);
+        let fn = (updateData: any) => {
+            this._modelService.saveItem({
+                updateData,
+                editedFields: [field],
+                oldItem: { ...item },
+                key: item.$key
+            }, {
+                task: 'update-by-key',
+                doneCallback: (error) => {
+                    let resultStatus = (error) ? 'fail' : 'success';
+                    this._helperService.notifier({
+                        notifierData: {
+                            type: this._conf.message.crud[`update_${resultStatus}`].type,
+                            message: this._conf.message.crud[`update_${resultStatus}`].content,
+                        }
+                    }, 'show')
+                }
+            });
+            this.onCheckAll(false);
+        }
+        let updateData: any;
+        if (option == 'relational-field') {
+            this._modelService.getItemByFieldPathAndValue({
+                controller: field,
+                fieldPath: value.fieldPath,
+                value: value.value,
+            }, {
+                doneCallback: (item: any) => {
+                    updateData = { [field]: this._modelService.getDupDataByDataAndField(item, field) };
+                    fn(updateData);
+                }
+            })
+        } else fn({ [field]: value });
     }
 }

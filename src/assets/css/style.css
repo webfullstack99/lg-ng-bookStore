@@ -117,6 +117,10 @@ input.ng-dirty.ng-valid, input.ng-touched.ng-valid {
     min-width: 100px;
 }
 
+.min-width-150px {
+    min-width: 150px;
+}
+
 .admin-table-input-message {
     margin-top: 3px;
 }
