@@ -80,7 +80,13 @@
                         </td>
 
                         <td class="align-middle" [innerHTML]="item.author.value"></td>
+                        <!-- 
                         <td class="align-middle">{{_helperService.getVal(item, 'category.name.value')}}</td>
+                         -->
+                        <td class="align-middle">
+                            <app-field-select [field]="'category'" [item]="item" [dbSelectData]="_dbSelectData"> 
+                            </app-field-select>
+                        </td>
                         <td class="align-middle">
                             <app-field-button [field]="'special'" [item]="item" (onClick)="onSpecialClick($event)">
                             </app-field-button>

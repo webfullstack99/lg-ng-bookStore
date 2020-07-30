@@ -20,6 +20,29 @@ export class HelperService {
         private _strFormat: StrFormatService,
     ) { }
 
+    // SOLVE HTML
+    public getSlt(name: string, ...args): string {
+        let $this: HelperService = this;
+        let _slt = {
+            adminTable: '.admin-main-table',
+            adminTableRowById: this._strFormat.format(`tr[data-key="{0}"]`, args[0]),
+            get adminTableRowsByIds() {
+                let slt: string = '';
+                for (let item of args[0]) slt += `${$this.getSlt('adminTableRowById', item.$key)}, `;
+                return slt.replace(/,\s*$/, '');
+            },
+            adminTheadActionBarButtons: '.thead-action-bar-container button',
+            get adminTableFieldButton() { return `${this.adminTable} ` + $this._strFormat.format(`button[class="{0}-btn"][key="{1}"]`, args[0], args[1]) },
+        }
+        return _slt[name];
+    }
+
+    public getPropertyString(propertyObj): string {
+        let result: string = '';
+        for (let key in propertyObj) result += ` ${key}="${propertyObj[key]}" `;
+        return result;
+    }
+
     public showFieldButton(field: string, item: any): any {
         let result: string = '';
         let myBtn = this._conf.template.format.button[field][item[field]];
@@ -61,6 +84,16 @@ export class HelperService {
         }
     }
 
+    public toHtml(string: string): any {
+        return this._sanitized.bypassSecurityTrustHtml(string);
+    }
+
+    // SOLVE STRING
+    public getTextFormString(str: string): string {
+        if (str.match(/^\<[\w]+\>/)) return $(str).text();
+        return str;
+    }
+
     public limit(str: string, limitNumber: number): string {
         if (str.length > limitNumber) return str.substr(0, limitNumber) + '...';
         return str;
@@ -71,6 +104,183 @@ export class HelperService {
         return str
     }
 
+    public md5(str: string): string {
+        let md5: Md5 = new Md5();
+        if (str) return `${md5.appendStr(str).end()}`;
+        return '';
+    }
+
+    public copy(str: string): void {
+        const el = document.createElement('textarea');
+        el.value = str;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+    }
+
+    public slug(str: string): string {
+        str = str.replace(/^\s+|\s+$/g, ''); // trim
+        str = str.toLowerCase();
+
+        // remove accents, swap ñ for n, etc
+        var from = 'àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ';
+        var to = "aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuunuuuuuuyyyyyd";
+
+        for (var i = 0, l = from.length; i < l; i++) {
+            str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+        }
+
+        str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+            .replace(/\s+/g, '-') // collapse whitespace and replace by -
+            .replace(/-+/g, '-'); // collapse dashes
+
+        return str;
+    }
+
+    // SOLVE ARRAY
+    public getKeysFromItems(items: any[]): string[] {
+        let keys: string[] = [];
+        for (let item of items) keys.push(item.$key);
+        return keys;
+    }
+
+    public removeKeyInItems(items: any): any {
+        let tempItems = [];
+        for (let item of items) {
+            tempItems.push({ ...item });
+        }
+        for (let item of tempItems) {
+            delete item.$key;
+        }
+        return tempItems;
+    }
+
+    public cloneArray(items: any[]): any[] {
+        return items.slice(0);
+    }
+
+    public intersect(arr1: string[], arr2: string[]): string[] {
+        if (arr1.length > 0 && arr2.length > 0) {
+            return arr1.filter((str: string) => {
+                return (arr2.indexOf(str) > -1);
+            })
+        }
+        return [];
+    }
+
+    // SOLVE OBJECT
+    public cloneObj(item: object): any {
+        return { ...item };
+    }
+
+    public getVal(item: any, path: string): any {
+        let result: any;
+        let temp: any = item;
+        let pathArr: string[];
+        if (path.match(/\.|\//)) pathArr = path.split(/\.|\//);
+        else pathArr = [path];
+        try {
+            for (let value of pathArr) {
+                result = temp[value];
+                temp = result;
+            }
+        } catch{ return '' }
+        return result;
+    }
+
+    // CHECK
+    public isFn(fn: any): boolean {
+        if (typeof fn == 'function') return true;
+        return false;
+    }
+
+    // SOLVE CHECKBOX
+    public selectAllItems(): void {
+        $('.table-row-checkbox').prop('checked', true);
+    }
+
+    public unSelectAllItems(): void {
+        $('.table-row-checkbox').prop('checked', false);
+    }
+
+    public selectItems(items: any[]): void {
+        for (let item of items)
+            $(`input#${item.$key}`).prop('checked', true);
+    }
+
+    // SOLVE SELECT DATA
+    /**
+     * Syncs select items with changes
+     * @param items 
+     * @param data - {task, value}
+     * @returns select items with changes 
+     */
+    public syncSelectItemsWithChanges(items: any[], data: any): any[] {
+        return items.map((item) => {
+            item[data.field] = data.value;
+            return item;
+        })
+    }
+
+    /**
+     * Gets valid page
+     * @param data - {itemsPerPage, pageRange, totalItems, page}
+     */
+    public getValidPageNumber(data: any): number {
+        let page: number = 1;
+        if (data.page) {
+            let totalPage = (!data.totalPage) ? Math.ceil(data.totalItems / data.itemsPerPage) : data.totalPage;
+            page = Number.parseInt(data.page);
+            page = (Number.isNaN(page) || page <= 0) ? 1 : page;
+            page = (page > totalPage) ? totalPage : page;
+        }
+        return page;
+    }
+
+    public setDefaultTextForCustomFileInput(): void {
+        $('.img-file-input').text(this.ucfirst(this.getConf_text('chooseFile')));
+    }
+
+    // SOLVE FIELDS
+    public getFieldPath(controller: string, field: string): string {
+        let searchArray: string[] = this.getConf_searchArr(controller);
+        return (searchArray.includes(field)) ? `${field}/value` : field;
+    }
+
+    public getDupFields(hostController: string, forController: string): string[]{
+        let dupConf: any[] = this.getConf_duplicationDataConf(hostController);
+        for (let item of dupConf){
+            if (item.controller == forController) return item.dupFields;
+        }
+        return null;
+    }
+
+    // NOTIFIER
+    public notifier(params: any, task: string): void {
+        switch (task) {
+            case 'show':
+                this._notifier.show(params.notifierData)
+                break;
+
+            case 'hide-by-id':
+                this._notifier.hide(params.id)
+                break;
+
+            case 'hide-all':
+                this._notifier.hideAll()
+                break;
+        }
+    }
+
+    public getNotifierId(id: string): string {
+        if (id) return `${id}_notifier`;
+    }
+
+    // GET CONFIG
     public getConf_text(val: string): string {
         return this._conf.template.format.text[val];
     }
@@ -126,205 +336,4 @@ export class HelperService {
         return this._conf.templateConf[controller];
     }
 
-    public isFn(fn: any): boolean {
-        if (typeof fn == 'function') return true;
-        return false;
-    }
-
-    public removeKeyInItems(items: any): any {
-        let tempItems = [];
-        for (let item of items) {
-            tempItems.push({ ...item });
-        }
-        for (let item of tempItems) {
-            delete item.$key;
-        }
-        return tempItems;
-    }
-
-    public cloneArray(items: any[]): any[] {
-        return items.slice(0);
-    }
-
-    public cloneObj(item: object): any {
-        return { ...item };
-    }
-
-    public getVal(item: any, path: string): any {
-        let result: any;
-        let temp: any = item;
-        let pathArr: string[];
-        if (path.match(/\.|\//)) pathArr = path.split(/\.|\//);
-        else pathArr = [path];
-        try {
-            for (let value of pathArr) {
-                result = temp[value];
-                temp = result;
-            }
-        } catch{ return '' }
-        return result;
-    }
-
-    public toHtml(string: string): any {
-        return this._sanitized.bypassSecurityTrustHtml(string);
-    }
-
-    public selectAllItems(): void {
-        $('.table-row-checkbox').prop('checked', true);
-    }
-
-    public unSelectAllItems(): void {
-        $('.table-row-checkbox').prop('checked', false);
-    }
-
-    public selectItems(items: any[]): void {
-        for (let item of items)
-            $(`input#${item.$key}`).prop('checked', true);
-    }
-
-
-    /**
-     * Syncs select items with changes
-     * @param items 
-     * @param data - {task, value}
-     * @returns select items with changes 
-     */
-    public syncSelectItemsWithChanges(items: any[], data: any): any[] {
-        return items.map((item) => {
-            item[data.field] = data.value;
-            return item;
-        })
-    }
-
-
-    /**
-     * Gets valid page
-     * @param data - {itemsPerPage, pageRange, totalItems, page}
-     */
-    public getValidPageNumber(data: any): number {
-        let page: number = 1;
-        if (data.page) {
-            let totalPage = (!data.totalPage) ? Math.ceil(data.totalItems / data.itemsPerPage) : data.totalPage;
-            page = Number.parseInt(data.page);
-            page = (Number.isNaN(page) || page <= 0) ? 1 : page;
-            page = (page > totalPage) ? totalPage : page;
-        }
-        return page;
-    }
-
-    public setDefaultTextForCustomFileInput(): void {
-        $('.img-file-input').text(this.ucfirst(this.getConf_text('chooseFile')));
-    }
-
-    public notifier(params: any, task: string): void {
-        switch (task) {
-            case 'show':
-                this._notifier.show(params.notifierData)
-                break;
-
-            case 'hide-by-id':
-                this._notifier.hide(params.id)
-                break;
-
-            case 'hide-all':
-                this._notifier.hideAll()
-                break;
-        }
-    }
-
-    public getNotifierId(id: string): string {
-        if (id) return `${id}_notifier`;
-    }
-
-    public getSlt(name: string, ...args): string {
-        let $this: HelperService = this;
-        let _slt = {
-            adminTable: '.admin-main-table',
-            adminTableRowById: this._strFormat.format(`tr[data-key="{0}"]`, args[0]),
-            get adminTableRowsByIds() {
-                let slt: string = '';
-                for (let item of args[0]) slt += `${$this.getSlt('adminTableRowById', item.$key)}, `;
-                return slt.replace(/,\s*$/, '');
-            },
-            adminTheadActionBarButtons: '.thead-action-bar-container button',
-            get adminTableFieldButton() { return `${this.adminTable} ` + $this._strFormat.format(`button[class="{0}-btn"][key="{1}"]`, args[0], args[1]) },
-        }
-        return _slt[name];
-    }
-
-    public getKeysFromItems(items: any[]): string[] {
-        let keys: string[] = [];
-        for (let item of items) keys.push(item.$key);
-        return keys;
-    }
-
-    public getPropertyString(propertyObj): string {
-        let result: string = '';
-        for (let key in propertyObj) result += ` ${key}="${propertyObj[key]}" `;
-        return result;
-    }
-
-    public slug(str: string): string {
-        str = str.replace(/^\s+|\s+$/g, ''); // trim
-        str = str.toLowerCase();
-
-        // remove accents, swap ñ for n, etc
-        var from = 'àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ';
-        var to = "aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuunuuuuuuyyyyyd";
-
-        for (var i = 0, l = from.length; i < l; i++) {
-            str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
-        }
-
-        str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-            .replace(/\s+/g, '-') // collapse whitespace and replace by -
-            .replace(/-+/g, '-'); // collapse dashes
-
-        return str;
-    }
-
-    public getTextFormString(str: string): string {
-        if (str.match(/^\<[\w]+\>/)) return $(str).text();
-        return str;
-    }
-
-    public md5(str: string): string {
-        let md5: Md5 = new Md5();
-        if (str) return `${md5.appendStr(str).end()}`;
-        return '';
-    }
-
-    public copy(str: string): void {
-        const el = document.createElement('textarea');
-        el.value = str;
-        el.setAttribute('readonly', '');
-        el.style.position = 'absolute';
-        el.style.left = '-9999px';
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-    }
-
-    public getFieldPath(controller: string, field: string): string {
-        let searchArray: string[] = this.getConf_searchArr(controller);
-        return (searchArray.includes(field)) ? `${field}/value` : field;
-    }
-
-    public intersect(arr1: string[], arr2: string[]): string[] {
-        if (arr1.length > 0 && arr2.length > 0) {
-            return arr1.filter((str: string) => {
-                return (arr2.indexOf(str) > -1);
-            })
-        }
-        return [];
-    }
-
-    public getDupFields(hostController: string, forController: string): string[]{
-        let dupConf: any[] = this.getConf_duplicationDataConf(hostController);
-        for (let item of dupConf){
-            if (item.controller == forController) return item.dupFields;
-        }
-        return null;
-    }
 }

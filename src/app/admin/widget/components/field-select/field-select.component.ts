@@ -12,6 +12,7 @@ export class FieldSelectComponent implements OnInit {
 
     @Input('field') _field: string;
     @Input('item') _item: any;
+    @Input('dbSelectData') _dbSelectData: any[];
 
     @Output('onChange') _onChange = new EventEmitter<string>();
 
@@ -20,7 +21,10 @@ export class FieldSelectComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this._selectData = this._helperService.getConf_selectData()[this._field];
+        console.log('db select data', this._dbSelectData);
+        if (!this._dbSelectData) {
+            this._selectData = this._helperService.getConf_selectData()[this._field];
+        }
     }
 
     public onChange(value: string): void {
