@@ -23,7 +23,7 @@
         "@ckeditor/ckeditor5-build-decoupled-document": "^20.0.0",
         "angular-notifier": "^6.0.1",
         "angularfire2": "^5.4.2",
-        "date-and-time": "^0.13.1",
+        "date-and-time": "^0.14.2",
         "firebase": "^7.15.5",
         "ngx-image-cropper": "^3.2.0",
         "rxjs": "^6.5.5",
